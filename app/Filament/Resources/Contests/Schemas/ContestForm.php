@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Contests\Schemas;
 
-use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -53,8 +53,8 @@ class ContestForm
                                     'male' => 'Male',
                                     'female' => 'Female',
                                     'male&female' => 'Male & Female'
-                                ]),
-                            DateTimePicker::make('date')->native(false)
+                                ])->required(),
+                            DatePicker::make('date')->native(false)
                                 ->required(),
                             TextInput::make('venue')
                                 ->required()
