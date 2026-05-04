@@ -15,7 +15,9 @@ class ContestsTable
     {
         return $table
             ->columns([
-                TextColumn::make('name')
+                TextColumn::make('category')->label('Contest Category'),
+                TextColumn::make('organizer')->label('Organizer'),
+                TextColumn::make('date')->label('Date')->date(),
             ])
             ->filters([
                 //

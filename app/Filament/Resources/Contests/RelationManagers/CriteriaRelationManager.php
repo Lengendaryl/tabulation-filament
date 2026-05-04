@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Contests\RelationManagers;
 
-
+use App\Models\Criteria;
 use App\Models\User;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -17,12 +17,11 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ViewField;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Tabs;
-use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
 use Filament\Support\Exceptions\Halt;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class CriteriaRelationManager extends RelationManager
 {
@@ -51,7 +50,7 @@ class CriteriaRelationManager extends RelationManager
                                     $q->where('contest_id', $this->ownerRecord->id)
                                 )->pluck('name', 'id'),
 
-                                default => User::pluck('name', 'id'),
+                                default => User::where('id', '!=', Auth::id())->pluck('name', 'id'),
                             };
                         })
                         ->live()
@@ -152,8 +151,10 @@ class CriteriaRelationManager extends RelationManager
         return $table
             ->defaultSort('created_at', 'desc')
             ->columns([
-                TextColumn::make('criteria')
-                    ->searchable(),
+                TextColumn::make('criteria.0.data.level')->description(fn(Criteria $record): string => $record->criteria[0]['data']['content'])
+                    ->searchable()->label('Criteria'),
+                TextColumn::make('qualified_participant')->label('Qualified Participants'),
+                TextColumn::make('final_scoring_method')->label('Final Scoring Method'),
             ])->filters([
                 //
             ])

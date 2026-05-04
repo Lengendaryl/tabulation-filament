@@ -80,11 +80,9 @@ class ContestRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('name')
             ->columns([
-                TextColumn::make('name')
-                    ->searchable(),
+                TextColumn::make('category')->label('Contest category')->searchable(),
                 TextColumn::make('organizer'),
                 TextColumn::make('contest_type'),
-                TextColumn::make('category'),
                 TextColumn::make('created_at'),
             ])
             ->filters([
