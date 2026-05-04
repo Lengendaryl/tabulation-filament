@@ -15,7 +15,6 @@ return new class extends Migration
         Schema::create('contests', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Event::class);
-            $table->string('name');
             $table->string('category');
             $table->text('description');
             $table->string('organizer');

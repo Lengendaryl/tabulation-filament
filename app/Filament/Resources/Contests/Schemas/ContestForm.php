@@ -20,28 +20,25 @@ class ContestForm
                     FileUpload::make('poster')->directory('contest'),
                     Grid::make(3)->schema([
                         Grid::make(2)->schema([
-                            TextInput::make('name')
-                                ->required()
-                                ->maxLength(255),
                             TextInput::make('category')->label('Contest Category')
                                 ->required()
-                                ->maxLength(255)
+                                ->maxLength(255),
+                            TextInput::make('organizer')
+                                ->required()
+                                ->maxLength(255),
                         ])->columnSpanFull(),
                         Grid::make(1)->schema([
                             Textarea::make('description')
                                 ->required()
                                 ->maxLength(255)
                         ])->columnSpanFull(),
-                        Grid::make(2)->schema([
-                            TextInput::make('organizer')
-                                ->required()
-                                ->maxLength(255),
+                        Grid::make(3)->schema([
                             Select::make('scoring_type')->label('Type of Scoring')
                                 ->options([
                                     'point_based_single' => 'Point Based Single',
-                                    'point_based_mutliple' => 'Point Based Mutliple',
+                                    'point_based_multiple' => 'Point Based Multiple',
                                     'rank_based_single' => 'Rank Based Single',
-                                    'rank_based_mutliple' => 'Rank Based Mutliple'
+                                    'rank_based_multiple' => 'Rank Based Multiple'
                                 ]),
                             Select::make('contest_type')->label('Type of Contest')
                                 ->options([
@@ -54,6 +51,9 @@ class ContestForm
                                     'female' => 'Female',
                                     'male&female' => 'Male & Female'
                                 ])->required(),
+                        ])->columnSpanFull(),
+                        Grid::make(2)->schema([
+
                             DatePicker::make('date')->native(false)
                                 ->required(),
                             TextInput::make('venue')
