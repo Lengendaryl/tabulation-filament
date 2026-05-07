@@ -18,6 +18,7 @@ use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Illuminate\Support\Facades\Blade;
 
 class JudgePanelProvider extends PanelProvider
 {
@@ -25,6 +26,15 @@ class JudgePanelProvider extends PanelProvider
     {
         return $panel
             ->id('judge')
+            ->viteTheme(['resources/css/app.css', 'resources/css/filament/admin/theme.css']) // This forces Filament to use your CSS
+            // ->renderHook(
+            //     'panels::head.start',
+            //     fn(): string => Blade::render('@fluxAppearance'),
+            // )
+            ->renderHook(
+                'panels::body.end',
+                fn(): string => Blade::render('@fluxScripts'),
+            )
             ->path('judge')
             ->login()
             ->colors([

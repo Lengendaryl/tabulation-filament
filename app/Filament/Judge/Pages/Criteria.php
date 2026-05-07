@@ -12,14 +12,14 @@ class Criteria extends Page
     protected string $view = 'filament.judge.pages.criteria';
     protected static bool $shouldRegisterNavigation = false;
 
-
+    public string $activeTab = 'tab1';
     public function form(Schema $schema): Schema
     {
         return $schema
             ->components([
                 TextInput::make('title')
                     ->required(),
-                MarkdownEditor::make('content'),
+                // MarkdownEditor::make('content'),
                 // ...
             ])
             ->statePath('data');
