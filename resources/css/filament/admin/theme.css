@@ -1,13 +1,4 @@
 @import "../../../../vendor/filament/filament/resources/css/theme.css";
-
 @source '../../../../app/Filament';
 @source '../../../../resources/views/filament';
-
-@theme {
-    --color-main-primary: rgb(242, 241, 235);
-}
-
-.fi-body {
-    @apply bg-slate-100 text-black;
-}
 
