@@ -27,5 +27,8 @@ class Criteria extends Model
         return $this->belongsToMany(User::class);
     }
 
-
+    public function contest()
+    {
+        return $this->belongsTo(Contest::class);
+    }
 }

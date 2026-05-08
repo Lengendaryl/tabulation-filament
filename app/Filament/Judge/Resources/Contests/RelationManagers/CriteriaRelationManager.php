@@ -17,15 +17,6 @@ class CriteriaRelationManager extends RelationManager
 {
     protected static string $relationship = 'criteria';
 
-    public function form(Schema $schema): Schema
-    {
-        return $schema
-            ->components([
-                TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-            ]);
-    }
 
     public function table(Table $table): Table
     {

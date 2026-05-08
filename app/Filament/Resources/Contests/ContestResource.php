@@ -13,7 +13,6 @@ use App\Filament\Resources\Contests\Tables\ContestsTable;
 use App\Filament\Resources\Criterias\RelationManagers\JudgeRelationManager;
 use App\Models\Contest;
 use BackedEnum;
-use Filament\Resources\Pages\Enums\ContentTabPosition;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;

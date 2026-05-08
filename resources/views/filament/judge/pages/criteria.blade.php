@@ -1,167 +1,90 @@
 <x-filament-panels::page>
-
     <x-filament::tabs>
-
-        <x-filament::tabs.item :active="$activeTab === 'tab1'" wire:click="$set('activeTab', 'tab1')">
-            Tab 1
-        </x-filament::tabs.item>
-
-        <x-filament::tabs.item :active="$activeTab === 'tab2'" wire:click="$set('activeTab', 'tab2')">
-            Tab 2
-        </x-filament::tabs.item>
-
-        <x-filament::tabs.item :active="$activeTab === 'tab3'" wire:click="$set('activeTab', 'tab3')">
-            Tab 3
-        </x-filament::tabs.item>
-
-        <x-filament::tabs.item :active="$activeTab === 'tab4'" wire:click="$set('activeTab', 'tab4')">
-            Tab 4
-        </x-filament::tabs.item>
-
+        @foreach ($allCriteria->first()->criteria as $item)
+            @php
+                $tabId = Str::slug($item['data']['content']);
+            @endphp
+            <x-filament::tabs.item class="uppercase" :active="$activeTab === $tabId"
+                wire:click="$set('activeTab', '{{ $tabId }}')">
+                {{ $item['data']['content'] }}
+            </x-filament::tabs.item>
+        @endforeach
     </x-filament::tabs>
 
+    <form class="space-y-4">
+        <flux:card class="flex items-center justify-center">
+            <p class="font-bold text-3xl uppercase">{{ $activeTab }}</p>
+        </flux:card>
 
-    <div class="space-y-4">
+        @foreach ($allCriteria->first()->criteria as $group)
+            @php
+                $thisTabId = Str::slug($group['data']['content']);
+            @endphp
 
-        {{-- <flux:input type="file" wire:model="logo" label="Logo" />
-         --}}
-        @if ($activeTab === 'tab1')
-            <div>
+            @if ($activeTab === $thisTabId)
+                <flux:card x-data="{ isShowing: false }" class="overflow-hidden relative uppercase">
 
-                <div>
-                    <p class="text-lg font-bold">Male Candidates</p>
-                </div>
-                <flux:table>
-                    <flux:table.columns sticky class="bg-white dark:bg-zinc-900">
+                    <div class="p-4 border-b border-zinc-200 dark:border-zinc-700 flex justify-between items-center">
+                        <p class="text-lg font-bold">Male Candidates</p>
 
-                        <flux:table.column sticky class="bg-white dark:bg-zinc-900">No</flux:table.column>
-                        <flux:table.column sticky class="bg-white dark:bg-zinc-900">Poise & Bearing</flux:table.column>
+                        <flux:button variant="ghost" size="sm" @click="isShowing = ! isShowing" inset="top bottom">
+                            {{-- Toggle Icon: Changes based on state --}}
+                            <flux:icon.eye x-show="! isShowing" class="size-5" />
+                            <flux:icon.eye-slash x-show="isShowing" class="size-5" />
+                        </flux:button>
+                    </div>
 
-                        <flux:table.column sticky class="bg-white dark:bg-zinc-900">Beauty & Wits</flux:table.column>
-
-                        <flux:table.column sticky class="bg-white dark:bg-zinc-900">Question & Answer
-                        </flux:table.column>
-
-                        <flux:table.column sticky class="bg-white dark:bg-zinc-900">Sincerity & Grace Under Pressure
-                        </flux:table.column>
-                        <!-- ... -->
-                    </flux:table.columns>
-
-                    <flux:table.rows>
-                        {{-- @foreach ($this->orders as $order)
-
-                @endforeach --}}
-                        <flux:table.row>
-                            @foreach (range(1, 6) as $i)
-                                <flux:table.row>
-                                    <flux:table.cell>
-                                        {{ $i }}
-                                    </flux:table.cell>
-                                    <flux:table.cell>
-                                        <flux:input.group>
-                                            <flux:input placeholder="chunky-spaceship" />
-                                            <flux:input.group.suffix>10</flux:input.group.suffix>
-                                        </flux:input.group>
-                                    </flux:table.cell>
+                    <div x-show="isShowing" x-transition.opacity
+                        class="absolute inset-0 z-10 bg-zinc-900/40 backdrop-blur-sm flex items-center justify-center">
+                        <div
+                            class="bg-white dark:bg-zinc-800 p-4 rounded-xl shadow-2xl flex flex-col items-center gap-2">
+                            <flux:icon.lock-closed class="size-8 text-zinc-400" />
+                            <p class="font-medium">Scoring in Progress</p>
+                            <flux:button size="sm" @click="isShowing = false">Reveal Table</flux:button>
+                        </div>
+                    </div>
 
 
-                                    <flux:table.cell>
-                                        <flux:input.group>
-                                            <flux:input placeholder="chunky-spaceship" />
-                                            <flux:input.group.suffix>10</flux:input.group.suffix>
-                                        </flux:input.group>
-                                    </flux:table.cell>
+                    <flux:table>
+                        <flux:table.columns sticky class="bg-white dark:bg-zinc-900">
+                            <flux:table.column sticky class="bg-white dark:bg-zinc-900">No</flux:table.column>
 
-                                    <flux:table.cell>
-                                        <flux:input.group>
-                                            <flux:input placeholder="chunky-spaceship" />
-                                            <flux:input.group.suffix>10</flux:input.group.suffix>
-                                        </flux:input.group>
-                                    </flux:table.cell>
-                                    <flux:table.cell>
-                                        <flux:input.group>
-                                            <flux:input placeholder="chunky-spaceship" />
-                                            <flux:input.group.suffix>10</flux:input.group.suffix>
-                                        </flux:input.group>
-                                    </flux:table.cell>
-                                </flux:table.row>
+                            @foreach ($group['data']['criteria'] as $item)
+                                <flux:table.column>
+                                    {{ $item['criterion'] }}
+                                </flux:table.column>
                             @endforeach
-                            <!-- ... -->
-                        </flux:table.row>
-                    </flux:table.rows>
-                </flux:table>
-            </div>
-            <div>
-                <div>
-                    <p class="text-lg font-bold">Female Candidates</p>
-                </div>
-                <flux:table>
-                    <flux:table.columns sticky class="bg-white dark:bg-zinc-900">
 
-                        <flux:table.column sticky class="bg-white dark:bg-zinc-900">No</flux:table.column>
-                        <flux:table.column sticky class="bg-white dark:bg-zinc-900">Poise & Bearing</flux:table.column>
+                        </flux:table.columns>
 
-                        <flux:table.column sticky class="bg-white dark:bg-zinc-900">Beauty & Wits</flux:table.column>
+                        <flux:table.rows>
 
-                        <flux:table.column sticky class="bg-white dark:bg-zinc-900">Question & Answer
-                        </flux:table.column>
-
-                        <flux:table.column sticky class="bg-white dark:bg-zinc-900">Sincerity & Grace Under Pressure
-                        </flux:table.column>
-                        <!-- ... -->
-                    </flux:table.columns>
-
-                    <flux:table.rows>
-                        {{-- @foreach ($this->orders as $order)
-
-                @endforeach --}}
-                        <flux:table.row>
-                            @foreach (range(1, 6) as $i)
-                                <flux:table.row>
-                                    <flux:table.cell>
-                                        {{ $i }}
-                                    </flux:table.cell>
-                                    <flux:table.cell>
+                            <flux:table.row>
+                                <flux:table.cell variant="strong">
+                                    asd
+                                </flux:table.cell>
+                                @foreach ($group['data']['criteria'] as $item)
+                                    <flux:table.cell variant="strong">
                                         <flux:input.group>
-                                            <flux:input placeholder="chunky-spaceship" />
-                                            <flux:input.group.suffix>10</flux:input.group.suffix>
+                                            {{-- <flux:input type="number" min="0" /> --}}
+                                            <flux:input type="number" min="0" max="{{ $item['score'] }}"
+                                                wire:model.live="scores.{{ 'sd' }}.{{ Str::slug($item['criterion']) }}" />
+                                            <flux:input.group.suffix>
+                                                /{{ $item['score'] }}
+                                            </flux:input.group.suffix>
                                         </flux:input.group>
                                     </flux:table.cell>
+                                @endforeach
+                            </flux:table.row>
 
 
-                                    <flux:table.cell>
-                                        <flux:input.group>
-                                            <flux:input placeholder="chunky-spaceship" />
-                                            <flux:input.group.suffix>10</flux:input.group.suffix>
-                                        </flux:input.group>
-                                    </flux:table.cell>
-
-                                    <flux:table.cell>
-                                        <flux:input.group>
-                                            <flux:input placeholder="chunky-spaceship" />
-                                            <flux:input.group.suffix>10</flux:input.group.suffix>
-                                        </flux:input.group>
-                                    </flux:table.cell>
-                                    <flux:table.cell>
-                                        <flux:input.group>
-                                            <flux:input placeholder="chunky-spaceship" />
-                                            <flux:input.group.suffix>10</flux:input.group.suffix>
-                                        </flux:input.group>
-                                    </flux:table.cell>
-                                </flux:table.row>
-                            @endforeach
-                            <!-- ... -->
-                        </flux:table.row>
-                    </flux:table.rows>
-                </flux:table>
-            </div>
-        @endif
-
-        @if ($activeTab === 'tab2')
-            <div>
-                asd
-            </div>
-        @endif
-
-    </div>
+                        </flux:table.rows>
+                    </flux:table>
+                </flux:card>
+            @endif
+        @endforeach
+        <div class="flex items-center justify-end gap-2">
+            <flux:button variant="primary" color="zinc">Submit</flux:button>
+        </div>
+    </form>
 </x-filament-panels::page>
