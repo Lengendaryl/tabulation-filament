@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->foreignIdFor(Contest::class)->nullable();
+            $table->foreignIdFor(Contest::class)->nullable()->constrained()->cascadeOnDelete();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
