@@ -17,7 +17,7 @@ return new class extends Migration
             $table->json('criteria');
             $table->json('judges')->nullable();
 
-            $table->foreignIdFor(Contest::class);
+            $table->foreignIdFor(Contest::class)->constrained()->cascadeOnDelete();
 
             $table->integer('qualified_participant')->nullable();
             $table->string('final_scoring_method')->nullable();

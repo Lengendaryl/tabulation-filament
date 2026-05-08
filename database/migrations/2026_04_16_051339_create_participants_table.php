@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('participants', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Contest::class);
-            $table->foreignIdFor(Criteria::class);
+            $table->foreignIdFor(Contest::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Criteria::class)->constrained()->cascadeOnDelete();
             $table->json('participant');
             $table->timestamps();
         });
