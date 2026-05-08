@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Contest;
+use App\Models\Criteria;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,6 +16,7 @@ return new class extends Migration
         Schema::create('participants', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Contest::class);
+            $table->foreignIdFor(Criteria::class);
             $table->json('participant');
             $table->timestamps();
         });
