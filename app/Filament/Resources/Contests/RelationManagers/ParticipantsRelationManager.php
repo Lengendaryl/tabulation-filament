@@ -159,7 +159,6 @@ class ParticipantsRelationManager extends RelationManager
             ->toolbarActions([
                 BulkActionGroup::make([
                     DissociateBulkAction::make(),
-                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
