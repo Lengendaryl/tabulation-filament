@@ -152,7 +152,7 @@ class CriteriaRelationManager extends RelationManager
                                             ->maxLength(255),
                                     ]),
                                     Textarea::make('participant.team_description')
-                                        ->required(),
+                                        ->nullable(),
                                 ])
                                 ->visible(
                                     fn() =>
@@ -191,7 +191,7 @@ class CriteriaRelationManager extends RelationManager
                                                                         ])->required()
                                                                     ]),
                                                                     Textarea::make('participant.description')
-                                                                        ->required()
+                                                                        ->nullable()
                                                                 ]),
                                                         ]),
                                                 ])
