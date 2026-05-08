@@ -26,6 +26,8 @@ class JudgePanelProvider extends PanelProvider
     {
         return $panel
             ->id('judge')
+            ->sidebarFullyCollapsibleOnDesktop()
+            ->topbar(false)
             ->viteTheme(['resources/css/app.css', 'resources/css/filament/admin/theme.css']) // This forces Filament to use your CSS
             // ->renderHook(
             //     'panels::head.start',

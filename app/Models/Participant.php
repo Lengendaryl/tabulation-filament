@@ -19,4 +19,9 @@ class Participant extends Model
     {
         return $this->belongsTo(Contest::class);
     }
+
+    public function criteria()
+    {
+        return $this->belongsToMany(Criteria::class);
+    }
 }

@@ -2,26 +2,24 @@
 
 namespace App\Filament\Judge\Pages;
 
-use Filament\Forms\Components\MarkdownEditor;
-use Filament\Forms\Components\TextInput;
+use App\Models\Criteria as ModelsCriteria;
 use Filament\Pages\Page;
-use Filament\Schemas\Schema;
+use Illuminate\Support\Str;
 
 class Criteria extends Page
 {
     protected string $view = 'filament.judge.pages.criteria';
+    public ?string $heading = '';
     protected static bool $shouldRegisterNavigation = false;
 
-    public string $activeTab = 'tab1';
-    public function form(Schema $schema): Schema
+    public string $activeTab;
+    public  $allCriteria;
+    public array $scores = [];
+    public function mount()
     {
-        return $schema
-            ->components([
-                TextInput::make('title')
-                    ->required(),
-                // MarkdownEditor::make('content'),
-                // ...
-            ])
-            ->statePath('data');
+        // Fetch your data here
+        $this->allCriteria = ModelsCriteria::all();
+        $firstContent = $this->allCriteria->first()->criteria[0]['data']['content'];
+        $this->activeTab = Str::slug($firstContent);
     }
 }
