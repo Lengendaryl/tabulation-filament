@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Contests\RelationManagers;
 
 use App\Filament\Imports\ParticipantsImporter;
+use App\Filament\Imports\TeamParticipantImporter;
 use Filament\Actions\Action;
 use Filament\Actions\AssociateAction;
 use Filament\Actions\BulkActionGroup;
@@ -144,7 +145,9 @@ class ParticipantsRelationManager extends RelationManager
             ])
             ->headerActions([
                 CreateAction::make(),
-                ImportAction::make()->importer(ParticipantsImporter::class)->options([
+                $isTeam ?   ImportAction::make()->importer(TeamParticipantImporter::class)->options([
+                    'contest_id' => $this->ownerRecord->id
+                ])->color('primary') :   ImportAction::make()->importer(ParticipantsImporter::class)->options([
                     'contest_id' => $this->ownerRecord->id
                 ])->color('primary'),
             ])
