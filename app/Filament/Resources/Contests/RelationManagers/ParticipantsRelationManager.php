@@ -116,11 +116,12 @@ class ParticipantsRelationManager extends RelationManager
                 ->label('Participant No'),
 
             ImageColumn::make('participant.image')
-                ->label('Participant Image')
+                ->label('Participant Image')->defaultImageUrl(url('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'))
                 ->circular(),
 
             TextColumn::make('participant.first_name')
-                ->label('First Name')
+                ->label('Name')
+                ->formatStateUsing(fn($record): string => "{$record->participant['first_name']} {$record->participant['last_name']}")
                 ->searchable(),
 
             TextColumn::make('participant.age')
