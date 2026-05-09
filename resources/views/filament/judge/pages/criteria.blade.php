@@ -13,7 +13,7 @@
 
     <form class="space-y-4" wire:submit.prevent="submit">
         <flux:card class="flex items-center justify-center">
-            <p class="font-bold text-3xl uppercase">{{ $activeTab }}</p>
+            <p class="font-bold text-3xl uppercase">{{ str($activeTab)->replace('-', ' ') }}</p>
         </flux:card>
 
         @foreach ($allCriteria->first()->criteria as $group)
