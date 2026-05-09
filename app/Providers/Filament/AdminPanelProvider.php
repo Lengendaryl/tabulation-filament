@@ -31,9 +31,6 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->registration()
-            ->colors([
-                'primary' => Color::Amber,
-            ])
             ->plugins([
                 FilamentShieldPlugin::make(),
             ])

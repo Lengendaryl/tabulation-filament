@@ -8,13 +8,13 @@ class Participant extends Model
 {
 
     protected $fillable = [
-        'participant'
+        'participant',
     ];
-
 
     protected $casts = [
         'participant' => 'array',
     ];
+
     public function contest()
     {
         return $this->belongsTo(Contest::class);
