@@ -11,7 +11,7 @@
         @endforeach
     </x-filament::tabs>
 
-    <form class="space-y-4">
+    <form class="space-y-4" wire:submit.prevent="submit">
         <flux:card class="flex items-center justify-center">
             <p class="font-bold text-3xl uppercase">{{ $activeTab }}</p>
         </flux:card>
@@ -59,32 +59,32 @@
 
                         <flux:table.rows>
 
-                            <flux:table.row>
-                                <flux:table.cell variant="strong">
-                                    asd
-                                </flux:table.cell>
-                                @foreach ($group['data']['criteria'] as $item)
+                            @foreach ($allCriteria->first()->contest->participants as $participant)
+                                <flux:table.row>
                                     <flux:table.cell variant="strong">
-                                        <flux:input.group>
-                                            {{-- <flux:input type="number" min="0" /> --}}
-                                            <flux:input type="number" min="0" max="{{ $item['score'] }}"
-                                                wire:model.live="scores.{{ 'sd' }}.{{ Str::slug($item['criterion']) }}" />
-                                            <flux:input.group.suffix>
-                                                /{{ $item['score'] }}
-                                            </flux:input.group.suffix>
-                                        </flux:input.group>
+                                        {{ $participant['participant']['participant_no'] }}
                                     </flux:table.cell>
-                                @endforeach
-                            </flux:table.row>
-
-
+                                    @foreach ($group['data']['criteria'] as $index => $item)
+                                        <flux:table.cell variant="strong">
+                                            <flux:input.group>
+                                                <flux:input required type="number" min="0"
+                                                    max="{{ $item['score'] }}"
+                                                    wire:model.live="scores.{{ $participant['id'] }}.{{ Str::slug($item['criterion']) }}" />
+                                                <flux:input.group.suffix>
+                                                    /{{ $item['score'] }}
+                                                </flux:input.group.suffix>
+                                            </flux:input.group>
+                                        </flux:table.cell>
+                                    @endforeach
+                                </flux:table.row>
+                            @endforeach
                         </flux:table.rows>
                     </flux:table>
                 </flux:card>
             @endif
         @endforeach
         <div class="flex items-center justify-end gap-2">
-            <flux:button variant="primary" color="zinc">Submit</flux:button>
+            <flux:button variant="primary" color="zinc" type="submit">Submit</flux:button>
         </div>
     </form>
 </x-filament-panels::page>

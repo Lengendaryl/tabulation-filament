@@ -22,7 +22,7 @@ class Criteria extends Model
         'judges' => 'array',
     ];
 
-    public function judges()
+    public function judgeUsers()
     {
         return $this->belongsToMany(User::class);
     }
