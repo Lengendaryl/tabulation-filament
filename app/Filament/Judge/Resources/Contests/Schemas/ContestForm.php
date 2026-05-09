@@ -19,11 +19,9 @@ class ContestForm
                 Grid::make(1)->schema([
                     FileUpload::make('poster')->directory('contest'),
                     Grid::make(3)->schema([
-                        Grid::make(2)->schema([
-                            TextInput::make('category')->label('Contest Category')
-                                ->required()
-                                ->maxLength(255)
-                        ])->columnSpanFull(),
+                        TextInput::make('category')->label('Contest Category')
+                            ->required()
+                            ->maxLength(255)->columnSpanFull(),
                         Grid::make(1)->schema([
                             Textarea::make('description')
                                 ->required()
