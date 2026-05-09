@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('gender_category');
             $table->date('date');
             $table->string('venue');
-            $table->string('poster');
+            $table->string('poster')->nullable();
             $table->timestamps();
         });
     }

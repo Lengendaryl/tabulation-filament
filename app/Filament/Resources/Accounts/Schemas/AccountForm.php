@@ -14,7 +14,7 @@ class AccountForm
             ->components([
                 TextInput::make('name')->required(),
                 TextInput::make('email')->unique()->required(),
-                TextInput::make('password')->minLength(8)->password()->required(),
+                TextInput::make('password')->minLength(8)->password()->dehydrated(fn(?string $state): bool => filled($state))->required(fn(string $operation): bool => $operation === 'create'),
                 Select::make('roles')->relationship('roles', 'name')->multiple()->preload()->searchable()->required(),
             ]);
     }

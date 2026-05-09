@@ -4,12 +4,14 @@ namespace App\Filament\Judge\Pages;
 
 use App\Models\Criteria as ModelsCriteria;
 use App\Models\Score;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Str;
 
 class Criteria extends Page
 {
+    // use HasPageShield;
     protected string $view = 'filament.judge.pages.criteria';
     public ?string $heading = '';
     protected static bool $shouldRegisterNavigation = false;
@@ -44,7 +46,7 @@ class Criteria extends Page
             Score::create([
                 'score' => $score->toArray(),
             ]);
-            
+
             return Notification::make()
                 ->title('Scores Submitted Successfully')
                 ->success() // Green color
