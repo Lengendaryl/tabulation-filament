@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Contests\RelationManagers;
 
+use App\Filament\Imports\ParticipantsImporter;
 use Filament\Actions\Action;
 use Filament\Actions\AssociateAction;
 use Filament\Actions\BulkActionGroup;
@@ -11,6 +12,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\DissociateAction;
 use Filament\Actions\DissociateBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ImportAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -142,15 +144,9 @@ class ParticipantsRelationManager extends RelationManager
             ])
             ->headerActions([
                 CreateAction::make(),
-                Action::make('participant')
-                    ->label('Import Participants')
-                    ->icon('heroicon-m-arrow-up-tray')
-                    ->schema([
-                        FileUpload::make('file')->required(),
-                    ])
-                    ->action(function (array $data) {
-                        // import logic
-                    }),
+                ImportAction::make()->importer(ParticipantsImporter::class)->options([
+                    'contest_id' => $this->ownerRecord->id
+                ])->color('primary'),
             ])
             ->recordActions([
                 EditAction::make(),

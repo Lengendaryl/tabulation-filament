@@ -45,7 +45,7 @@ class JudgeRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                CreateAction::make(),
+                CreateAction::make()->label('Add Judge'),
             ])
             ->recordActions([
                 EditAction::make(),
