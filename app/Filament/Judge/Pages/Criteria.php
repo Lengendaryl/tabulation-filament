@@ -23,6 +23,7 @@ class Criteria extends Page
     {
         // Fetch your data here
         $this->allCriteria = ModelsCriteria::with(['contest.participants'])->get();
+        logger($this->allCriteria);
         $firstContent = $this->allCriteria->first()->criteria[0]['data']['content'];
         $this->activeTab = Str::slug($firstContent);
     }
@@ -52,7 +53,6 @@ class Criteria extends Page
                 ->success() // Green color
                 ->body('All participant scores have been recorded.')
                 ->send();
-
         } catch (\Exception $e) {
             Notification::make()
                 ->title('Submission Failed')
