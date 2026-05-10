@@ -34,7 +34,7 @@ class ParticipantFactory extends Factory
     {
         return $this->state(fn(array $attributes) => [
             'participant' => array_merge($attributes['participant'], [
-                'gender' => 'Male',
+                'gender' => 'male',
                 'first_name' => $this->faker->firstName('male'),
             ]),
         ]);
@@ -44,7 +44,7 @@ class ParticipantFactory extends Factory
     {
         return $this->state(fn(array $attributes) => [
             'participant' => array_merge($attributes['participant'], [
-                'gender' => 'Female',
+                'gender' => 'female',
                 'first_name' => $this->faker->firstName('female'),
             ]),
         ]);

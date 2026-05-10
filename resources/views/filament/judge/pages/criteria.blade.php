@@ -65,13 +65,39 @@
                                 // 2. Sort by total descending
                                 scoresArray.sort((a, b) => b.total - a.total);
 
-                                // 3. Assign ranks (handling ties)
+                                // 3. Group by scores to find ties
                                 let ranks = {};
-                                scoresArray.forEach((item, index) => {
-                                    // Basic rank is index + 1
-                                    // If total is 0, we can leave it blank or make it last
-                                    ranks[item.id] = item.total > 0 ? (index + 1) : '-';
-                                });
+                                let i = 0;
+                                while (i < scoresArray.length) {
+                                    let item = scoresArray[i];
+
+                                    if (!item.total || item.total === 0) {
+                                        ranks[item.id] = '-';
+                                        i++;
+                                        continue;
+                                    }
+
+                                    // Find all participants with this exact same score
+                                    let j = i;
+                                    while (j < scoresArray.length && scoresArray[j].total === item.total) {
+                                        j++;
+                                    }
+
+                                    // Calculate Fractional Rank: Average of positions from (i+1) to j
+                                    // Formula: (Start Rank + End Rank) / 2
+                                    let startRank = i + 1;
+                                    let endRank = j;
+                                    let fractionalRank = (startRank + endRank) / 2;
+
+                                    // Assign this rank to all tied participants
+                                    for (let k = i; k < j; k++) {
+                                        ranks[scoresArray[k].id] = fractionalRank;
+                                    }
+
+                                    // Move the counter to the next score group
+                                    i = j;
+                                }
+
                                 return ranks;
                             }
                         }">
@@ -123,6 +149,7 @@
                                 </flux:table.rows>
                             </flux:table>
                         </div>
+
                     </flux:card>
                 @endforeach
             @endif
@@ -132,4 +159,5 @@
             </flux:button>
         </div>
     </form>
+
 </x-filament-panels::page>
