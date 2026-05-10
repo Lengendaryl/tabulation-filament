@@ -1,20 +1,18 @@
 <x-filament-panels::page>
     <x-filament::tabs>
         @foreach ($allCriteria->first()->criteria as $item)
-
             @php
                 $tabId = Str::slug($item['data']['content']);
             @endphp
 
-            <x-filament::tabs.item class="uppercase" :active="$activeTab === $tabId"
+            <x-filament::tabs.item class="uppercase text-wrap" :active="$activeTab === $tabId"
                 wire:click="$set('activeTab', '{{ $tabId }}')">
                 {{ $item['data']['content'] }}
             </x-filament::tabs.item>
-
         @endforeach
     </x-filament::tabs>
 
-    <form class="space-y-4" wire:submit.prevent="submit">
+    <form class="space-y-4" wire:submit.prevent="submit" x-data="{ isShowing: false }">
         <flux:card class="flex items-center justify-center">
             <p class="font-bold text-3xl uppercase">{{ str($activeTab)->replace('-', ' ') }}</p>
         </flux:card>
@@ -31,15 +29,15 @@
             @endphp
             @if ($activeTab === $thisTabId)
                 @foreach ($groupedParticipants as $gender => $participants)
-                    <flux:card x-data="{ isShowing: false }" class="overflow-hidden relative uppercase">
+                    <flux:card class="overflow-hidden relative uppercase">
 
                         <div class="p-4 border-b border-zinc-200 dark:border-zinc-700 flex justify-between items-center">
                             <p class="text-lg font-bold">{{ $gender }} Candidates</p>
 
-                            <flux:button variant="ghost" size="sm" @click="isShowing = ! isShowing"
+                            <flux:button variant="ghost" size="sm" @click="isShowing = !isShowing"
                                 inset="top bottom">
                                 {{-- Toggle Icon: Changes based on state --}}
-                                <flux:icon.eye x-show="! isShowing" class="size-5" />
+                                <flux:icon.eye x-show="!isShowing" class="size-5" />
                                 <flux:icon.eye-slash x-show="isShowing" class="size-5" />
                             </flux:button>
                         </div>
@@ -49,7 +47,7 @@
                             <div
                                 class="bg-white dark:bg-zinc-800 p-4 rounded-xl shadow-2xl flex flex-col items-center gap-2">
                                 <flux:icon.lock-closed class="size-8 text-zinc-400" />
-                                <p class="font-medium">Scoring in Progress</p>
+                                <p class="font-medium">Score is hidden</p>
                                 <flux:button size="sm" @click="isShowing = false">Reveal Table</flux:button>
                             </div>
                         </div>
@@ -60,7 +58,7 @@
                                 <flux:table.column sticky class="bg-white dark:bg-zinc-900">No</flux:table.column>
 
                                 @foreach ($group['data']['criteria'] as $item)
-                                    <flux:table.column>
+                                    <flux:table.column class="text-wrap ">
                                         {{ $item['criterion'] }}
                                     </flux:table.column>
                                 @endforeach
@@ -79,7 +77,7 @@
                                                 <flux:input.group>
                                                     <flux:input required type="number" min="0"
                                                         max="{{ $item['score'] }}"
-                                                        wire:model.live="scores.{{ $participant['id'] }}.{{ Str::slug($item['criterion']) }}" />
+                                                        wire:model="scores.{{ $participant['id'] }}.{{ Str::slug($item['criterion']) }}" />
                                                     <flux:input.group.suffix>
                                                         /{{ $item['score'] }}
                                                     </flux:input.group.suffix>
@@ -95,7 +93,8 @@
             @endif
         @endforeach
         <div class="flex items-center justify-end gap-2">
-            <flux:button variant="primary" color="zinc" type="submit">Submit</flux:button>
+            <flux:button variant="primary" color="zinc" type="submit" @click="isShowing = true">Submit
+            </flux:button>
         </div>
     </form>
 </x-filament-panels::page>
