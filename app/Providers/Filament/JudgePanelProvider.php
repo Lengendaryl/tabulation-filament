@@ -62,6 +62,20 @@ class JudgePanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+            ])->colors([
+                'primary' => [
+                    50 => '#f4effa',
+                    100 => '#e6dbf4',
+                    200 => '#cbb7e9',
+                    300 => '#b093de',
+                    400 => '#8a5fd0',
+                    500 => '#45226b',
+                    600 => '#3d1f60',
+                    700 => '#341a52',
+                    800 => '#2b1544',
+                    900 => '#221037',
+                    950 => '#160a24',
+                ],
             ])
             ->authMiddleware([
                 Authenticate::class,
