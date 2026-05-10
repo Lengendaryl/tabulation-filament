@@ -61,10 +61,10 @@
                                     let total = Object.values(this.results[id]).reduce((a, b) => Number(a) + Number(b), 0);
                                     return { id: id, total: total };
                                 });
-                        
+
                                 // 2. Sort by total descending
                                 scoresArray.sort((a, b) => b.total - a.total);
-                        
+
                                 // 3. Assign ranks (handling ties)
                                 let ranks = {};
                                 scoresArray.forEach((item, index) => {

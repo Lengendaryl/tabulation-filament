@@ -31,8 +31,7 @@ class ParticipantsRelationManager extends RelationManager
         return $schema->components([
             Section::make('Team Info')
                 ->schema([
-                    FileUpload::make('participant.image')->directory('participant')
-                        ->required(),
+                    FileUpload::make('participant.image')->directory('participant'),
                     Grid::make(3)->schema([
                         TextInput::make('participant.team_participant_no')
                             ->required()
@@ -41,11 +40,9 @@ class ParticipantsRelationManager extends RelationManager
                             ->required()
                             ->maxLength(255),
                         TextInput::make('participant.team_captain')
-                            ->required()
-                            ->maxLength(255),
+                            ->required(),
                     ]),
                     Textarea::make('participant.team_description')
-                        ->required(),
                 ])
                 ->visible(
                     fn() =>
@@ -54,8 +51,7 @@ class ParticipantsRelationManager extends RelationManager
 
             Section::make('Individual Info')
                 ->schema([
-                    FileUpload::make('participant.image')->directory('participant')
-                        ->required(),
+                    FileUpload::make('participant.image')->directory('participant'),
                     Grid::make(3)->schema([
                         TextInput::make('participant.participant_no')
                             ->required()
@@ -68,15 +64,13 @@ class ParticipantsRelationManager extends RelationManager
                             ->maxLength(255),
                     ]),
                     Grid::make(2)->schema([
-                        TextInput::make('participant.age')->numeric()
-                            ->required(),
+                        TextInput::make('participant.age')->numeric(),
                         Select::make('participant.gender')->options([
                             'male' => 'Male',
                             'female' => 'Female',
                         ])->required()
                     ]),
-                    Textarea::make('participant.description')
-                        ->required(),
+                    Textarea::make('participant.description'),
 
                 ])
                 ->visible(
