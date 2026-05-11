@@ -15,7 +15,6 @@ class Criteria extends Page
     protected string $view = 'filament.judge.pages.criteria';
     public ?string $heading = '';
     protected static bool $shouldRegisterNavigation = false;
-
     public string $activeTab;
     public  $allCriteria;
     public array $submittedCategories = [];
@@ -32,10 +31,12 @@ class Criteria extends Page
 
         $this->activeTab = Str::slug($firstContent);
 
+        $this->loadScoresByTab($this->activeTab);
+
         $record = Score::where('judge_id', auth()->id())
             ->where('contest_id', $this->allCriteria->first()->contest_id)
+            ->where('contest_category', Str::headline($this->activeTab))
             ->first();
-
 
         if ($record && !empty($record->score)) {
             foreach ($record->score as $item) {
@@ -47,6 +48,32 @@ class Criteria extends Page
                 $this->scores[$category][$pId] = $item['scores'];
             }
         }
+    }
+    private function loadScoresByTab(string $tab)
+    {
+        $record = Score::where('judge_id', auth()->id())
+            ->where('contest_id', $this->allCriteria->first()->contest_id)
+            ->where('contest_category', Str::headline($tab))
+            ->first();
+
+        // reset tab data to avoid mixing old values
+        $this->scores[$tab] = [];
+
+        if ($record && !empty($record->score)) {
+            foreach ($record->score as $item) {
+                $category = Str::slug($item['contest_category']);
+                $pId = $item['participant_id'];
+                $this->submittedCategories[$category] = true;
+                $this->scores[$tab][$pId] = $item['scores'];
+            }
+        }
+    }
+
+
+    public function updatedActiveTab(string $value)
+    {
+        $this->loadScoresByTab($value);
+        logger($this->activeTab);
     }
 
     private function getRank(array $participantsScores)
