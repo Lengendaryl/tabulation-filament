@@ -41,4 +41,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Contest::class);
     }
+
+    public function scores()
+    {
+        return $this->hasMany(Score::class, 'judge_id');
+    }
 }

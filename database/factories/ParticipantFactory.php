@@ -25,7 +25,7 @@ class ParticipantFactory extends Factory
                 "first_name" => $this->faker->firstName(),
                 "last_name" => $this->faker->lastName(),
                 "gender" => $this->faker->randomElement(['Male', 'Female']),
-                "participant_no" => $this->faker->unique()->numberBetween(1, 10),
+                "participant_no" => $this->faker->unique()->numberBetween(1, 12),
             ]
         ];
     }

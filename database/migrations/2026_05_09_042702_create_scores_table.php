@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Contest;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,6 +15,8 @@ return new class extends Migration
     {
         Schema::create('scores', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(User::class, 'judge_id')->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Contest::class)->constrained()->cascadeOnDelete();
             $table->json('score');
             $table->timestamps();
         });
