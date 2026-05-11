@@ -65,7 +65,8 @@
                                 // Only include participants from this gender
                                 let scoresArray = this.participants.map(id => {
                         
-                                    let participantScores = this.results[id] || {};
+                                    let participantScores =
+                                        this.results['{{ $activeTab }}']?.[id] || {};
                         
                                     let total = Object.values(participantScores)
                                         .reduce((a, b) => Number(a) + Number(b), 0);
@@ -144,7 +145,8 @@
                                                             max="{{ $item['score'] }}"
                                                             x-on:input="if(!results['{{ $participant['id'] }}']) results['{{ $participant['id'] }}'] = {};
                                                             results['{{ $participant['id'] }}']['{{ $slug }}'] = $event.target.value"
-                                                            wire:model="scores.{{ $participant['id'] }}.{{ $slug }}" />
+                                                            {{-- wire:model="scores.{{ $participant['id'] }}.{{ $slug }}"  --}}
+                                                            wire:model="scores.{{ $activeTab }}.{{ $participant['id'] }}.{{ $slug }}" />
                                                         <flux:input.group.suffix>
                                                             /{{ $item['score'] }}
                                                         </flux:input.group.suffix>
@@ -153,7 +155,7 @@
                                             @endforeach
                                             <flux:table.cell variant="strong"
                                                 x-text="() => {
-                                                let pScores = results['{{ $participant['id'] }}'] || {};
+                                                let pScores = results['{{ $activeTab }}']?.['{{ $participant['id'] }}'] || {};
                                                 return Object.values(pScores).reduce((a, b) => Number(a) + Number(b), 0) + '%';
                                             }">
                                                 0
