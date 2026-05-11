@@ -54,7 +54,9 @@
                             </div>
                         </div>
 
-
+                        @php
+                            $isLocked = isset($submittedCategories[$activeTab]);
+                        @endphp
                         <div x-data="{
                             results: @entangle('scores'),
                         
@@ -145,8 +147,8 @@
                                                             max="{{ $item['score'] }}"
                                                             x-on:input="if(!results['{{ $participant['id'] }}']) results['{{ $participant['id'] }}'] = {};
                                                             results['{{ $participant['id'] }}']['{{ $slug }}'] = $event.target.value"
-                                                            {{-- wire:model="scores.{{ $participant['id'] }}.{{ $slug }}"  --}}
-                                                            wire:model="scores.{{ $activeTab }}.{{ $participant['id'] }}.{{ $slug }}" />
+                                                            wire:model="scores.{{ $activeTab }}.{{ $participant['id'] }}.{{ $slug }}"
+                                                            :disabled="$isLocked" />
                                                         <flux:input.group.suffix>
                                                             /{{ $item['score'] }}
                                                         </flux:input.group.suffix>
@@ -174,7 +176,8 @@
             @endif
         @endforeach
         <div class="flex items-center justify-end gap-2">
-            <flux:button variant="primary" color="zinc" type="submit" @click="isShowing = true">Submit
+            <flux:button variant="primary" :disabled="$isLocked" color="zinc" type="submit"
+                @click="isShowing = true">Submit
             </flux:button>
         </div>
     </form>

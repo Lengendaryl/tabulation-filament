@@ -28,7 +28,9 @@ class JudgePanelProvider extends PanelProvider
             ->id('judge')
             ->sidebarFullyCollapsibleOnDesktop()
             ->topbar(false)
-            ->viteTheme(['resources/css/app.css', 'resources/css/filament/admin/theme.css']) // This forces Filament to use your CSS
+            ->viteTheme(['resources/css/app.css', 'resources/css/filament/admin/theme.css'])
+            ->topNavigation()
+            // This forces Filament to use your CSS
             // ->renderHook(
             //     'panels::head.start',
             //     fn(): string => Blade::render('@fluxAppearance'),

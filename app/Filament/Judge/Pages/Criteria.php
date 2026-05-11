@@ -19,6 +19,7 @@ class Criteria extends Page
     public string $activeTab;
     public  $allCriteria;
     public bool $hasSubmitted = false;
+    public array $submittedCategories = [];
     public array $scores = [];
     public function mount()
     {
@@ -38,15 +39,12 @@ class Criteria extends Page
 
         if ($record && !empty($record->score)) {
             foreach ($record->score as $item) {
-                // $pId = $item['participant_id'];
-                // $pScores = $item['scores'];
-                // $contestCategory = $item['contest_category'];
-                // $this->scores[$pId] = $pScores;
                 $category = Str::slug($item['contest_category']);
                 $pId = $item['participant_id'];
 
+                $this->submittedCategories[$category] = true;
+
                 $this->scores[$category][$pId] = $item['scores'];
-                logger($this->scores[$category][$pId] = $item['scores']);
             }
         }
     }
@@ -118,11 +116,6 @@ class Criteria extends Page
                 ];
             })->values();
 
-            // Score::create([
-            //     'score' => $score->toArray(),
-            //     'judge_id' => auth()->id(),
-            //     'contest_id' => $this->allCriteria->first()->contest_id
-            // ]);
             auth()->user()->scores()->create([
                 'contest_id' => $this->allCriteria->first()->contest_id,
                 'score' => $score->toArray(),
