@@ -146,7 +146,7 @@
                                                         <flux:input required type="number" min="0"
                                                             max="{{ $item['score'] }}"
                                                             x-on:input="if(!results['{{ $participant['id'] }}']) results['{{ $participant['id'] }}'] = {};
-                                                            results['{{ $participant['id'] }}']['{{ $slug }}'] = $event.target.value"
+                                                            results['{{ $participant['id'] }}']['{{ $slug }}'] = Number($event.target.value)"
                                                             wire:model="scores.{{ $activeTab }}.{{ $participant['id'] }}.{{ $slug }}"
                                                             :disabled="$isLocked" />
                                                         <flux:input.group.suffix>

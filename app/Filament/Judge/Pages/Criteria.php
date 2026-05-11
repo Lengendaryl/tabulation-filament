@@ -18,9 +18,9 @@ class Criteria extends Page
 
     public string $activeTab;
     public  $allCriteria;
-    public bool $hasSubmitted = false;
     public array $submittedCategories = [];
     public array $scores = [];
+    private $ranks = [];
     public function mount()
     {
         // Fetch your data here
@@ -49,87 +49,128 @@ class Criteria extends Page
         }
     }
 
+    private function getRank(array $participantsScores)
+    {
+        $this->ranks = [];
+
+        $groupedParticipants = $this->allCriteria
+            ->first()
+            ->contest
+            ->participants
+            ->groupBy(fn($p) => $p['participant']['gender']);
+
+        foreach ($groupedParticipants as $gender => $participants) {
+
+            $scoresArray = [];
+
+            foreach ($participants as $participant) {
+
+                $participantId = $participant['id'];
+
+                $criteria = $participantsScores[$participantId] ?? [];
+
+                $total = collect($criteria)
+                    ->map(fn($v) => (float) $v)
+                    ->sum();
+
+                $scoresArray[] = [
+                    'id' => $participantId,
+                    'total' => $total,
+                ];
+            }
+
+            // Sort descending
+            usort($scoresArray, fn($a, $b) => $b['total'] <=> $a['total']);
+
+            $i = 0;
+            $count = count($scoresArray);
+
+            while ($i < $count) {
+
+                $item = $scoresArray[$i];
+
+                if ($item['total'] <= 0) {
+                    $this->ranks[$item['id']] = '-';
+                    $i++;
+                    continue;
+                }
+
+                $j = $i;
+
+                while (
+                    $j < $count &&
+                    $scoresArray[$j]['total'] == $item['total']
+                ) {
+                    $j++;
+                }
+
+                $fractionalRank = (($i + 1) + $j) / 2;
+
+                for ($k = $i; $k < $j; $k++) {
+                    $this->ranks[$scoresArray[$k]['id']] = $fractionalRank;
+                }
+
+                $i = $j;
+            }
+        }
+    }
+
     public function submit()
     {
         try {
-            $groupedParticipants = $this->allCriteria->first()->contest->participants->groupBy(fn($p) => $p['participant']['gender']);
 
-            $ranks = [];
+            $category = $this->activeTab;
 
-            foreach ($groupedParticipants as $gender => $participants) {
-                // 2. Filter scores only for participants in this specific gender group
-                $genderParticipantIds = $participants->pluck('id')->toArray();
+            // ONLY current tab
+            $participantsScores = $this->scores[$category] ?? [];
 
-                $genderTotals = collect($this->scores)
-                    ->only($genderParticipantIds) // Only take scores for current gender
-                    ->map(fn($criteria) => array_sum($criteria))
-                    ->sortDesc();
+            // compute ranks only for this category
+            $this->getRank($participantsScores);
 
-                // 3. Convert this gender group to a flat array
-                $scoresArray = [];
-                foreach ($genderTotals as $participantId => $total) {
-                    $scoresArray[] = [
-                        'id' => $participantId,
-                        'total' => $total,
-                    ];
-                }
+            $score = collect();
 
-                // 4. Calculate fractional ranks for THIS gender group
-                $i = 0;
-                $count = count($scoresArray);
+            foreach ($participantsScores as $participantId => $criteria) {
 
-                while ($i < $count) {
-                    $item = $scoresArray[$i];
+                $score->push([
+                    'contest_category' => Str::headline($category),
 
-                    if (!$item['total'] || $item['total'] == 0) {
-                        $ranks[$item['id']] = '-';
-                        $i++;
-                        continue;
-                    }
+                    'participant_id' => (int) $participantId,
 
-                    $j = $i;
-                    while ($j < $count && $scoresArray[$j]['total'] == $item['total']) {
-                        $j++;
-                    }
-
-                    $fractionalRank = ($i + 1 + $j) / 2;
-
-                    for ($k = $i; $k < $j; $k++) {
-                        $ranks[$scoresArray[$k]['id']] = $fractionalRank;
-                    }
-
-                    $i = $j;
-                }
-            }
-
-            $score = collect($this->scores)->map(function ($criteria, $participantId) use ($ranks) {
-                return [
-                    'contest_category' => $this->allCriteria->first()->criteria[0]['data']['content'],
-                    'participant_id' => $participantId,
                     'level' => $this->allCriteria->first()->criteria[0]['data']['level'],
+
                     'judge_id' => auth()->id(),
+
                     'contest_id' => $this->allCriteria->first()->contest_id,
+
                     'scores' => $criteria,
-                    'total_score' => array_sum($criteria),
+
+                    'total_score' => collect($criteria)
+                        ->map(fn($v) => (float) $v)
+                        ->sum(),
+
                     'submitted_at' => now()->toDateTimeString(),
-                    'rank' => $ranks[$participantId] ?? '-'
-                ];
-            })->values();
+
+                    'rank' => $this->ranks[$participantId] ?? '-',
+                ]);
+            }
 
             auth()->user()->scores()->create([
                 'contest_id' => $this->allCriteria->first()->contest_id,
                 'score' => $score->toArray(),
             ]);
 
-            return Notification::make()
+            $this->submittedCategories[$category] = true;
+
+            Notification::make()
                 ->title('Scores Submitted Successfully')
-                ->success() // Green color
+                ->success()
                 ->body('All participant scores have been recorded.')
                 ->send();
         } catch (\Exception $e) {
+
             Notification::make()
                 ->title('Submission Failed')
-                ->danger() // Red color
+                ->danger()
                 ->body('An error occurred: ' . $e->getMessage())
                 ->send();
         }
