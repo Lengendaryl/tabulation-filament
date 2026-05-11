@@ -18,20 +18,93 @@ class Criteria extends Page
 
     public string $activeTab;
     public  $allCriteria;
+    public bool $hasSubmitted = false;
     public array $scores = [];
     public function mount()
     {
         // Fetch your data here
         $this->allCriteria = ModelsCriteria::with(['contest.participants'])->get();
-        logger($this->allCriteria);
+
+        if ($this->allCriteria->isEmpty()) return;
+
         $firstContent = $this->allCriteria->first()->criteria[0]['data']['content'];
+
         $this->activeTab = Str::slug($firstContent);
+
+        $record = Score::where('judge_id', auth()->id())
+            ->where('contest_id', $this->allCriteria->first()->contest_id)
+            ->first();
+
+
+        if ($record && !empty($record->score)) {
+            foreach ($record->score as $item) {
+                // $pId = $item['participant_id'];
+                // $pScores = $item['scores'];
+                // $contestCategory = $item['contest_category'];
+                // $this->scores[$pId] = $pScores;
+                $category = Str::slug($item['contest_category']);
+                $pId = $item['participant_id'];
+
+                $this->scores[$category][$pId] = $item['scores'];
+                logger($this->scores[$category][$pId] = $item['scores']);
+            }
+        }
     }
 
     public function submit()
     {
         try {
-            $score = collect($this->scores)->map(function ($criteria, $participantId) {
+            $groupedParticipants = $this->allCriteria->first()->contest->participants->groupBy(fn($p) => $p['participant']['gender']);
+
+            $ranks = [];
+
+            foreach ($groupedParticipants as $gender => $participants) {
+                // 2. Filter scores only for participants in this specific gender group
+                $genderParticipantIds = $participants->pluck('id')->toArray();
+
+                $genderTotals = collect($this->scores)
+                    ->only($genderParticipantIds) // Only take scores for current gender
+                    ->map(fn($criteria) => array_sum($criteria))
+                    ->sortDesc();
+
+                // 3. Convert this gender group to a flat array
+                $scoresArray = [];
+                foreach ($genderTotals as $participantId => $total) {
+                    $scoresArray[] = [
+                        'id' => $participantId,
+                        'total' => $total,
+                    ];
+                }
+
+                // 4. Calculate fractional ranks for THIS gender group
+                $i = 0;
+                $count = count($scoresArray);
+
+                while ($i < $count) {
+                    $item = $scoresArray[$i];
+
+                    if (!$item['total'] || $item['total'] == 0) {
+                        $ranks[$item['id']] = '-';
+                        $i++;
+                        continue;
+                    }
+
+                    $j = $i;
+                    while ($j < $count && $scoresArray[$j]['total'] == $item['total']) {
+                        $j++;
+                    }
+
+                    $fractionalRank = ($i + 1 + $j) / 2;
+
+                    for ($k = $i; $k < $j; $k++) {
+                        $ranks[$scoresArray[$k]['id']] = $fractionalRank;
+                    }
+
+                    $i = $j;
+                }
+            }
+
+            $score = collect($this->scores)->map(function ($criteria, $participantId) use ($ranks) {
                 return [
                     'contest_category' => $this->allCriteria->first()->criteria[0]['data']['content'],
                     'participant_id' => $participantId,
@@ -40,11 +113,18 @@ class Criteria extends Page
                     'contest_id' => $this->allCriteria->first()->contest_id,
                     'scores' => $criteria,
                     'total_score' => array_sum($criteria),
-                    'submitted_at' => now()->toDateTimeString()
+                    'submitted_at' => now()->toDateTimeString(),
+                    'rank' => $ranks[$participantId] ?? '-'
                 ];
             })->values();
 
-            Score::create([
+            // Score::create([
+            //     'score' => $score->toArray(),
+            //     'judge_id' => auth()->id(),
+            //     'contest_id' => $this->allCriteria->first()->contest_id
+            // ]);
+            auth()->user()->scores()->create([
+                'contest_id' => $this->allCriteria->first()->contest_id,
                 'score' => $score->toArray(),
             ]);
 
