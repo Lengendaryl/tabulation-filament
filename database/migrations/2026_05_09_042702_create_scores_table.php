@@ -18,6 +18,8 @@ return new class extends Migration
             $table->foreignIdFor(User::class, 'judge_id')->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Contest::class)->constrained()->cascadeOnDelete();
             $table->json('score');
+            $table->boolean('status');
+            $table->string('contest_category');
             $table->timestamps();
         });
     }
