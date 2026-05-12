@@ -5,7 +5,7 @@ namespace App\Filament\Resources\Results;
 use App\Filament\Resources\Results\Pages\CreateResult;
 use App\Filament\Resources\Results\Pages\EditResult;
 use App\Filament\Resources\Results\Pages\ListResults;
-use App\Filament\Resources\Results\Pages\Results;
+use App\Filament\Resources\Results\Pages\ViewResult;
 use App\Filament\Resources\Results\Schemas\ResultForm;
 use App\Filament\Resources\Results\Tables\ResultsTable;
 use App\Models\Contest;
@@ -45,7 +45,7 @@ class ResultResource extends Resource
             'index' => ListResults::route('/'),
             'create' => CreateResult::route('/create'),
             'edit' => EditResult::route('/{record}/edit'),
-            'view' => Results::route('/{record}/view')
+            'view' => ViewResult::route('/{record}/view')
         ];
     }
 }
