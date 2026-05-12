@@ -11,7 +11,6 @@ use Illuminate\Support\Str;
 
 class Criteria extends Page
 {
-    // use HasPageShield;
     protected string $view = 'filament.judge.pages.criteria';
     public ?string $heading = '';
     protected static bool $shouldRegisterNavigation = false;
@@ -73,7 +72,6 @@ class Criteria extends Page
     public function updatedActiveTab(string $value)
     {
         $this->loadScoresByTab($value);
-        logger($this->activeTab);
     }
 
     private function getRank(array $participantsScores)
@@ -184,6 +182,7 @@ class Criteria extends Page
             auth()->user()->scores()->create([
                 'contest_id' => $this->allCriteria->first()->contest_id,
                 'score' => $score->toArray(),
+                'status' => true
             ]);
 
             $this->submittedCategories[$category] = true;
