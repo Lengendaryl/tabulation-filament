@@ -12,7 +12,7 @@ use Illuminate\Support\Str;
 class Criteria extends Page
 {
     protected string $view = 'filament.judge.pages.criteria';
-    public ?string $heading = '';
+    protected ?string $heading = '';
     protected static bool $shouldRegisterNavigation = false;
     public string $activeTab;
     public  $allCriteria;
