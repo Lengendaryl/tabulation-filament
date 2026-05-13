@@ -26,22 +26,9 @@ class JudgePanelProvider extends PanelProvider
     {
         return $panel
             ->id('judge')
-            ->viteTheme(['resources/css/app.css', 'resources/css/filament/admin/theme.css'])
             ->topNavigation()
-            // This forces Filament to use your CSS
-            // ->renderHook(
-            //     'panels::head.start',
-            //     fn(): string => Blade::render('@fluxAppearance'),
-            // )
-            ->renderHook(
-                'panels::body.end',
-                fn(): string => Blade::render('@fluxScripts'),
-            )
-            ->path('judge')
+            ->path('')
             ->login()
-            ->colors([
-                'primary' => Color::Amber,
-            ])
             ->discoverResources(in: app_path('Filament/Judge/Resources'), for: 'App\Filament\Judge\Resources')
             ->discoverPages(in: app_path('Filament/Judge/Pages'), for: 'App\Filament\Judge\Pages')
             ->pages([
@@ -76,7 +63,7 @@ class JudgePanelProvider extends PanelProvider
                     900 => '#221037',
                     950 => '#160a24',
                 ],
-            ])
+            ])->viteTheme(['resources/css/filament/admin/theme.css', 'resources/css/app.css'])
             ->authMiddleware([
                 Authenticate::class,
             ]);
