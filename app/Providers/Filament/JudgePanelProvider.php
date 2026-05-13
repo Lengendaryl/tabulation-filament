@@ -27,7 +27,7 @@ class JudgePanelProvider extends PanelProvider
         return $panel
             ->id('judge')
             ->topNavigation()
-            ->path('judge')
+            ->path('')
             ->login()
             ->discoverResources(in: app_path('Filament/Judge/Resources'), for: 'App\Filament\Judge\Resources')
             ->discoverPages(in: app_path('Filament/Judge/Pages'), for: 'App\Filament\Judge\Pages')
