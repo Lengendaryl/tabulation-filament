@@ -17,7 +17,6 @@ class CriteriaRelationManager extends RelationManager
 {
     protected static string $relationship = 'criteria';
 
-
     public function table(Table $table): Table
     {
         return $table
@@ -33,7 +32,7 @@ class CriteriaRelationManager extends RelationManager
             ])
             ->recordActions([
                 ViewAction::make()->url(fn($record) => route('filament.judge.pages.criteria', [
-                    'contest' => $record->id
+                    'criteria' => $record->id
                 ])),
             ])
             ->toolbarActions([

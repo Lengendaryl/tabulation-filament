@@ -19,10 +19,14 @@ class Criteria extends Page
     public array $submittedCategories = [];
     public array $scores = [];
     private $ranks = [];
+    public ?int $criteriaId = null;
     public function mount()
     {
         // Fetch your data here
-        $this->allCriteria = ModelsCriteria::with(['contest.participants'])->get();
+        $contestId = $this->criteriaId = request('criteria');
+        
+        $this->allCriteria = ModelsCriteria::where('id', $contestId)->with(['contest.participants'])->get();
+
 
         if ($this->allCriteria->isEmpty()) return;
 
@@ -48,6 +52,7 @@ class Criteria extends Page
             }
         }
     }
+
     private function loadScoresByTab(string $tab)
     {
         $record = Score::where('judge_id', auth()->id())
@@ -158,23 +163,16 @@ class Criteria extends Page
 
                 $score->push([
                     'contest_category' => Str::headline($category),
-
                     'participant_id' => (int) $participantId,
-
                     'level' => $this->allCriteria->first()->criteria[0]['data']['level'],
-
                     'judge_id' => auth()->id(),
-
                     'contest_id' => $this->allCriteria->first()->contest_id,
-
+                    'criteria' => $this->record->id,
                     'scores' => $criteria,
-
                     'total_score' => collect($criteria)
                         ->map(fn($v) => (float) $v)
                         ->sum(),
-
                     'submitted_at' => now()->toDateTimeString(),
-
                     'rank' => $this->ranks[$participantId] ?? '-',
                 ]);
             }
