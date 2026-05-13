@@ -70,8 +70,11 @@
         </div>
         <flux:card x:card>
             <flux:table>
+                <div class="border-b border-zinc-800/10 dark:border-white/20">
+                    <p class="text-lg font-bold">Gender Candidates</p>
+                </div>
                 <flux:table.columns>
-                    <flux:table.column>Customer</flux:table.column>
+                    <flux:table.column> Customer</flux:table.column>
                     <flux:table.column>Date</flux:table.column>
                     <flux:table.column>Status</flux:table.column>
                     <flux:table.column>Amount</flux:table.column>
