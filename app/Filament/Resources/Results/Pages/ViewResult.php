@@ -8,7 +8,7 @@ use Filament\Resources\Pages\ViewRecord;
 class ViewResult extends ViewRecord
 {
     protected static string $resource = ResultResource::class;
-    protected string $view = 'filament.admin.pages.result';
+    protected string $view = 'filament.admin.pages.results.result';
     protected ?string $heading = '';
     protected function getHeaderActions(): array
     {
