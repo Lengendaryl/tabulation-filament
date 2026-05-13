@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Contest;
+use App\Models\Criteria;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -17,6 +18,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(User::class, 'judge_id')->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Contest::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Criteria::class)->constrained()->cascadeOnDelete();
             $table->json('score');
             $table->boolean('status');
             $table->string('contest_category');
