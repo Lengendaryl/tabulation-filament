@@ -40,7 +40,9 @@
                 MAJOR AWARDS
             </x-filament::tabs.item>
             <x-filament::tabs.item>
-                TOP 3 RESULTS
+                @foreach (collect($criteria)->unique('criteria.id') as $item)
+                    TOP {{ $item['criteria']['qualified_participant'] }} RESULTS
+                @endforeach
             </x-filament::tabs.item>
             <x-filament::tabs.item>
                 FINAL RESULTS
@@ -52,7 +54,6 @@
             @endforeach
         </x-filament::tabs>
     </div>
-
 
     <flux:card class="space-y-6">
         <div>

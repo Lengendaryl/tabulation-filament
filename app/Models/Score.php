@@ -23,4 +23,8 @@ class Score extends Model
     {
         return $this->belongsTo(Contest::class);
     }
+    public function criteria()
+    {
+        return $this->belongsTo(Criteria::class);
+    }
 }

@@ -24,7 +24,7 @@ class Criteria extends Model
         'judges' => 'array',
     ];
 
-    public function judgeUsers()
+    public function judge()
     {
         return $this->belongsToMany(User::class);
     }
@@ -32,5 +32,10 @@ class Criteria extends Model
     public function contest()
     {
         return $this->belongsTo(Contest::class);
+    }
+
+    public function scores()
+    {
+        return $this->hasMany(Score::class);
     }
 }

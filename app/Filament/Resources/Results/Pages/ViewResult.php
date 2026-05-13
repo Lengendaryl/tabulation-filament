@@ -27,7 +27,7 @@ class ViewResult extends ViewRecord
     {
         parent::mount($record);
 
-        $t =   $this->criteria = Score::where('criteria_id', $this->record->id)->with('judge')->get();
+        $t =   $this->criteria = Score::where('criteria_id', $this->record->id)->with(['judge', 'criteria'])->get();
 
         logger($t);
     }
