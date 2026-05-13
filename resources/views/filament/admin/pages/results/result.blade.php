@@ -24,17 +24,11 @@
                         @endforeach
                     @endforeach
                 </flux:table.row>
-
-
-
-
-
-
             </flux:table.rows>
         </flux:table>
     </flux:card>
 
-    <div class="w-fit">
+    <div class="w-fit ">
         <x-filament::tabs label="Content tabs">
             <x-filament::tabs.item>
                 PRELIMINARY
@@ -46,23 +40,20 @@
                 MAJOR AWARDS
             </x-filament::tabs.item>
             <x-filament::tabs.item>
-                TOP 3 RESULTS
+                @foreach (collect($criteria)->unique('criteria.id') as $item)
+                    TOP {{ $item['criteria']['qualified_participant'] }} RESULTS
+                @endforeach
             </x-filament::tabs.item>
             <x-filament::tabs.item>
                 FINAL RESULTS
             </x-filament::tabs.item>
-            <x-filament::tabs.item>
-                JUDGE 1
-            </x-filament::tabs.item>
-            <x-filament::tabs.item>
-                JUDGE 2
-            </x-filament::tabs.item>
-            <x-filament::tabs.item>
-                JUDGE 3
-            </x-filament::tabs.item>
+            @foreach (collect($criteria)->unique('judge.id') as $item)
+                <x-filament::tabs.item class="uppercase">
+                    {{ $item['judge']['name'] }}
+                </x-filament::tabs.item>
+            @endforeach
         </x-filament::tabs>
     </div>
-
 
     <flux:card class="space-y-6">
         <div>
