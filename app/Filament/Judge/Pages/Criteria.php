@@ -24,7 +24,7 @@ class Criteria extends Page
     {
         // Fetch your data here
         $contestId = $this->criteriaId = request('criteria');
-        
+
         $this->allCriteria = ModelsCriteria::where('id', $contestId)->with(['contest.participants'])->get();
 
 
@@ -167,7 +167,7 @@ class Criteria extends Page
                     'level' => $this->allCriteria->first()->criteria[0]['data']['level'],
                     'judge_id' => auth()->id(),
                     'contest_id' => $this->allCriteria->first()->contest_id,
-                    'criteria' => $this->record->id,
+                    'criteria' => $this->criteriaId,
                     'scores' => $criteria,
                     'total_score' => collect($criteria)
                         ->map(fn($v) => (float) $v)
@@ -179,6 +179,7 @@ class Criteria extends Page
 
             auth()->user()->scores()->create([
                 'contest_id' => $this->allCriteria->first()->contest_id,
+                'criteria_id' => $this->criteriaId,
                 'score' => $score->toArray(),
                 'status' => true
             ]);
