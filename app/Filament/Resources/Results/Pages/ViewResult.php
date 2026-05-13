@@ -3,7 +3,10 @@
 namespace App\Filament\Resources\Results\Pages;
 
 use App\Filament\Resources\Results\ResultResource;
+use App\Models\Result;
+use App\Models\Score;
 use Filament\Resources\Pages\ViewRecord;
+
 
 class ViewResult extends ViewRecord
 {
@@ -15,5 +18,17 @@ class ViewResult extends ViewRecord
         return [
             // EditAction::make(),
         ];
+    }
+
+    public $result;
+    public $criteria;
+
+    public function mount(int|string $record): void
+    {
+        parent::mount($record);
+
+        $t =   $this->criteria = Score::where('criteria_id', $this->record->id)->with('judge')->get();
+
+        logger($t);
     }
 }
