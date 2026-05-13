@@ -9,6 +9,8 @@ use App\Filament\Resources\Results\Pages\ViewResult;
 use App\Filament\Resources\Results\Schemas\ResultForm;
 use App\Filament\Resources\Results\Tables\ResultsTable;
 use App\Models\Contest;
+use App\Models\Criteria;
+use App\Models\Score;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -18,7 +20,7 @@ use Filament\Tables\Table;
 
 class ResultResource extends Resource
 {
-    protected static ?string $model = Contest::class;
+    protected static ?string $model = Criteria::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::ChartBarSquare;
     protected static ?string $navigationLabel = 'Results';
