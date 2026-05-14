@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use DiogoGPinto\AuthUIEnhancer\AuthUIEnhancerPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -29,6 +30,9 @@ class JudgePanelProvider extends PanelProvider
             ->topNavigation()
             ->path('')
             ->login()
+            ->plugins([
+                AuthUIEnhancerPlugin::make()->formPanelPosition('left'),
+            ])
             ->discoverResources(in: app_path('Filament/Judge/Resources'), for: 'App\Filament\Judge\Resources')
             ->discoverPages(in: app_path('Filament/Judge/Pages'), for: 'App\Filament\Judge\Pages')
             ->pages([
