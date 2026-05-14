@@ -6,7 +6,7 @@ use App\Filament\Resources\Results\ResultResource;
 use App\Models\Result;
 use App\Models\Score;
 use Filament\Resources\Pages\ViewRecord;
-
+use Filament\Support\Enums\Width;
 
 class ViewResult extends ViewRecord
 {

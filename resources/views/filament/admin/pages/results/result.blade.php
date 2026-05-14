@@ -1,7 +1,7 @@
 <x-filament-panels::page>
 
-    <flux:card>
-        <flux:table>
+    <flux:card class="space-y-2">
+        <flux:table class="border-b">
             <flux:table.columns>
                 <flux:table.column>JUDGES</flux:table.column>
                 @foreach ($criteria as $item)
@@ -26,6 +26,7 @@
                 </flux:table.row>
             </flux:table.rows>
         </flux:table>
+        <flux:button variant="primary" color="violet" class="w-full">Tabulate</flux:button>
     </flux:card>
 
     <div class="w-fit ">
