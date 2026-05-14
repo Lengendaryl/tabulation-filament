@@ -2,8 +2,9 @@
 
 namespace App\Providers\Filament;
 
-use BezhanSalleh\FilamentShield\FilamentShield;
+use App\Filament\Pages\Auth\Login;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use DiogoGPinto\AuthUIEnhancer\AuthUIEnhancerPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -29,11 +30,13 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->viteTheme(['resources/css/filament/admin/theme.css', 'resources/css/app.css'])
             ->topNavigation()
             ->login()
             ->registration()
             ->plugins([
                 FilamentShieldPlugin::make(),
+                AuthUIEnhancerPlugin::make()
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
@@ -73,6 +76,6 @@ class AdminPanelProvider extends PanelProvider
                     900 => '#221037',
                     950 => '#160a24',
                 ],
-            ])->viteTheme(['resources/css/filament/admin/theme.css', 'resources/css/app.css']);
+            ]);
     }
 }
