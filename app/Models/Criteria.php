@@ -38,4 +38,9 @@ class Criteria extends Model
     {
         return $this->hasMany(Score::class);
     }
+
+    public function judgesGroups()
+    {
+        return $this->hasMany(JudgesGroup::class);
+    }
 }
