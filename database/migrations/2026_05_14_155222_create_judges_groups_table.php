@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('judges_groups', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Criteria::class);
+            $table->foreignIdFor(Criteria::class)->constrained()->cascadeOnDelete();
             $table->json('judges');
             $table->timestamps();
         });
