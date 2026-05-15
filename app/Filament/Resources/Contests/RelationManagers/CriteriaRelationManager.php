@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Contests\RelationManagers;
 
 
 use App\Models\Criteria;
+use App\Models\JudgesGroup;
 use App\Models\User;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -16,6 +17,7 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ViewField;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
@@ -72,7 +74,7 @@ class CriteriaRelationManager extends RelationManager
                                 ])->live()->required()
                             ])->columnSpanFull(),
                             Grid::make(1)->schema([
-                                Builder::make('criteria')
+                                Builder::make('criteria')->label('Category contest')
                                     ->blocks([
                                         Block::make('contest')
                                             ->schema([
@@ -104,12 +106,6 @@ class CriteriaRelationManager extends RelationManager
                                                             ->minValue(1)
                                                             ->required()
                                                             ->live()
-                                                            ->afterStateUpdated(function (callable $get, callable $set) {
-                                                                $criteria = $get('criteria');
-                                                                $total = collect($criteria)
-                                                                    ->sum(fn($item) => floatval($item['score'] ?? 0));
-                                                                $set('total', $total);
-                                                            }),
                                                     ])
                                                     ->columns(2)
                                                     ->columnSpanFull()
@@ -132,27 +128,6 @@ class CriteriaRelationManager extends RelationManager
             ]);
     }
 
-    protected function mutateFormDataBeforeCreate(array $data): array
-    {
-        $total = collect($data['criteria'] ?? [])
-            ->sum(function ($block) {
-                return collect($block['data']['criteria'] ?? [])
-                    ->sum(fn($item) => (float) ($item['score'] ?? 0));
-            });
-
-        $data['judges'] = array_merge(
-            $data['judges_filtered'] ?? [],
-            $data['judges_all'] ?? []
-        );
-
-        if ($total > 100) {
-            throw new Halt(
-                'Total score cannot exceed 100.'
-            );
-        }
-
-        return $data;
-    }
     public function table(Table $table): Table
     {
         return $table
@@ -166,7 +141,106 @@ class CriteriaRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                CreateAction::make()->modalWidth(Width::ScreenExtraLarge),
+                CreateAction::make()
+                    ->modalWidth(Width::ScreenTwoExtraLarge)
+                    ->mutateDataUsing(function (array $data): array {
+                        // Use the correct hook for Table Actions
+                        logger('test1');
+
+                        collect($data['criteria'] ?? [])
+                            ->each(function ($block) {
+
+                                $total = collect($block['data']['criteria'] ?? [])
+                                    ->sum(fn($item) => (float) ($item['score'] ?? 0));
+
+                                if ($total > 100) {
+
+                                    $content = $block['data']['content'] ?? 'Unknown';
+                                    $level = $block['data']['level'] ?? 'Unknown';
+
+                                    throw new Halt(
+                                        "{$content} ({$level}) total score cannot exceed 100."
+                                    );
+                                }
+                            });
+                        logger('test2');
+                        // 2. Prepare Judges JSON structure
+                        // In your form, the Select is named 'judges'
+                        $selectedJudgeIds = $data['judges'] ?? [];
+                        $judgesJson = collect($selectedJudgeIds)
+                            ->map(fn($judgeId) => [
+                                'judge_id' => (int) $judgeId,
+                                'status' => false,
+                            ])
+                            ->values()
+                            ->all();
+                        logger('test3');
+                        // 3. Map the Builder data (Crucial: Keep 'type' and 'criteria' scores)
+                        $data['criteria'] = collect($data['criteria'] ?? [])
+                            ->map(function ($block) use ($judgesJson) {
+                                return [
+                                    'type' => $block['type'] ?? 'contest',
+                                    'data' => [
+                                        'level' => $block['data']['level'] ?? null,
+                                        'content' => $block['data']['content'] ?? null,
+                                        'weight' => $block['data']['weight'] ?? null,
+                                        'criteria' => $block['data']['criteria'] ?? [],
+                                        'judges' => $judgesJson,
+                                    ],
+                                ];
+                            })
+                            ->values()
+                            ->all();
+                        logger('test4');
+                        return $data;
+                    })
+                    ->before(function (array $data) {
+                        foreach ($data['criteria'] ?? [] as $block) {
+
+                            $total = collect($block['data']['criteria'] ?? [])
+                                ->sum(fn($item) => (float) ($item['score'] ?? 0));
+
+                            if ($total > 100) {
+                                $content = $block['data']['content'] ?? 'Unknown';
+                                $level = $block['data']['level'] ?? 'Unknown';
+
+                                Notification::make()
+                                    ->danger()
+                                    ->title('Validation Error')
+                                    ->body("{$content} ({$level}) total must not exceed 100")
+                                    ->send();
+                                throw Halt::make();
+                            }
+                        }
+                    })
+                    ->after(function ($record) {
+                        logger('test5');
+                        // JudgesGroup::create([
+                        //     'criteria_id' => $record->id,
+                        //     'judges' => $record->judges,
+                        // ]);
+                        try {
+                            logger($record->criteria);
+                            $payload = [
+                                'criteria_id' => $record->id,
+                                'judges' => $record->criteria,
+                            ];
+
+                            logger('PAYLOAD', $payload);
+
+                            JudgesGroup::create($payload);
+                        } catch (\Throwable $e) {
+
+                            logger()->error('JudgesGroup Create Failed', [
+                                'message' => $e->getMessage(),
+                                'line' => $e->getLine(),
+                                'file' => $e->getFile(),
+                                'trace' => $e->getTraceAsString(),
+                            ]);
+
+                            throw $e;
+                        }
+                    }),
             ])
             ->recordActions([
                 EditAction::make(),
