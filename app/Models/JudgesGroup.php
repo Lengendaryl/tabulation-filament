@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class JudgesGroup extends Model
 {
-    protected $fillable = ['criteria_id', 'judges'];
+    protected $fillable = ['criteria_id', 'judges', 'judge_id'];
 
     protected $casts = [
-        'judges' => 'array'
+        'judges' => 'array',
+        'judge_id' => 'array'
     ];
 
     public function criteria()

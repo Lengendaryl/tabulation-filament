@@ -232,6 +232,7 @@ class CriteriaRelationManager extends RelationManager
                             JudgesGroup::create([
                                 'criteria_id' => $record->id,
                                 'judges' => $data['_meta'] ?? [],
+                                'judge_id' => $data['judges']
                             ]);
                         } catch (\Throwable $e) {
 
