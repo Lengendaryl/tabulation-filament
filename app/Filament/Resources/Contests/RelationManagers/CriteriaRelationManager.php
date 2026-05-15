@@ -63,41 +63,51 @@ class CriteriaRelationManager extends RelationManager
                                 ->live()
                                 ->required(),
                             Grid::make(3)->schema([
-                                TextInput::make('qualified_participant')->numeric()->minValue(1)->required(),
-                                Select::make('final_scoring_method')->options([
+                                TextInput::make('qualified_participant')
+                                ->numeric()
+                                ->minValue(1)
+                                ->required(),
+                                Select::make('final_scoring_method')
+                                ->options([
                                     'final' => 'Final',
                                     'finalprelim' => 'Final & Prelim',
                                 ])->live()->required(),
-                                Select::make('preliminary_scoring_method')->options([
+                                Select::make('preliminary_scoring_method')
+                                ->options([
                                     'default' => 'Default',
                                     'weighted' => 'Weighted',
                                 ])->live()->required()
                             ])->columnSpanFull(),
                             Grid::make(1)->schema([
-                                Builder::make('criteria')->label('Category contest')
+                                Builder::make('criteria')
+                                    ->label('Category contest')
                                     ->blocks([
                                         Block::make('contest')
                                             ->schema([
-                                                Grid::make(3)->columns(fn(callable $get) => $get('../../../preliminary_scoring_method') === 'weighted'
-                                                    ? 3
-                                                    : 2)->schema([
-                                                    TextInput::make('content')
-                                                        ->label('Contest name')
-                                                        ->required(),
-                                                    TextInput::make('weight')->label('Contest Weight')
-                                                        ->visible(
-                                                            fn(callable $get) =>
-                                                            $get('../../../preliminary_scoring_method') === 'weighted'
-                                                        )
-                                                        ->required(),
-                                                    Select::make('level')
-                                                        ->label('Contes Round')
-                                                        ->options([
-                                                            'preliminary' => 'Preliminary',
-                                                            'final' => 'Final',
-                                                        ])
-                                                        ->required(),
-                                                ])->columnSpanFull(),
+                                                Grid::make(3)
+                                                    ->columns(fn(callable $get) => $get('../../../preliminary_scoring_method') === 'weighted'
+                                                        ? 3
+                                                        : 2)
+                                                    ->schema([
+                                                        TextInput::make('content')
+                                                            ->label('Contest name')
+                                                            ->required(),
+                                                        TextInput::make('weight')
+                                                            ->label('Contest Weight')
+                                                            ->numeric()
+                                                            ->visible(
+                                                                fn(callable $get) =>
+                                                                $get('../../../preliminary_scoring_method') === 'weighted'
+                                                            )
+                                                            ->required(),
+                                                        Select::make('level')
+                                                            ->label('Contes Round')
+                                                            ->options([
+                                                                'preliminary' => 'Preliminary',
+                                                                'final' => 'Final',
+                                                            ])
+                                                            ->required(),
+                                                    ])->columnSpanFull(),
                                                 Repeater::make('criteria')
                                                     ->schema([
                                                         TextInput::make('criterion')->required(),
@@ -144,9 +154,6 @@ class CriteriaRelationManager extends RelationManager
                 CreateAction::make()
                     ->modalWidth(Width::ScreenTwoExtraLarge)
                     ->mutateDataUsing(function (array $data): array {
-                        // Use the correct hook for Table Actions
-                        logger('test1');
-
                         collect($data['criteria'] ?? [])
                             ->each(function ($block) {
 
@@ -163,7 +170,7 @@ class CriteriaRelationManager extends RelationManager
                                     );
                                 }
                             });
-                        logger('test2');
+
                         // 2. Prepare Judges JSON structure
                         // In your form, the Select is named 'judges'
                         $selectedJudgeIds = $data['judges'] ?? [];
@@ -174,24 +181,22 @@ class CriteriaRelationManager extends RelationManager
                             ])
                             ->values()
                             ->all();
-                        logger('test3');
                         // 3. Map the Builder data (Crucial: Keep 'type' and 'criteria' scores)
                         $data['criteria'] = collect($data['criteria'] ?? [])
                             ->map(function ($block) use ($judgesJson) {
                                 return [
-                                    'type' => $block['type'] ?? 'contest',
+                                    // 'type' => $block['type'] ?? 'contest',
                                     'data' => [
                                         'level' => $block['data']['level'] ?? null,
                                         'content' => $block['data']['content'] ?? null,
                                         'weight' => $block['data']['weight'] ?? null,
-                                        'criteria' => $block['data']['criteria'] ?? [],
+                                        // 'criteria' => $block['data']['criteria'] ?? [],
                                         'judges' => $judgesJson,
                                     ],
                                 ];
                             })
                             ->values()
                             ->all();
-                        logger('test4');
                         return $data;
                     })
                     ->before(function (array $data) {
@@ -209,24 +214,16 @@ class CriteriaRelationManager extends RelationManager
                                     ->title('Validation Error')
                                     ->body("{$content} ({$level}) total must not exceed 100")
                                     ->send();
-                                throw Halt::make();
+                                // throw Halt::make();
                             }
                         }
                     })
                     ->after(function ($record) {
-                        logger('test5');
-                        // JudgesGroup::create([
-                        //     'criteria_id' => $record->id,
-                        //     'judges' => $record->judges,
-                        // ]);
                         try {
-                            logger($record->criteria);
                             $payload = [
                                 'criteria_id' => $record->id,
                                 'judges' => $record->criteria,
                             ];
-
-                            logger('PAYLOAD', $payload);
 
                             JudgesGroup::create($payload);
                         } catch (\Throwable $e) {
