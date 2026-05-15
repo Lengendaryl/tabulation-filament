@@ -19,6 +19,7 @@ class JudgesGroupFactory extends Factory
     {
         return [
             'criteria_id' => 1,
+            'judge_id' => [2, 3, 4, 5],
             [
                 'level' => 'preliminary',
                 'content' => 'Production Number',
