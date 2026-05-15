@@ -1,32 +1,100 @@
 <x-filament-panels::page>
 
-    <flux:card class="space-y-2">
-        <flux:table class="border-b">
-            <flux:table.columns>
-                <flux:table.column>JUDGES</flux:table.column>
-                @foreach ($criteria as $item)
-                    @foreach (collect($item['score'])->unique('contest_category') as $c)
-                        <flux:table.column class="uppercase">{{ $c['contest_category'] }}</flux:table.column>
-                    @endforeach
-                @endforeach
+    <flux:card class="space-y-8">
+        @php
+            $preliminaryContents = collect($judgesGroup)
+                ->flatMap(fn($group) => collect($group->judges))
+                ->where('level', 'preliminary')
+                ->unique('content')
+                ->values();
 
-            </flux:table.columns>
-            <flux:table.rows>
-                <flux:table.row class="uppercase ">
-                    @foreach (collect($criteria)->unique('judge.id') as $item)
-                        <flux:table.cell>{{ $item['judge']['name'] }}</flux:table.cell>
+            $finalContents = collect($judgesGroup)
+                ->flatMap(fn($group) => collect($group->judges))
+                ->where('level', 'final')
+                ->unique('content')
+                ->values();
+
+            $uniqueJudges = collect($judgesGroup)
+                ->flatMap(fn($group) => collect($group->judges)->flatMap(fn($levelGroup) => $levelGroup['judges']))
+                ->unique('judge_id')
+                ->values();
+        @endphp
+
+        {{-- PRELIMINARY --}}
+        <div class="space-y-2">
+            <p class="text-xl font-bold">PRELIMINARY JUDGES CONTEST</p>
+            <flux:table class="border-b">
+                <flux:table.columns>
+                    <flux:table.column>JUDGES</flux:table.column>
+                    @foreach ($preliminaryContents as $content)
+                        <flux:table.column class="uppercase text-wrap">{{ $content['content'] }}</flux:table.column>
+                        <flux:table.column>ACTION</flux:table.column>
                     @endforeach
-                    @foreach ($criteria as $item)
-                        @foreach (collect($item['score'])->unique('contest_category') as $c)
-                            <flux:table.cell>
-                                <flux:button variant="primary" color="purple">ENABLED</flux:button>
-                            </flux:table.cell>
-                        @endforeach
+                </flux:table.columns>
+                <flux:table.rows>
+                    @foreach ($uniqueJudges as $judge)
+                        <flux:table.row class="uppercase">
+                            <flux:table.cell>{{ $judge['name'] }}</flux:table.cell>
+                            @foreach ($preliminaryContents as $content)
+                                @php
+                                    $status =
+                                        $judgeStatusMap[$content['content']][$judge['judge_id']]['status'] ?? null;
+                                @endphp
+                                <flux:table.cell>
+                                    @if ($status === true)
+                                        <span class="text-green-500">✅ SUBMITTED</span>
+                                    @else
+                                        <span class="text-red-400">❌ UNSUBMITTED</span>
+                                    @endif
+                                </flux:table.cell>
+                                <flux:table.cell>
+                                    <flux:button variant="primary" color="violet" size="xs">ENABLED</flux:button>
+                                </flux:table.cell>
+                            @endforeach
+                        </flux:table.row>
                     @endforeach
-                </flux:table.row>
-            </flux:table.rows>
-        </flux:table>
-        <flux:button variant="primary" color="violet" class="w-full">Tabulate</flux:button>
+                </flux:table.rows>
+            </flux:table>
+            <flux:button variant="primary" color="violet" class="w-full">TABULATE</flux:button>
+        </div>
+
+        {{-- FINAL --}}
+        <div class="space-y-2">
+            <p class="text-xl font-bold">FINAL JUDGES CONTEST</p>
+            <flux:table class="border-b">
+                <flux:table.columns>
+                    <flux:table.column>JUDGES</flux:table.column>
+                    @foreach ($finalContents as $content)
+                        <flux:table.column class="uppercase text-wrap">{{ $content['content'] }}</flux:table.column>
+                        <flux:table.column>ACTION</flux:table.column>
+                    @endforeach
+                </flux:table.columns>
+                <flux:table.rows>
+                    @foreach ($uniqueJudges as $judge)
+                        <flux:table.row class="uppercase">
+                            <flux:table.cell>{{ $judge['name'] }}</flux:table.cell>
+                            @foreach ($finalContents as $content)
+                                @php
+                                    $status =
+                                        $judgeStatusMap[$content['content']][$judge['judge_id']]['status'] ?? null;
+                                @endphp
+                                <flux:table.cell>
+                                    @if ($status === true)
+                                        <span class="text-green-500">✅ SUBMITTED</span>
+                                    @else
+                                        <span class="text-red-400">❌ UNSUBMITTED</span>
+                                    @endif
+                                </flux:table.cell>
+                                <flux:table.cell>
+                                    <flux:button variant="primary" color="violet" size="xs">ENABLED</flux:button>
+                                </flux:table.cell>
+                            @endforeach
+                        </flux:table.row>
+                    @endforeach
+                </flux:table.rows>
+            </flux:table>
+            <flux:button variant="primary" color="violet" class="w-full">TABULATE</flux:button>
+        </div>
     </flux:card>
 
     <div class="w-fit ">
