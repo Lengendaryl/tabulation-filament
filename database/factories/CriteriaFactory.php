@@ -30,22 +30,6 @@ class CriteriaFactory extends Factory
                         "level" => "preliminary",
                         "total" => 100,
                         "content" => "Production Number",
-                        "judges" => [
-                            [
-                                "status" => false,
-                                "judge_id" => 4
-                            ],
-                            [
-                                "status" => false,
-                                "judge_id" => 5
-                            ],
-                            "status" => false,
-                            "judge_id" => 2,
-                            [
-                                "status" => false,
-                                "judge_id" => 3
-                            ]
-                        ],
                         "criteria" => [
                             ["criterion" => "Confidence and Beauty", "score" => 40],
                             ["criterion" => "Master and Delivery of Introduction", "score" => 50],
@@ -59,22 +43,6 @@ class CriteriaFactory extends Factory
                         "level" => "preliminary",
                         "total" => 100,
                         "content" => "Swimwear",
-                        "judges" => [
-                            [
-                                "status" => false,
-                                "judge_id" => 4
-                            ],
-                            [
-                                "status" => false,
-                                "judge_id" => 5
-                            ],
-                            "status" => false,
-                            "judge_id" => 2,
-                            [
-                                "status" => false,
-                                "judge_id" => 3
-                            ]
-                        ],
                         "criteria" => [
                             ["criterion" => "Poise and Bearing", "score" => 30],
                             ["criterion" => "Beauty", "score" => 30],
@@ -89,22 +57,6 @@ class CriteriaFactory extends Factory
                         "level" => "preliminary",
                         "total" => 100,
                         "content" => "Casual Interview",
-                        "judges" => [
-                            [
-                                "status" => false,
-                                "judge_id" => 4
-                            ],
-                            [
-                                "status" => false,
-                                "judge_id" => 5
-                            ],
-                            "status" => false,
-                            "judge_id" => 2,
-                            [
-                                "status" => false,
-                                "judge_id" => 3
-                            ]
-                        ],
                         "criteria" => [
                             ["criterion" => "Sincerity & Grace Under Pressure", "score" => 40],
                             ["criterion" => "Content", "score" => 50],
@@ -118,22 +70,6 @@ class CriteriaFactory extends Factory
                         "level" => "preliminary",
                         "total" => 100,
                         "content" => "Formal Wear",
-                        "judges" => [
-                            [
-                                "status" => false,
-                                "judge_id" => 4
-                            ],
-                            [
-                                "status" => false,
-                                "judge_id" => 5
-                            ],
-                            "status" => false,
-                            "judge_id" => 2,
-                            [
-                                "status" => false,
-                                "judge_id" => 3
-                            ]
-                        ],
                         "criteria" => [
                             ["criterion" => "Elegance", "score" => 30],
                             ["criterion" => "Beauty", "score" => 30],
@@ -148,22 +84,6 @@ class CriteriaFactory extends Factory
                         "level" => "final",
                         "total" => 100,
                         "content" => "Final Round",
-                        "judges" => [
-                            [
-                                "status" => false,
-                                "judge_id" => 4
-                            ],
-                            [
-                                "status" => false,
-                                "judge_id" => 5
-                            ],
-                            "status" => false,
-                            "judge_id" => 2,
-                            [
-                                "status" => false,
-                                "judge_id" => 3
-                            ]
-                        ],
                         "criteria" => [
                             ["criterion" => "Grace Under Pressure", "score" => 40],
                             ["criterion" => "Content", "score" => 50],
