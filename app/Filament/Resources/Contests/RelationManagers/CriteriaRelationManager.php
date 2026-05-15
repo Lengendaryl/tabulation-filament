@@ -179,7 +179,7 @@ class CriteriaRelationManager extends RelationManager
 
                         // 3. Map the Builder data (Crucial: Keep 'type' and 'criteria' scores)
                         $data['criteria'] = collect($data['criteria'] ?? [])
-                            ->map(function ($block) use ($judgesJson) {
+                            ->map(function ($block) {
                                 $total = collect($block['data']['criteria'] ?? [])
                                     ->sum(fn($item) => (float) ($item['score'] ?? 0));
                                 return [
@@ -190,12 +190,21 @@ class CriteriaRelationManager extends RelationManager
                                         'weight' => $block['data']['weight'] ?? null,
                                         'criteria' => $block['data']['criteria'] ?? [],
                                         'total' => $total,
-                                        'judges' => $judgesJson,
+
                                     ],
                                 ];
                             })
                             ->values()
                             ->all();
+                        $data['_meta'] = collect($data['criteria'] ?? [])
+                            ->map(fn($block) => [
+                                'content' => $block['data']['content'] ?? null,
+                                'level' => $block['data']['level'] ?? null,
+                                'judges' => $judgesJson
+                            ])
+                            ->values()
+                            ->all();
+
                         return $data;
                     })
                     ->before(function (array $data) {
@@ -219,16 +228,11 @@ class CriteriaRelationManager extends RelationManager
                     })
                     ->after(function ($record, array $data) {
                         try {
-                            // $payload = [
-                            //     'criteria_id' => $record->id,
-                            //     'judges' => $record->criteria,
-                            // ];
 
-                            // JudgesGroup::create($payload);
-                            // JudgesGroup::create([
-                            //     'criteria_id' => $record->id,
-                            //     'judges' =>  $data['_judges'] ?? [],
-                            // ]);
+                            JudgesGroup::create([
+                                'criteria_id' => $record->id,
+                                'judges' => $data['_meta'] ?? [],
+                            ]);
                         } catch (\Throwable $e) {
 
                             logger()->error('JudgesGroup Create Failed', [
