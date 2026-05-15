@@ -64,19 +64,19 @@ class CriteriaRelationManager extends RelationManager
                                 ->required(),
                             Grid::make(3)->schema([
                                 TextInput::make('qualified_participant')
-                                ->numeric()
-                                ->minValue(1)
-                                ->required(),
+                                    ->numeric()
+                                    ->minValue(1)
+                                    ->required(),
                                 Select::make('final_scoring_method')
-                                ->options([
-                                    'final' => 'Final',
-                                    'finalprelim' => 'Final & Prelim',
-                                ])->live()->required(),
+                                    ->options([
+                                        'final' => 'Final',
+                                        'finalprelim' => 'Final & Prelim',
+                                    ])->live()->required(),
                                 Select::make('preliminary_scoring_method')
-                                ->options([
-                                    'default' => 'Default',
-                                    'weighted' => 'Weighted',
-                                ])->live()->required()
+                                    ->options([
+                                        'default' => 'Default',
+                                        'weighted' => 'Weighted',
+                                    ])->live()->required()
                             ])->columnSpanFull(),
                             Grid::make(1)->schema([
                                 Builder::make('criteria')
@@ -119,12 +119,6 @@ class CriteriaRelationManager extends RelationManager
                                                     ])
                                                     ->columns(2)
                                                     ->columnSpanFull()
-                                                    ->afterStateUpdated(function (callable $get, callable $set) {
-                                                        $criteria = $get('criteria');
-                                                        $total = collect($criteria)
-                                                            ->sum(fn($item) => floatval($item['score'] ?? 0));
-                                                        $set('total', $total);
-                                                    })
                                                     ->live(),
                                                 ViewField::make('total')
                                                     ->label('Total Score')
@@ -181,16 +175,21 @@ class CriteriaRelationManager extends RelationManager
                             ])
                             ->values()
                             ->all();
+
+
                         // 3. Map the Builder data (Crucial: Keep 'type' and 'criteria' scores)
                         $data['criteria'] = collect($data['criteria'] ?? [])
                             ->map(function ($block) use ($judgesJson) {
+                                $total = collect($block['data']['criteria'] ?? [])
+                                    ->sum(fn($item) => (float) ($item['score'] ?? 0));
                                 return [
-                                    // 'type' => $block['type'] ?? 'contest',
+                                    'type' => 'contest',
                                     'data' => [
                                         'level' => $block['data']['level'] ?? null,
                                         'content' => $block['data']['content'] ?? null,
                                         'weight' => $block['data']['weight'] ?? null,
-                                        // 'criteria' => $block['data']['criteria'] ?? [],
+                                        'criteria' => $block['data']['criteria'] ?? [],
+                                        'total' => $total,
                                         'judges' => $judgesJson,
                                     ],
                                 ];
@@ -218,14 +217,18 @@ class CriteriaRelationManager extends RelationManager
                             }
                         }
                     })
-                    ->after(function ($record) {
+                    ->after(function ($record, array $data) {
                         try {
-                            $payload = [
-                                'criteria_id' => $record->id,
-                                'judges' => $record->criteria,
-                            ];
+                            // $payload = [
+                            //     'criteria_id' => $record->id,
+                            //     'judges' => $record->criteria,
+                            // ];
 
-                            JudgesGroup::create($payload);
+                            // JudgesGroup::create($payload);
+                            // JudgesGroup::create([
+                            //     'criteria_id' => $record->id,
+                            //     'judges' =>  $data['_judges'] ?? [],
+                            // ]);
                         } catch (\Throwable $e) {
 
                             logger()->error('JudgesGroup Create Failed', [
@@ -240,7 +243,7 @@ class CriteriaRelationManager extends RelationManager
                     }),
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()->modalWidth(Width::ScreenTwoExtraLarge),
                 DeleteAction::make(),
             ])
             ->toolbarActions([
