@@ -185,7 +185,7 @@ class CriteriaRelationManager extends RelationManager
                         $data['criteria'] = collect($data['criteria'] ?? [])
                             ->map(function ($block) use ($judgesJson) {
                                 return [
-                                    'type' => $block['type'] ?? 'contest',
+                                    // 'type' => $block['type'] ?? 'contest',
                                     'data' => [
                                         'level' => $block['data']['level'] ?? null,
                                         'content' => $block['data']['content'] ?? null,
