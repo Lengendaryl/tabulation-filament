@@ -4,11 +4,9 @@ namespace App\Filament\Resources\Results\Pages;
 
 use App\Filament\Resources\Results\ResultResource;
 use App\Models\JudgesGroup;
-use App\Models\Result;
 use App\Models\Score;
 use App\Models\User;
 use Filament\Resources\Pages\ViewRecord;
-use Filament\Support\Enums\Width;
 
 class ViewResult extends ViewRecord
 {
@@ -62,9 +60,8 @@ class ViewResult extends ViewRecord
 
             return $group;
         });
-
-
-        // logger($t);
+        
+        logger($t);
         // logger($a);
     }
 }
