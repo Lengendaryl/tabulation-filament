@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('organizer');
             $table->text('venue');
             $table->text('address');
-            $table->text('poster');
+            $table->text('poster')->nullable();
             $table->timestamps();
         });
     }

@@ -23,8 +23,7 @@ class ContestsTable
                 //
             ])
             ->recordActions([
-                EditAction::make()
-                // ViewAction::make(),
+                ViewAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

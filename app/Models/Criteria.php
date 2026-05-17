@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Criteria extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'criteria',
         'judges',
@@ -22,10 +24,23 @@ class Criteria extends Model
         'judges' => 'array',
     ];
 
-    public function judges()
+    public function judge()
     {
         return $this->belongsToMany(User::class);
     }
 
+    public function contest()
+    {
+        return $this->belongsTo(Contest::class);
+    }
 
+    public function scores()
+    {
+        return $this->hasMany(Score::class);
+    }
+
+    public function judgesGroups()
+    {
+        return $this->hasMany(JudgesGroup::class);
+    }
 }

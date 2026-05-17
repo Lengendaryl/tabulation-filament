@@ -2,8 +2,9 @@
 
 namespace App\Providers\Filament;
 
-use BezhanSalleh\FilamentShield\FilamentShield;
+use App\Filament\Pages\Auth\Login;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use DiogoGPinto\AuthUIEnhancer\AuthUIEnhancerPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -20,7 +21,7 @@ use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-
+use Filament\Support\Enums\Width;
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -29,13 +30,14 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->maxContentWidth(Width::Full)
+            ->viteTheme(['resources/css/filament/admin/theme.css', 'resources/css/app.css'])
+            ->topNavigation()
             ->login()
             ->registration()
-            ->colors([
-                'primary' => Color::Amber,
-            ])
             ->plugins([
                 FilamentShieldPlugin::make(),
+                AuthUIEnhancerPlugin::make()
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
@@ -75,6 +77,6 @@ class AdminPanelProvider extends PanelProvider
                     900 => '#221037',
                     950 => '#160a24',
                 ],
-            ])->viteTheme('resources/css/filament/admin/theme.css');
+            ]);
     }
 }

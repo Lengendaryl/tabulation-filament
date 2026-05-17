@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use DiogoGPinto\AuthUIEnhancer\AuthUIEnhancerPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -18,6 +19,7 @@ use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Illuminate\Support\Facades\Blade;
 
 class JudgePanelProvider extends PanelProvider
 {
@@ -25,10 +27,11 @@ class JudgePanelProvider extends PanelProvider
     {
         return $panel
             ->id('judge')
-            ->path('judge')
+            ->topNavigation()
+            ->path('')
             ->login()
-            ->colors([
-                'primary' => Color::Amber,
+            ->plugins([
+                AuthUIEnhancerPlugin::make()->formPanelPosition('left'),
             ])
             ->discoverResources(in: app_path('Filament/Judge/Resources'), for: 'App\Filament\Judge\Resources')
             ->discoverPages(in: app_path('Filament/Judge/Pages'), for: 'App\Filament\Judge\Pages')
@@ -50,7 +53,21 @@ class JudgePanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
-            ])
+            ])->colors([
+                'primary' => [
+                    50 => '#f4effa',
+                    100 => '#e6dbf4',
+                    200 => '#cbb7e9',
+                    300 => '#b093de',
+                    400 => '#8a5fd0',
+                    500 => '#45226b',
+                    600 => '#3d1f60',
+                    700 => '#341a52',
+                    800 => '#2b1544',
+                    900 => '#221037',
+                    950 => '#160a24',
+                ],
+            ])->viteTheme(['resources/css/filament/admin/theme.css', 'resources/css/app.css'])
             ->authMiddleware([
                 Authenticate::class,
             ]);

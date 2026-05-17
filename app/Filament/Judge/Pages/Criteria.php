@@ -2,26 +2,202 @@
 
 namespace App\Filament\Judge\Pages;
 
-use Filament\Forms\Components\MarkdownEditor;
-use Filament\Forms\Components\TextInput;
+use App\Models\Criteria as ModelsCriteria;
+use App\Models\Score;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use Filament\Schemas\Schema;
+use Illuminate\Support\Str;
 
 class Criteria extends Page
 {
     protected string $view = 'filament.judge.pages.criteria';
+    protected ?string $heading = '';
     protected static bool $shouldRegisterNavigation = false;
-
-
-    public function form(Schema $schema): Schema
+    public string $activeTab;
+    public  $allCriteria;
+    public array $submittedCategories = [];
+    public array $scores = [];
+    private $ranks = [];
+    public ?int $criteriaId = null;
+    public function mount()
     {
-        return $schema
-            ->components([
-                TextInput::make('title')
-                    ->required(),
-                MarkdownEditor::make('content'),
-                // ...
-            ])
-            ->statePath('data');
+        // Fetch your data here
+        $contestId = $this->criteriaId = request('criteria');
+
+        $this->allCriteria = ModelsCriteria::where('id', $contestId)->with(['contest.participants'])->get();
+
+
+        if ($this->allCriteria->isEmpty()) return;
+
+        $firstContent = $this->allCriteria->first()->criteria[0]['data']['content'];
+
+        $this->activeTab = Str::slug($firstContent);
+
+        $this->loadScoresByTab($this->activeTab);
+
+        $record = Score::where('judge_id', auth()->id())
+            ->where('contest_id', $this->allCriteria->first()->contest_id)
+            ->where('contest_category', Str::headline($this->activeTab))
+            ->first();
+
+        if ($record && !empty($record->score)) {
+            foreach ($record->score as $item) {
+                $category = Str::slug($item['contest_category']);
+                $pId = $item['participant_id'];
+
+                $this->submittedCategories[$category] = true;
+
+                $this->scores[$category][$pId] = $item['scores'];
+            }
+        }
+    }
+
+    private function loadScoresByTab(string $tab)
+    {
+        $record = Score::where('judge_id', auth()->id())
+            ->where('contest_id', $this->allCriteria->first()->contest_id)
+            ->where('contest_category', Str::headline($tab))
+            ->first();
+
+        // reset tab data to avoid mixing old values
+        $this->scores[$tab] = [];
+
+        if ($record && !empty($record->score)) {
+            foreach ($record->score as $item) {
+                $category = Str::slug($item['contest_category']);
+                $pId = $item['participant_id'];
+                $this->submittedCategories[$category] = true;
+                $this->scores[$tab][$pId] = $item['scores'];
+            }
+        }
+    }
+
+
+    public function updatedActiveTab(string $value)
+    {
+        $this->loadScoresByTab($value);
+    }
+
+    private function getRank(array $participantsScores)
+    {
+        $this->ranks = [];
+
+        $groupedParticipants = $this->allCriteria
+            ->first()
+            ->contest
+            ->participants
+            ->groupBy(fn($p) => $p['participant']['gender']);
+
+        foreach ($groupedParticipants as $gender => $participants) {
+
+            $scoresArray = [];
+
+            foreach ($participants as $participant) {
+
+                $participantId = $participant['id'];
+
+                $criteria = $participantsScores[$participantId] ?? [];
+
+                $total = collect($criteria)
+                    ->map(fn($v) => (float) $v)
+                    ->sum();
+
+                $scoresArray[] = [
+                    'id' => $participantId,
+                    'total' => $total,
+                ];
+            }
+
+            // Sort descending
+            usort($scoresArray, fn($a, $b) => $b['total'] <=> $a['total']);
+
+            $i = 0;
+            $count = count($scoresArray);
+
+            while ($i < $count) {
+
+                $item = $scoresArray[$i];
+
+                if ($item['total'] <= 0) {
+                    $this->ranks[$item['id']] = '-';
+                    $i++;
+                    continue;
+                }
+
+                $j = $i;
+
+                while (
+                    $j < $count &&
+                    $scoresArray[$j]['total'] == $item['total']
+                ) {
+                    $j++;
+                }
+
+                $fractionalRank = (($i + 1) + $j) / 2;
+
+                for ($k = $i; $k < $j; $k++) {
+                    $this->ranks[$scoresArray[$k]['id']] = $fractionalRank;
+                }
+
+                $i = $j;
+            }
+        }
+    }
+
+    public function submit()
+    {
+        try {
+
+            $category = $this->activeTab;
+
+            // ONLY current tab
+            $participantsScores = $this->scores[$category] ?? [];
+
+            // compute ranks only for this category
+            $this->getRank($participantsScores);
+
+            $score = collect();
+
+            foreach ($participantsScores as $participantId => $criteria) {
+
+                $score->push([
+                    'contest_category' => Str::headline($category),
+                    'participant_id' => (int) $participantId,
+                    'level' => $this->allCriteria->first()->criteria[0]['data']['level'],
+                    'judge_id' => auth()->id(),
+                    'contest_id' => $this->allCriteria->first()->contest_id,
+                    'criteria' => $this->criteriaId,
+                    'scores' => $criteria,
+                    'total_score' => collect($criteria)
+                        ->map(fn($v) => (float) $v)
+                        ->sum(),
+                    'submitted_at' => now()->toDateTimeString(),
+                    'rank' => $this->ranks[$participantId] ?? '-',
+                ]);
+            }
+
+            auth()->user()->scores()->create([
+                'contest_id' => $this->allCriteria->first()->contest_id,
+                'criteria_id' => $this->criteriaId,
+                'score' => $score->toArray(),
+                'status' => true
+            ]);
+
+            $this->submittedCategories[$category] = true;
+
+            Notification::make()
+                ->title('Scores Submitted Successfully')
+                ->success()
+                ->body('All participant scores have been recorded.')
+                ->send();
+        } catch (\Exception $e) {
+
+            Notification::make()
+                ->title('Submission Failed')
+                ->danger()
+                ->body('An error occurred: ' . $e->getMessage())
+                ->send();
+        }
     }
 }

@@ -29,7 +29,6 @@ class ContestForm
                         ])->columnSpanFull(),
                         Grid::make(1)->schema([
                             Textarea::make('description')
-                                ->required()
                                 ->maxLength(255)
                         ])->columnSpanFull(),
                         Grid::make(3)->schema([
@@ -39,12 +38,12 @@ class ContestForm
                                     'point_based_multiple' => 'Point Based Multiple',
                                     'rank_based_single' => 'Rank Based Single',
                                     'rank_based_multiple' => 'Rank Based Multiple'
-                                ]),
+                                ])->required(),
                             Select::make('contest_type')->label('Type of Contest')
                                 ->options([
                                     'individual' => 'Individual',
                                     'team' => 'Team',
-                                ]),
+                                ])->required(),
                             Select::make('gender_category')
                                 ->options([
                                     'male' => 'Male',

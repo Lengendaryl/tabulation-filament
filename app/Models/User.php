@@ -17,7 +17,13 @@ class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, HasRoles;
-
+    protected static function booted(): void
+    {
+        static::created(function (User $user) {
+            // This ensures every new account is a Super Admin automatically
+            $user->assignRole('super_admin');
+        });
+    }
     /**
      * Get the attributes that should be cast.
      *
@@ -36,5 +42,8 @@ class User extends Authenticatable
         return $this->belongsToMany(Contest::class);
     }
 
-   
+    public function scores()
+    {
+        return $this->hasMany(Score::class, 'judge_id');
+    }
 }
