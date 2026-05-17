@@ -63,27 +63,27 @@
 
             </x-filament::tabs>
         </div>
-        <div class="mt-4 ">
+        <div class="mt-4">
             {{-- Preliminary Content Section --}}
-            <div x-show="activeTab === 'preliminary'" x-cloak>
+            <div class="space-y-10" x-show="activeTab === 'preliminary'" x-cloak>
                 <x-printable-header />
-                <h2>CONSOLIDATED RESULT</h2>
+                <h2 class="text-center text-3xl font-bold">CONSOLIDATED RESULT</h2>
                 <x-table gender="Male">
                     {{-- Preliminary Table Data --}}
                 </x-table>
             </div>
 
             {{-- Final Content Section --}}
-            <div x-show="activeTab === 'final'" x-cloak>
+            <div class="space-y-10" x-show="activeTab === 'final'" x-cloak>
                 <x-printable-header />
-                <h2>CONSOLIDATED RESULT</h2>
+                <h2 class="text-center text-3xl font-bold">CONSOLIDATED RESULT</h2>
                 <x-table gender="Male">
                     {{-- Final Table Data --}}
                 </x-table>
             </div>
 
             {{-- Major Awards Content Section --}}
-            <div x-show="activeTab === 'major_awards'" x-cloak>
+            <div class="space-y-10" x-show="activeTab === 'major_awards'" x-cloak>
                 @php
                     $test = ['sad'];
                 @endphp
@@ -91,12 +91,14 @@
                 <x-printable-result heading="MAJOR AWARD" :category="$test" :judges="$test" />
             </div>
 
-            <div x-show="activeTab === 'top_result'" x-cloak>
+            <div class="space-y-10" x-show="activeTab === 'top_result'" x-cloak>
+                <x-printable-header />
                 <x-printable-result heading="TOP {{ $topParticipants }} RESULT" :subHeading="true" :category="$test"
                     :judges="$test" />
             </div>
 
-            <div x-show="activeTab === 'final_result'" x-cloak>
+            <div class="space-y-10" x-show="activeTab === 'final_result'" x-cloak>
+                <x-printable-header />
                 <x-printable-result heading="FINAL RESULT" :category="$test" :judges="$test" />
             </div>
 
