@@ -93,7 +93,7 @@
 
             <div class="space-y-10" x-show="activeTab === 'top_result'" x-cloak>
                 <x-printable-header />
-                <x-printable-result heading="TOP {{ $topParticipants }} RESULT" :subHeading="true" :category="$test"
+                <x-printable-result heading="TOP {{ $topParticipants }} RESULT" :subHeading="$topParticipants" :category="$test"
                     :judges="$test" />
             </div>
 
