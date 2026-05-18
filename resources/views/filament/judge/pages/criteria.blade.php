@@ -3,8 +3,6 @@
         @foreach ($allCriteria->first()->criteria as $item)
             @php
                 $tabId = Str::slug($item['data']['content']);
-                // logger($tabId);
-                logger();
             @endphp
 
             <x-filament::tabs.item class="uppercase text-wrap" :active="$activeTab === $tabId"
@@ -16,7 +14,8 @@
 
     <form class="space-y-4" wire:submit.prevent="submit" x-data="{ isShowing: false }">
         <flux:card class="flex items-center justify-center">
-            <p class="font-bold text-3xl uppercase">{{ str($activeTab)->replace('-', ' ') }}</p>
+            <p class="font-bold text-3xl uppercase">{{ $tabLabels[$activeTab] ?? str($activeTab)->replace('-', ' ') }}
+            </p>
         </flux:card>
 
         @foreach ($allCriteria->first()->criteria as $group)
@@ -60,65 +59,65 @@
                         @endphp
                         <div x-data="{
                             results: @entangle('scores'),
-
+                        
                             participants: @js($participants->pluck('id')->values()),
-
+                        
                             get rankings() {
-
+                        
                                 // Only include participants from this gender
                                 let scoresArray = this.participants.map(id => {
-
+                        
                                     let participantScores =
                                         this.results['{{ $activeTab }}']?.[id] || {};
-
+                        
                                     let total = Object.values(participantScores)
                                         .reduce((a, b) => Number(a) + Number(b), 0);
-
+                        
                                     return {
                                         id: id,
                                         total: total
                                     };
                                 });
-
+                        
                                 // Sort descending
                                 scoresArray.sort((a, b) => b.total - a.total);
-
+                        
                                 let ranks = {};
                                 let i = 0;
-
+                        
                                 while (i < scoresArray.length) {
-
+                        
                                     let item = scoresArray[i];
-
+                        
                                     if (!item.total || item.total === 0) {
                                         ranks[item.id] = '-';
                                         i++;
                                         continue;
                                     }
-
+                        
                                     // Find ties
                                     let j = i;
-
+                        
                                     while (
                                         j < scoresArray.length &&
                                         scoresArray[j].total === item.total
                                     ) {
                                         j++;
                                     }
-
+                        
                                     // Fractional ranking
                                     let startRank = i + 1;
                                     let endRank = j;
-
+                        
                                     let fractionalRank = (startRank + endRank) / 2;
-
+                        
                                     for (let k = i; k < j; k++) {
                                         ranks[scoresArray[k].id] = fractionalRank;
                                     }
-
+                        
                                     i = j;
                                 }
-
+                        
                                 return ranks;
                             }
                         }">
@@ -177,8 +176,11 @@
             @endif
         @endforeach
         <div class="flex items-center justify-end gap-2">
-            <flux:button variant="primary" :disabled="$isLocked" color="zinc" type="submit"
-                @click="isShowing = true">Submit
+            <flux:button variant="primary" type="submit"
+                x-bind:class="($wire.submittedCategories[$wire.activeTab] ?? false) ?
+                'opacity-50 pointer-events-none cursor-not-allowed' : ''"
+                @click="if(!($wire.submittedCategories[$wire.activeTab] ?? false)) { isShowing = true; $wire.submit(); }">
+                Submit
             </flux:button>
         </div>
     </form>
