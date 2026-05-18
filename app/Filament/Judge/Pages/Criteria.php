@@ -3,10 +3,12 @@
 namespace App\Filament\Judge\Pages;
 
 use App\Models\Criteria as ModelsCriteria;
+use App\Models\JudgesGroup;
 use App\Models\Score;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class Criteria extends Page
@@ -21,6 +23,9 @@ class Criteria extends Page
     private $ranks = [];
     public ?int $criteriaId = null;
     public array $tabLabels = [];
+    private string $level;
+    private string $contestCategory;
+    private bool $status;
     public function mount()
     {
         // Fetch your data here
@@ -196,6 +201,46 @@ class Criteria extends Page
 
             $this->submittedCategories[$category] = true;
 
+            $groups = JudgesGroup::where('criteria_id', $this->criteriaId)->get();
+
+            foreach ($groups as $group) {
+                // 1. Copy the current judges JSON array into a variable
+                $tempJudges = $group->judges;
+                $isUpdated = false;
+
+                // Use & to directly mutate the nested array data
+                foreach ($tempJudges as &$competitionLevel) {
+
+                    // Match the current category tab (using slugs to protect against capitalization issues)
+                    if ($competitionLevel['content'] !== $originalCategory) {
+                        continue;
+                    }
+
+                    foreach ($competitionLevel['judges'] as &$judgeStatus) {
+
+                        // Find the current logged-in judge
+                        if ($judgeStatus['judge_id'] === Auth::id()) {
+
+                            // 2. Update ONLY the status
+                            $judgeStatus['status'] = true;
+                            $isUpdated = true;
+
+                            // Optional UI sync properties
+                            $this->level = $competitionLevel['level'];
+                            $this->contestCategory = $competitionLevel['content'];
+                            $this->status = true;
+
+                            break 2; // Exit both inner loops early since we found our target
+                        }
+                    }
+                }
+
+                // 3. Save the record if changes were made
+                if ($isUpdated) {
+                    $group->judges = $tempJudges;
+                    $group->save();
+                }
+            };
             Notification::make()
                 ->title('Scores Submitted Successfully')
                 ->success()
