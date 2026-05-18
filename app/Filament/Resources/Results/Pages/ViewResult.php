@@ -61,7 +61,5 @@ class ViewResult extends ViewRecord
             return $group;
         });
         
-        logger($t);
-        // logger($a);
     }
 }
