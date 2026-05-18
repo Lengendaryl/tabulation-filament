@@ -10,7 +10,6 @@ class Score extends Model
         'contest_id',
         'criteria_id',
         'score',
-        'status',
         'contest_category'
     ];
 
