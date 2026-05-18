@@ -18,15 +18,27 @@
                 ->flatMap(fn($group) => collect($group->judges)->flatMap(fn($levelGroup) => $levelGroup['judges']))
                 ->unique('judge_id')
                 ->values();
+           
+            $judgeStatusMap = [];
+            foreach ($judgesGroup as $group) {
+                foreach ($group->judges as $levelGroup) {
+                    $categoryName = $levelGroup['content'];
+                    foreach ($levelGroup['judges'] as $jStatus) {
+                        $judgeStatusMap[$categoryName][$jStatus['judge_id']] = [
+                            'status' => (bool) $jStatus['status'],
+                        ];
+                    }
+                }
+            }
 
             $topParticipants = collect($criteria)->unique('criteria.id')->first()['criteria']['qualified_participant'];
         @endphp
 
         {{-- PRELIMINARY --}}
-        <x-table-judge-result heading="PRELIMINARY" :judges="$judges" :contest="$preliminaryContents" />
+        <x-table-judge-result heading="PRELIMINARY" :judges="$judges" :contest="$preliminaryContents" :judgeStatusMap="$judgeStatusMap"/>
 
         {{-- FINAL --}}
-        <x-table-judge-result heading="FINAL" :judges="$judges" :contest="$finalContents" />
+        <x-table-judge-result heading="FINAL" :judges="$judges" :contest="$finalContents" :judgeStatusMap="$judgeStatusMap"/>
 
     </flux:card>
 

@@ -1,4 +1,4 @@
-@props(['heading', 'judges' => [], 'contest' => []])
+@props(['heading', 'judges' => [], 'contest' => [], 'judgeStatusMap' => []])
 
 <div class="space-y-2">
     <p class="text-xl font-bold">{{ $heading }} JUDGES CONTEST</p>
@@ -16,7 +16,11 @@
                     <flux:table.cell>{{ $judge['name'] }}</flux:table.cell>
                     @foreach ($contest as $content)
                         @php
-                            $status = $judgeStatusMap[$content['content']][$judge['judge_id']]['status'] ?? null;
+                            $categoryName = $content['content'];
+                            $judgeId = $judge['judge_id'];
+
+                            // Safely read the status from our mapping dictionary
+                            $status = $judgeStatusMap[$categoryName][$judgeId]['status'] ?? false;
                         @endphp
                         <flux:table.cell>
                             @if ($status === true)
