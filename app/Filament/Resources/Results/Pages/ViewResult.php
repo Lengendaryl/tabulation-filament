@@ -28,9 +28,9 @@ class ViewResult extends ViewRecord
     {
         parent::mount($record);
 
-        $t =   $this->criteria = Score::where('criteria_id', $this->record->id)->with(['judge', 'criteria'])->get();
+        $this->criteria = Score::where('criteria_id', $this->record->id)->with(['judge', 'criteria'])->get();
 
-        $a = $this->judgesGroup = JudgesGroup::where('criteria_id', $this->record->id)->get();
+        $this->judgesGroup = JudgesGroup::where('criteria_id', $this->record->id)->get();
 
         $judgeIds = JudgesGroup::where('criteria_id', $this->record->id)
             ->get()
@@ -60,6 +60,5 @@ class ViewResult extends ViewRecord
 
             return $group;
         });
-        
     }
 }
