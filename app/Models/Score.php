@@ -8,7 +8,9 @@ class Score extends Model
 {
     protected $fillable = [
         'contest_id',
+        'criteria_id',
         'score',
+        'contest_category'
     ];
 
     protected $casts = [

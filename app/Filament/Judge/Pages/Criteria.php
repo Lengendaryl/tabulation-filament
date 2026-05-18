@@ -20,15 +20,20 @@ class Criteria extends Page
     public array $scores = [];
     private $ranks = [];
     public ?int $criteriaId = null;
+    public array $tabLabels = [];
     public function mount()
     {
         // Fetch your data here
-        $contestId = $this->criteriaId = request('criteria');
-
-        $this->allCriteria = ModelsCriteria::where('id', $contestId)->with(['contest.participants'])->get();
+        $criteriaId = $this->criteriaId = request('criteria');
+        $this->allCriteria = ModelsCriteria::where('id', $criteriaId)->with(['contest.participants'])->get();
 
 
         if ($this->allCriteria->isEmpty()) return;
+
+        foreach ($this->allCriteria->first()->criteria as $item) {
+            $content = $item['data']['content'];
+            $this->tabLabels[Str::slug($content)] = $content; // ✅ preserve original
+        }
 
         $firstContent = $this->allCriteria->first()->criteria[0]['data']['content'];
 
@@ -38,7 +43,8 @@ class Criteria extends Page
 
         $record = Score::where('judge_id', auth()->id())
             ->where('contest_id', $this->allCriteria->first()->contest_id)
-            ->where('contest_category', Str::headline($this->activeTab))
+            ->where('contest_category', $this->tabLabels[$this->activeTab])
+            ->where('criteria_id', $criteriaId)
             ->first();
 
         if ($record && !empty($record->score)) {
@@ -55,9 +61,12 @@ class Criteria extends Page
 
     private function loadScoresByTab(string $tab)
     {
+        if (!empty($this->scores[$tab])) {
+            return;
+        }
         $record = Score::where('judge_id', auth()->id())
             ->where('contest_id', $this->allCriteria->first()->contest_id)
-            ->where('contest_category', Str::headline($tab))
+            ->where('contest_category', $this->tabLabels[$this->activeTab])
             ->first();
 
         // reset tab data to avoid mixing old values
@@ -150,7 +159,7 @@ class Criteria extends Page
         try {
 
             $category = $this->activeTab;
-
+            $originalCategory = $this->tabLabels[$category] ?? Str::headline($category);
             // ONLY current tab
             $participantsScores = $this->scores[$category] ?? [];
 
@@ -162,7 +171,7 @@ class Criteria extends Page
             foreach ($participantsScores as $participantId => $criteria) {
 
                 $score->push([
-                    'contest_category' => Str::headline($category),
+                    'contest_category' => $originalCategory,
                     'participant_id' => (int) $participantId,
                     'level' => $this->allCriteria->first()->criteria[0]['data']['level'],
                     'judge_id' => auth()->id(),
@@ -181,7 +190,8 @@ class Criteria extends Page
                 'contest_id' => $this->allCriteria->first()->contest_id,
                 'criteria_id' => $this->criteriaId,
                 'score' => $score->toArray(),
-                'status' => true
+                'status' => true,
+                'contest_category' => $originalCategory
             ]);
 
             $this->submittedCategories[$category] = true;
@@ -189,7 +199,7 @@ class Criteria extends Page
             Notification::make()
                 ->title('Scores Submitted Successfully')
                 ->success()
-                ->body('All participant scores have been recorded.')
+                ->body("$originalCategory scores have been recorded.")
                 ->send();
         } catch (\Exception $e) {
 
