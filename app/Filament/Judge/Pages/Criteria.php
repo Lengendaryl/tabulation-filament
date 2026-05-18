@@ -55,6 +55,9 @@ class Criteria extends Page
 
     private function loadScoresByTab(string $tab)
     {
+        if (!empty($this->scores[$tab])) {
+            return;
+        }
         $record = Score::where('judge_id', auth()->id())
             ->where('contest_id', $this->allCriteria->first()->contest_id)
             ->where('contest_category', Str::headline($tab))
@@ -181,7 +184,8 @@ class Criteria extends Page
                 'contest_id' => $this->allCriteria->first()->contest_id,
                 'criteria_id' => $this->criteriaId,
                 'score' => $score->toArray(),
-                'status' => true
+                'status' => true,
+                'contest_category' =>$category
             ]);
 
             $this->submittedCategories[$category] = true;
@@ -189,7 +193,7 @@ class Criteria extends Page
             Notification::make()
                 ->title('Scores Submitted Successfully')
                 ->success()
-                ->body('All participant scores have been recorded.')
+                ->body("$category scores have been recorded.")
                 ->send();
         } catch (\Exception $e) {
 
