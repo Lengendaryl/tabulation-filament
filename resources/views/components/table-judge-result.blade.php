@@ -24,9 +24,11 @@
                         @endphp
                         <flux:table.cell>
                             @if ($status === true)
-                                <span class="text-green-500">✅ SUBMITTED</span>
+                                <flux:badge variant="solid" color="green" size="sm" icon='check-circle'>SUBMITTED
+                                </flux:badge>
                             @else
-                                <span class="text-red-400">❌ UNSUBMITTED</span>
+                                <flux:badge variant="solid" color="red" size="sm" icon="x-circle">
+                                    UNSUBMITTED</flux:badge>
                             @endif
                         </flux:table.cell>
                         <flux:table.cell>
