@@ -19,34 +19,27 @@ class ViewResult extends ViewRecord
             // EditAction::make(),
         ];
     }
-
+    protected $listeners = [
+        'echo:judging,.JudgeSubmittedEvent' => 'handleJudgeSubmitted',
+    ];
+    public array $submittedJudges = [];
     public $result;
     public $criteria;
     public $judgesGroup;
     public $judgesInfo;
-    public function mount(int|string $record): void
+
+    private function loadJudgesGroup()
     {
-        parent::mount($record);
+        $judgesGroup = JudgesGroup::where('criteria_id', $this->record->id)->get();
 
-        $this->criteria = Score::where('criteria_id', $this->record->id)->with(['judge', 'criteria'])->get();
-
-        $this->judgesGroup = JudgesGroup::where('criteria_id', $this->record->id)->get();
-
-        $judgeIds = JudgesGroup::where('criteria_id', $this->record->id)
-            ->get()
-            ->flatMap(
-                fn($group) => collect($group->judges)        // each levelGroup
-                    ->flatMap(
-                        fn($levelGroup) => collect($levelGroup['judges'])  // each judge entry
-                            ->pluck('judge_id')                            // grab judge_id
-                    )
-            )
-            ->unique()
-            ->values();
+        $judgeIds = $judgesGroup->flatMap(
+            fn($group) => collect($group->judges)
+                ->flatMap(fn($levelGroup) => collect($levelGroup['judges'])->pluck('judge_id'))
+        )->unique()->values();
 
         $judgesInfo = User::whereIn('id', $judgeIds)->get()->keyBy('id');
 
-        $this->judgesGroup = $this->judgesGroup->map(function ($group) use ($judgesInfo) {
+        $this->judgesGroup = $judgesGroup->map(function ($group) use ($judgesInfo) {
             $group->judges = collect($group->judges)->map(function ($levelGroup) use ($judgesInfo) {
                 $levelGroup['judges'] = collect($levelGroup['judges'])->map(function ($judge) use ($judgesInfo) {
                     $user = $judgesInfo->get($judge['judge_id']);
@@ -57,8 +50,21 @@ class ViewResult extends ViewRecord
                 })->toArray();
                 return $levelGroup;
             })->toArray();
-
             return $group;
         });
+    }
+
+    public function mount(int|string $record): void
+    {
+        parent::mount($record);
+
+        $this->criteria = Score::where('criteria_id', $this->record->id)->with(['judge', 'criteria'])->get();
+
+        $this->loadJudgesGroup();
+    }
+
+    public function handleJudgeSubmitted(): void
+    {
+        $this->loadJudgesGroup();
     }
 }
