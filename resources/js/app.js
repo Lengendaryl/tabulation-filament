@@ -1,9 +1,3 @@
-// import Alpine from "alpinejs";
-// import criteria from "./criteria";
-
-// Alpine.data("criteria", criteria);
-
-
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
@@ -11,3 +5,4 @@
  */
 
 import './echo';
+import './criteria';
