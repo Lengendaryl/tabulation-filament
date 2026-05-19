@@ -33,6 +33,10 @@ class JudgePanelProvider extends PanelProvider
             ->plugins([
                 AuthUIEnhancerPlugin::make()->formPanelPosition('left'),
             ])
+            ->renderHook(
+                'panels::head.end',
+                fn() => Blade::render('@vite(["resources/js/app.js"])')
+            )
             ->discoverResources(in: app_path('Filament/Judge/Resources'), for: 'App\Filament\Judge\Resources')
             ->discoverPages(in: app_path('Filament/Judge/Pages'), for: 'App\Filament\Judge\Pages')
             ->pages([

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Judge\Pages;
 
+use App\Events\JudgeSubmittedEvent;
 use App\Models\Criteria as ModelsCriteria;
 use App\Models\JudgesGroup;
 use App\Models\Score;
@@ -57,7 +58,7 @@ class Criteria extends Page
                 $category = Str::slug($item['contest_category']);
                 $pId = $item['participant_id'];
 
-                $this->submittedCategories[$category] = true;
+                // $this->submittedCategories[$category] = true;
 
                 $this->scores[$category][$pId] = $item['scores'];
             }
@@ -81,7 +82,7 @@ class Criteria extends Page
             foreach ($record->score as $item) {
                 $category = Str::slug($item['contest_category']);
                 $pId = $item['participant_id'];
-                $this->submittedCategories[$category] = true;
+                // $this->submittedCategories[$category] = true;
                 $this->scores[$tab][$pId] = $item['scores'];
             }
         }
@@ -166,38 +167,38 @@ class Criteria extends Page
             $category = $this->activeTab;
             $originalCategory = $this->tabLabels[$category] ?? Str::headline($category);
             // ONLY current tab
-            $participantsScores = $this->scores[$category] ?? [];
+            // $participantsScores = $this->scores[$category] ?? [];
 
-            // compute ranks only for this category
-            $this->getRank($participantsScores);
+            // // compute ranks only for this category
+            // $this->getRank($participantsScores);
 
-            $score = collect();
+            // $score = collect();
 
-            foreach ($participantsScores as $participantId => $criteria) {
+            // foreach ($participantsScores as $participantId => $criteria) {
 
-                $score->push([
-                    'contest_category' => $originalCategory,
-                    'participant_id' => (int) $participantId,
-                    'level' => $this->allCriteria->first()->criteria[0]['data']['level'],
-                    'judge_id' => auth()->id(),
-                    'contest_id' => $this->allCriteria->first()->contest_id,
-                    'criteria' => $this->criteriaId,
-                    'scores' => $criteria,
-                    'total_score' => collect($criteria)
-                        ->map(fn($v) => (float) $v)
-                        ->sum(),
-                    'submitted_at' => now()->toDateTimeString(),
-                    'rank' => $this->ranks[$participantId] ?? '-',
-                ]);
-            }
+            //     $score->push([
+            //         'contest_category' => $originalCategory,
+            //         'participant_id' => (int) $participantId,
+            //         'level' => $this->allCriteria->first()->criteria[0]['data']['level'],
+            //         'judge_id' => auth()->id(),
+            //         'contest_id' => $this->allCriteria->first()->contest_id,
+            //         'criteria' => $this->criteriaId,
+            //         'scores' => $criteria,
+            //         'total_score' => collect($criteria)
+            //             ->map(fn($v) => (float) $v)
+            //             ->sum(),
+            //         'submitted_at' => now()->toDateTimeString(),
+            //         'rank' => $this->ranks[$participantId] ?? '-',
+            //     ]);
+            // }
 
-            auth()->user()->scores()->create([
-                'contest_id' => $this->allCriteria->first()->contest_id,
-                'criteria_id' => $this->criteriaId,
-                'score' => $score->toArray(),
-                'status' => true,
-                'contest_category' => $originalCategory
-            ]);
+            // auth()->user()->scores()->create([
+            //     'contest_id' => $this->allCriteria->first()->contest_id,
+            //     'criteria_id' => $this->criteriaId,
+            //     'score' => $score->toArray(),
+            //     'status' => true,
+            //     'contest_category' => $originalCategory
+            // ]);
 
             $this->submittedCategories[$category] = true;
 
@@ -241,6 +242,12 @@ class Criteria extends Page
                     $group->save();
                 }
             };
+
+            broadcast(new JudgeSubmittedEvent(
+                auth()->id(),
+                $originalCategory,
+            ))->toOthers();
+
             Notification::make()
                 ->title('Scores Submitted Successfully')
                 ->success()
