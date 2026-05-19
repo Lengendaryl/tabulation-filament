@@ -37,6 +37,7 @@ class ContestResource extends Resource
         return parent::getTableQuery()
             ->where('contest_id', auth()->id());
     }
+
     public static function getRelations(): array
     {
         return [
