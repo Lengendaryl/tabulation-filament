@@ -6,7 +6,6 @@ use App\Events\JudgeSubmittedEvent;
 use App\Models\Criteria as ModelsCriteria;
 use App\Models\JudgesGroup;
 use App\Models\Score;
-use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Auth;
@@ -27,6 +26,8 @@ class Criteria extends Page
     private string $level;
     private string $contestCategory;
     private bool $status;
+
+
     public function mount()
     {
         // Fetch your data here
@@ -57,12 +58,31 @@ class Criteria extends Page
             foreach ($record->score as $item) {
                 $category = Str::slug($item['contest_category']);
                 $pId = $item['participant_id'];
-                $this->submittedCategories[$category] = true;
                 $this->scores[$category][$pId] = $item['scores'];
             }
         }
     }
+    public function isSubmitted(string $category): bool
+    {
+        $group = JudgesGroup::where('criteria_id', $this->criteriaId)->first();
 
+        if (!$group) return false;
+
+        foreach ($group->judges ?? [] as $levelGroup) {
+            if (Str::slug($levelGroup['content'] ?? '') !== Str::slug($category)) {
+                continue;
+            }
+
+            foreach ($levelGroup['judges'] ?? [] as $judge) {
+                logger($judge);
+                if (($judge['judge_id'] ?? null) == Auth::id()) {
+                    return (bool) ($judge['status'] ?? false);
+                }
+            }
+        }
+
+        return false;
+    }
     private function loadScoresByTab(string $tab)
     {
         if (!empty($this->scores[$tab])) {
@@ -78,9 +98,7 @@ class Criteria extends Page
 
         if ($record && !empty($record->score)) {
             foreach ($record->score as $item) {
-                $category = Str::slug($item['contest_category']);
                 $pId = $item['participant_id'];
-                $this->submittedCategories[$category] = true;
                 $this->scores[$tab][$pId] = $item['scores'];
             }
         }
@@ -190,13 +208,17 @@ class Criteria extends Page
                 ]);
             }
 
-            auth()->user()->scores()->create([
-                'contest_id' => $this->allCriteria->first()->contest_id,
-                'criteria_id' => $this->criteriaId,
-                'score' => $score->toArray(),
-                'status' => true,
-                'contest_category' => $originalCategory
-            ]);
+            auth()->user()->scores()->updateOrCreate(
+                [
+                    'contest_id' => $this->allCriteria->first()->contest_id,
+                    'criteria_id' => $this->criteriaId,
+                    'contest_category' => $originalCategory,
+                ],
+                [
+                    'score' => $score->toArray(),
+                    'status' => true,
+                ]
+            );
 
             $this->submittedCategories[$category] = true;
 
