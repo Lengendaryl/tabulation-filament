@@ -25,18 +25,22 @@ class JudgesGroupFactory extends Factory
                 'content' => 'Production Number',
                 'judges' => [
                     [
+                        'request_edit' => false,
                         'status' => false,
                         'judge_id' => 2
                     ],
                     [
+                        'request_edit' => false,
                         'status' => false,
                         'judge_id' => 3
                     ],
                     [
+                        'request_edit' => false,
                         'status' => false,
                         'judge_id' => 4
                     ],
                     [
+                        'request_edit' => false,
                         'status' => false,
                         'judge_id' => 5
                     ],
@@ -47,18 +51,22 @@ class JudgesGroupFactory extends Factory
                 'content' => 'Swimwear',
                 'judges' => [
                     [
+                        'request_edit' => false,
                         'status' => false,
                         'judge_id' => 2
                     ],
                     [
+                        'request_edit' => false,
                         'status' => false,
                         'judge_id' => 3
                     ],
                     [
+                        'request_edit' => false,
                         'status' => false,
                         'judge_id' => 4
                     ],
                     [
+                        'request_edit' => false,
                         'status' => false,
                         'judge_id' => 5
                     ],
@@ -69,18 +77,22 @@ class JudgesGroupFactory extends Factory
                 'content' => 'Casual Interview',
                 'judges' => [
                     [
+                        'request_edit' => false,
                         'status' => false,
                         'judge_id' => 2
                     ],
                     [
+                        'request_edit' => false,
                         'status' => false,
                         'judge_id' => 3
                     ],
                     [
+                        'request_edit' => false,
                         'status' => false,
                         'judge_id' => 4
                     ],
                     [
+                        'request_edit' => false,
                         'status' => false,
                         'judge_id' => 5
                     ],
@@ -91,18 +103,22 @@ class JudgesGroupFactory extends Factory
                 'content' => 'Formal Wear',
                 'judges' => [
                     [
+                        'request_edit' => false,
                         'status' => false,
                         'judge_id' => 2
                     ],
                     [
+                        'request_edit' => false,
                         'status' => false,
                         'judge_id' => 3
                     ],
                     [
+                        'request_edit' => false,
                         'status' => false,
                         'judge_id' => 4
                     ],
                     [
+                        'request_edit' => false,
                         'status' => false,
                         'judge_id' => 5
                     ],
@@ -114,18 +130,22 @@ class JudgesGroupFactory extends Factory
                     'content' => 'Final Round',
                     'judges' => [
                         [
+                            'request_edit' => false,
                             'status' => false,
                             'judge_id' => 2
                         ],
                         [
+                            'request_edit' => false,
                             'status' => false,
                             'judge_id' => 3
                         ],
                         [
+                            'request_edit' => false,
                             'status' => false,
                             'judge_id' => 4
                         ],
                         [
+                            'request_edit' => false,
                             'status' => false,
                             'judge_id' => 5
                         ],
