@@ -7,6 +7,8 @@ use App\Models\JudgesGroup;
 use App\Models\Score;
 use App\Models\User;
 use Filament\Resources\Pages\ViewRecord;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class ViewResult extends ViewRecord
 {
@@ -23,10 +25,10 @@ class ViewResult extends ViewRecord
         'echo:judging,.JudgeSubmittedEvent' => 'handleJudgeSubmitted',
     ];
     public array $submittedJudges = [];
-    public $result;
-    public $criteria;
-    public $judgesGroup;
-    public $judgesInfo;
+    public array $result;
+    public Collection $criteria;
+    public Collection $judgesGroup;
+    public array $judgesInfo;
 
     private function loadJudgesGroup()
     {
@@ -63,8 +65,51 @@ class ViewResult extends ViewRecord
         $this->loadJudgesGroup();
     }
 
+
     public function handleJudgeSubmitted(): void
     {
         $this->loadJudgesGroup();
+    }
+
+    public function toggleStatus(string $originalCategory, string $level, $judgeId)
+    {
+        $groups = JudgesGroup::where('criteria_id', $this->record->id)->get();
+
+        foreach ($groups as $group) {
+
+            $judges = $group->judges;
+            $updated = false;
+
+            foreach ($judges as $i => $competitionLevel) {
+
+                if (
+                    ($competitionLevel['content'] ?? null) !== $originalCategory ||
+                    ($competitionLevel['level'] ?? null) !== $level
+                ) {
+                    continue;
+                }
+
+                foreach ($competitionLevel['judges'] as $j => $judgeStatus) {
+
+                    if (($judgeStatus['judge_id'] ?? null) == $judgeId) {
+
+                        // ✅ TOGGLE instead of forcing true
+                        $currentStatus = $judges[$i]['judges'][$j]['status'] ?? false;
+                        $judges[$i]['judges'][$j]['status'] = !$currentStatus;
+
+                        $updated = true;
+
+                        break 2;
+                    }
+                }
+            }
+
+            if ($updated) {
+                $group->judges = $judges;
+                $group->save();
+
+                $this->loadJudgesGroup();
+            }
+        }
     }
 }
