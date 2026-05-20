@@ -172,6 +172,7 @@ class CriteriaRelationManager extends RelationManager
                             ->map(fn($judgeId) => [
                                 'judge_id' => (int) $judgeId,
                                 'status' => false,
+                                'request_edit' => false,
                             ])
                             ->values()
                             ->all();
