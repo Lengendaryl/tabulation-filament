@@ -282,4 +282,14 @@ class Criteria extends Page
                 ->send();
         }
     }
+
+    public function requestEdit()
+    {
+        // Implement your logic to handle edit requests here
+        Notification::make()
+            ->title('Edit Request Sent')
+            ->success()
+            ->body('Your request to edit the scores has been sent to the administrator.')
+            ->send();
+    }
 }

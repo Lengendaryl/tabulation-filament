@@ -124,7 +124,7 @@
             </flux:button>
 
             @if ($isLocked)
-                <flux:button variant="primary" type="submit">
+                <flux:button wire:click="requestEdit" variant="primary" type="button">
                     Request Edit Score
                 </flux:button>
             @endif
