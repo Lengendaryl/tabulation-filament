@@ -53,9 +53,8 @@
                                 </flux:button>
                             </div>
                         </div>
-
                         @php
-                            $isLocked = isset($submittedCategories[$activeTab]);
+                            $isLocked = $this->isSubmitted($activeTab);
                         @endphp
                         <div x-data="rankingSystem(
                             $wire.entangle('scores'),
@@ -118,11 +117,18 @@
         @endforeach
         <div class="flex items-center justify-end gap-2">
             <flux:button variant="primary" type="submit"
-                x-bind:class="($wire.submittedCategories[$wire.activeTab] ?? false) ?
-                'opacity-50 pointer-events-none cursor-not-allowed' : ''"
-                @click="if(!($wire.submittedCategories[$wire.activeTab] ?? false)) { isShowing = true; $wire.submit(); }">
+                class="{{ $isLocked ? 'opacity-50 pointer-events-none cursor-not-allowed' : '' }}"
+                :disabled="$isLocked"
+                @click="if(!{{ $isLocked ? 'true' : 'false' }}) { isShowing = true; $wire.submit(); }">
                 Submit
             </flux:button>
+
+            @if ($isLocked)
+                <flux:button variant="primary" type="submit">
+                    Request Edit Score
+                </flux:button>
+            @endif
+
         </div>
     </form>
 
