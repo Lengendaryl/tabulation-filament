@@ -18,7 +18,7 @@
                 ->flatMap(fn($group) => collect($group->judges)->flatMap(fn($levelGroup) => $levelGroup['judges']))
                 ->unique('judge_id')
                 ->values();
-           
+
             $judgeStatusMap = [];
             foreach ($judgesGroup as $group) {
                 foreach ($group->judges as $levelGroup) {
@@ -26,6 +26,7 @@
                     foreach ($levelGroup['judges'] as $jStatus) {
                         $judgeStatusMap[$categoryName][$jStatus['judge_id']] = [
                             'status' => (bool) $jStatus['status'],
+                            'request_edit' => (bool) $jStatus['request_edit'],
                         ];
                     }
                 }
