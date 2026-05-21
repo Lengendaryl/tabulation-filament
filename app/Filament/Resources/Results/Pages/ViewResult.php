@@ -72,7 +72,7 @@ class ViewResult extends ViewRecord
         $this->loadJudgesGroup();
     }
 
-    public function toggleStatus(string $originalCategory, string $level, $judgeId)
+    public function toggleStatus(string $originalCategory, string $level, int $judgeId)
     {
         $groups = JudgesGroup::where('criteria_id', $this->record->id)->get();
 
