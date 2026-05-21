@@ -74,7 +74,6 @@ class Criteria extends Page
             }
 
             foreach ($levelGroup['judges'] ?? [] as $judge) {
-                logger($judge);
                 if (($judge['judge_id'] ?? null) == Auth::id()) {
                     return (bool) ($judge['status'] ?? false);
                 }

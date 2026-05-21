@@ -36,10 +36,10 @@
         @endphp
 
         {{-- PRELIMINARY --}}
-        <x-table-judge-result heading="PRELIMINARY" :judges="$judges" :contest="$preliminaryContents" :judgeStatusMap="$judgeStatusMap"/>
+        <x-table-judge-result heading="PRELIMINARY" :judges="$judges" :contest="$preliminaryContents" :judgeStatusMap="$judgeStatusMap" />
 
         {{-- FINAL --}}
-        <x-table-judge-result heading="FINAL" :judges="$judges" :contest="$finalContents" :judgeStatusMap="$judgeStatusMap"/>
+        <x-table-judge-result heading="FINAL" :judges="$judges" :contest="$finalContents" :judgeStatusMap="$judgeStatusMap" />
 
     </flux:card>
 

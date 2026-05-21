@@ -31,7 +31,7 @@
                         <flux:table.cell class="flex items-center gap-1">
                             <flux:button
                                 wire:click="toggleStatus('{{ $categoryName }}', '{{ $level }}','{{ $judgeId }}')"
-                                variant="primary" color="violet" size="xs">
+                                :variant="$status ? null : 'primary'" color="violet" size="xs">
                                 {{ $status ? 'DISABLED' : 'ENABLED' }}
                             </flux:button>
 

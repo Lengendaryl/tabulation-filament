@@ -95,7 +95,9 @@ class ViewResult extends ViewRecord
 
                         // ✅ TOGGLE instead of forcing true
                         $currentStatus = $judges[$i]['judges'][$j]['status'] ?? false;
+                        $statusRequestEdit = $judges[$i]['judges'][$j]['request_edit'] ?? false;
                         $judges[$i]['judges'][$j]['status'] = !$currentStatus;
+                        $judges[$i]['judges'][$j]['request_edit'] = !$statusRequestEdit;
 
                         $updated = true;
 
