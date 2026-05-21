@@ -26,8 +26,17 @@ class Criteria extends Page
     private string $level;
     private string $contestCategory;
     private bool $status;
-
-
+    protected $listeners = [
+        'echo:judging,.JudgeSubmittedEvent' => 'granted',
+    ];
+    public function granted()
+    {
+        Notification::make()
+            ->title('Request Granted')
+            ->success()
+            ->body('You can now edit the score.')
+            ->send();
+    }
     public function mount()
     {
         // Fetch your data here
