@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Results\Pages;
 
+use App\Events\JudgeSubmittedEvent;
 use App\Filament\Resources\Results\ResultResource;
 use App\Models\JudgesGroup;
 use App\Models\Score;
@@ -105,7 +106,10 @@ class ViewResult extends ViewRecord
                     }
                 }
             }
-
+            broadcast(new JudgeSubmittedEvent(
+                $judgeId,
+                $originalCategory,
+            ))->toOthers();
             if ($updated) {
                 $group->judges = $judges;
                 $group->save();
