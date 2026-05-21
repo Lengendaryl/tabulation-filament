@@ -74,7 +74,6 @@ class Criteria extends Page
             }
 
             foreach ($levelGroup['judges'] ?? [] as $judge) {
-                logger($judge);
                 if (($judge['judge_id'] ?? null) == Auth::id()) {
                     return (bool) ($judge['status'] ?? false);
                 }
@@ -285,7 +284,44 @@ class Criteria extends Page
 
     public function requestEdit()
     {
-        // Implement your logic to handle edit requests here
+        $category = $this->activeTab;
+        $originalCategory = $this->tabLabels[$category] ?? Str::headline($category);
+        $groups = JudgesGroup::where('criteria_id', $this->criteriaId)->get();
+
+        foreach ($groups as $group) {
+
+            $judges = $group->judges;
+            $updated = false;
+
+            foreach ($judges as $i => $competitionLevel) {
+
+                if (
+                    ($competitionLevel['content'] ?? null) !== $originalCategory
+                ) {
+                    continue;
+                }
+
+                foreach ($competitionLevel['judges'] as $j => $judgeStatus) {
+
+                    if (($judgeStatus['judge_id'] ?? null) == Auth::id()) {
+                        $judges[$i]['judges'][$j]['request_edit'] = true;
+                        $updated = true;
+                        break 2;
+                    }
+                }
+            }
+
+            if ($updated) {
+                $group->judges = $judges;
+                $group->save();
+            }
+        }
+
+        broadcast(new JudgeSubmittedEvent(
+            auth()->id(),
+            $originalCategory,
+        ))->toOthers();
+
         Notification::make()
             ->title('Edit Request Sent')
             ->success()

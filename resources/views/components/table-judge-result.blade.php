@@ -19,8 +19,8 @@
                             $categoryName = $content['content'];
                             $judgeId = $judge['judge_id'];
                             $level = $content['level'];
-                            // Safely read the status from our mapping dictionary
                             $status = $judgeStatusMap[$categoryName][$judgeId]['status'] ?? false;
+                            $request = $judgeStatusMap[$categoryName][$judgeId]['request_edit'] ?? false;
                         @endphp
                         <flux:table.cell>
                             <flux:badge variant="solid" color="{{ $status ? 'green' : 'red' }}" size="sm"
@@ -28,11 +28,16 @@
                                 {{ $status ? 'SUBMITTED' : 'UNSUBMITTED' }}
                             </flux:badge>
                         </flux:table.cell>
-                        <flux:table.cell>
+                        <flux:table.cell class="flex items-center gap-1">
                             <flux:button
                                 wire:click="toggleStatus('{{ $categoryName }}', '{{ $level }}','{{ $judgeId }}')"
-                                variant="primary" color="violet" size="xs">
-                                {{ $status ? 'DISABLED' : 'ENABLED' }}</flux:button>
+                                :variant="$status ? null : 'primary'" color="violet" size="xs">
+                                {{ $status ? 'DISABLED' : 'ENABLED' }}
+                            </flux:button>
+
+                            @if ($request)
+                                <flux:icon.pencil variant="mini" class="text-violet-400" />
+                            @endif
                         </flux:table.cell>
                     @endforeach
                 </flux:table.row>
