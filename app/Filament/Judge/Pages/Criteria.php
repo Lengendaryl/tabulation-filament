@@ -187,22 +187,32 @@ class Criteria extends Page
     public function submit()
     {
         try {
-
             $category = $this->activeTab;
             $originalCategory = $this->tabLabels[$category] ?? Str::headline($category);
+
             // ONLY current tab
             $participantsScores = $this->scores[$category] ?? [];
 
-            // compute ranks only for this category
+            // Compute ranks only for this category
             $this->getRank($participantsScores);
+
+            // Get the participants collection from our preloaded criteria to search against
+            $contestParticipants = $this->allCriteria->first()->contest->participants;
 
             $score = collect();
 
             foreach ($participantsScores as $participantId => $criteria) {
 
+                // Find the specific participant match from our relationship collection
+                $participantRecord = $contestParticipants->firstWhere('id', (int) $participantId);
+
+                // Extract the participant data array (falls back to an empty array if not found)
+                $participantData = $participantRecord ? $participantRecord->toArray() : [];
+
                 $score->push([
                     'contest_category' => $originalCategory,
-                    'participant_id' => (int) $participantId,
+                    'participant_id' => (int) $participantId, // Keeping the ID fallback tracking is usually good practice!
+                    'participant' => $participantData,  // 💾 Storing the entire participant data object here
                     'level' => $this->allCriteria->first()->criteria[0]['data']['level'],
                     'judge_id' => auth()->id(),
                     'contest_id' => $this->allCriteria->first()->contest_id,
@@ -233,38 +243,28 @@ class Criteria extends Page
             $groups = JudgesGroup::where('criteria_id', $this->criteriaId)->get();
 
             foreach ($groups as $group) {
-                // 1. Copy the current judges JSON array into a variable
                 $tempJudges = $group->judges;
                 $isUpdated = false;
 
-                // Use & to directly mutate the nested array data
                 foreach ($tempJudges as &$competitionLevel) {
-
-                    // Match the current category tab (using slugs to protect against capitalization issues)
                     if ($competitionLevel['content'] !== $originalCategory) {
                         continue;
                     }
 
                     foreach ($competitionLevel['judges'] as &$judgeStatus) {
-
-                        // Find the current logged-in judge
                         if ($judgeStatus['judge_id'] === Auth::id()) {
-
-                            // 2. Update ONLY the status
                             $judgeStatus['status'] = true;
                             $isUpdated = true;
 
-                            // Optional UI sync properties
                             $this->level = $competitionLevel['level'];
                             $this->contestCategory = $competitionLevel['content'];
                             $this->status = true;
 
-                            break 2; // Exit both inner loops early since we found our target
+                            break 2;
                         }
                     }
                 }
 
-                // 3. Save the record if changes were made
                 if ($isUpdated) {
                     $group->judges = $tempJudges;
                     $group->save();
@@ -282,7 +282,6 @@ class Criteria extends Page
                 ->body("$originalCategory scores have been recorded.")
                 ->send();
         } catch (\Exception $e) {
-
             Notification::make()
                 ->title('Submission Failed')
                 ->danger()
