@@ -83,7 +83,12 @@
                                                 @php $slug = Str::slug($item['criterion']); @endphp
                                                 <flux:table.cell variant="strong">
                                                     <flux:input.group>
-                                                        <flux:input required type="number" min="0"
+                                                        <flux:input
+                                                            x-on:keypress="
+                                                            if (['-', '+', 'e', 'E'].includes($event.key)|| $event.target.value.length >= 3) {
+                                                            $event.preventDefault()
+                                                            }"
+                                                            required type="number" min="0"
                                                             max="{{ $item['score'] }}"
                                                             x-on:input="if(!results['{{ $participant['id'] }}']) results['{{ $participant['id'] }}'] = {};
                                                             results['{{ $participant['id'] }}']['{{ $slug }}'] = Number($event.target.value)"
