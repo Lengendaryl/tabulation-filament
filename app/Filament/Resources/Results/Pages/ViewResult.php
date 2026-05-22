@@ -5,11 +5,12 @@ namespace App\Filament\Resources\Results\Pages;
 use App\Events\JudgeSubmittedEvent;
 use App\Filament\Resources\Results\ResultResource;
 use App\Models\JudgesGroup;
+use App\Models\Participant;
 use App\Models\Score;
 use App\Models\User;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Auth;
+
 
 class ViewResult extends ViewRecord
 {
@@ -30,6 +31,7 @@ class ViewResult extends ViewRecord
     public Collection $criteria;
     public Collection $judgesGroup;
     public array $judgesInfo;
+    public array $participants = [];
 
     private function loadJudgesGroup()
     {
@@ -60,9 +62,9 @@ class ViewResult extends ViewRecord
     public function mount(int|string $record): void
     {
         parent::mount($record);
-
+        $this->participants = Participant::all()->toArray();
         $this->criteria = Score::where('criteria_id', $this->record->id)->with(['judge', 'criteria'])->get();
-
+        logger($this->criteria);
         $this->loadJudgesGroup();
     }
 
