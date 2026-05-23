@@ -24,7 +24,7 @@ class ParticipantFactory extends Factory
                 "image" => "",
                 "first_name" => $this->faker->firstName(),
                 "last_name" => $this->faker->lastName(),
-                "gender" => $this->faker->randomElement(['Male', 'Female']),
+                "gender" => $this->faker->randomElement(['male', 'female']),
                 "participant_no" => $this->faker->unique()->numberBetween(1, 12),
             ]
         ];
@@ -34,8 +34,12 @@ class ParticipantFactory extends Factory
     {
         return $this->state(fn(array $attributes) => [
             'participant' => array_merge($attributes['participant'], [
+                "image" => "",
+                "age" => 21,
                 'gender' => 'male',
                 'first_name' => $this->faker->firstName('male'),
+                "last_name" => $this->faker->lastName(),
+                "participant_no" => $this->faker->unique()->numberBetween(1, 6)
             ]),
         ]);
     }
@@ -44,8 +48,12 @@ class ParticipantFactory extends Factory
     {
         return $this->state(fn(array $attributes) => [
             'participant' => array_merge($attributes['participant'], [
+                "image" => "",
+                "age" => 21,
                 'gender' => 'female',
                 'first_name' => $this->faker->firstName('female'),
+                "last_name" => $this->faker->lastName(),
+                "participant_no" => $this->faker->unique()->numberBetween(1, 6)
             ]),
         ]);
     }
