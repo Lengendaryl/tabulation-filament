@@ -161,6 +161,7 @@
                                         'data.content',
                                         $categoryItem['contest_category'],
                                     );
+
                                     $dynamicDynamicCriteria = collect(data_get($criteriaBlock, 'data.criteria', []))
                                         ->pluck('criterion')
                                         ->values()

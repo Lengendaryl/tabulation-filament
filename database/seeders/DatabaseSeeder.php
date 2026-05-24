@@ -38,11 +38,11 @@ class DatabaseSeeder extends Seeder
 
         // Criteria::factory()->create();
 
+        // JudgesGroup::factory()->create();
+
         // Participant::factory()->count(6)->male()->create();
 
         // Participant::factory()->count(6)->female()->create();
-
-        // JudgesGroup::factory()->create();
 
 
         Score::factory()->scoreCreate();

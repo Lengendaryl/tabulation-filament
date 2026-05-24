@@ -30,7 +30,7 @@ class ScoreFactory extends Factory
             [
                 'judge_id' => 2,
                 'contest_id' => 1,
-                'criteria_id' => 3,
+                'criteria_id' => 1,
                 'contest_category' => 'Production Number',
                 'score' => [
                     [
@@ -412,7 +412,7 @@ class ScoreFactory extends Factory
         Score::factory()->create([
             'judge_id' => 2,
             'contest_id' => 1,
-            'criteria_id' => 3,
+            'criteria_id' => 1,
             'contest_category' => 'Sports Wear',
             'score' => [
                 [
@@ -794,7 +794,7 @@ class ScoreFactory extends Factory
             [
                 'judge_id' => 2,
                 'contest_id' => 1,
-                'criteria_id' => 3,
+                'criteria_id' => 1,
                 'contest_category' => 'Barong/Filipiana Competition',
                 'score' => [
                     [
@@ -1165,7 +1165,7 @@ class ScoreFactory extends Factory
             [
                 'judge_id' => 3,
                 'contest_id' => 1,
-                'criteria_id' => 3,
+                'criteria_id' => 1,
                 'contest_category' => 'Production Number',
                 'score' => [
                     [
@@ -1547,16 +1547,16 @@ class ScoreFactory extends Factory
         Score::factory()->create([
             'judge_id' => 3,
             'contest_id' => 1,
-            'criteria_id' => 3,
+            'criteria_id' => 1,
             'contest_category' => 'Sports Wear',
             'score' => [
                 [
-                    "rank" => 1.5,
+                    "rank" => 1,
                     "level" => "preliminary",
                     "scores" => [
                         "personality" => "27",
                         "body-fitness" => "27",
-                        "overall-look" => "8",
+                        "overall-look" => "9",
                         "confidence-stage-presence" => "29"
                     ],
                     "criteria" => 59,
@@ -1576,7 +1576,7 @@ class ScoreFactory extends Factory
                             "participant_no" => 12
                         ]
                     ],
-                    "total_score" => 91,
+                    "total_score" => 92,
                     "submitted_at" => now(),
                     "participant_id" => 1,
                     "contest_category" => "Sports Wear"
@@ -1706,7 +1706,7 @@ class ScoreFactory extends Factory
                     "contest_category" => "Sports Wear"
                 ],
                 [
-                    "rank" => 1.5,
+                    "rank" => 2,
                     "level" => "preliminary",
                     "scores" => [
                         "personality" => "28",
@@ -1929,7 +1929,7 @@ class ScoreFactory extends Factory
         Score::factory()->create([
             'judge_id' => 3,
             'contest_id' => 1,
-            'criteria_id' => 3,
+            'criteria_id' => 1,
             'contest_category' => 'Barong/Filipiana Competition',
             'score' => [
                 [
@@ -2300,7 +2300,7 @@ class ScoreFactory extends Factory
         Score::factory()->create([
             'judge_id' => 4,
             'contest_id' => 1,
-            'criteria_id' => 3,
+            'criteria_id' => 1,
             'contest_category' => 'Production Number',
             'score' => [
                 [
@@ -2685,7 +2685,7 @@ class ScoreFactory extends Factory
             [
                 'judge_id' => 4,
                 'contest_id' => 1,
-                'criteria_id' => 3,
+                'criteria_id' => 1,
                 'contest_category' => 'Sports Wear',
                 'score' => [
                     [
@@ -3068,7 +3068,7 @@ class ScoreFactory extends Factory
         Score::factory()->create([
             'judge_id' => 4,
             'contest_id' => 1,
-            'criteria_id' => 3,
+            'criteria_id' => 1,
             'contest_category' => 'Barong/Filipiana Competition',
             'score' => [
                 [
@@ -3438,7 +3438,7 @@ class ScoreFactory extends Factory
             [
                 'judge_id' => 5,
                 'contest_id' => 1,
-                'criteria_id' => 3,
+                'criteria_id' => 1,
                 'contest_category' => 'Production Number',
                 'score' => [
                     [
@@ -3817,11 +3817,11 @@ class ScoreFactory extends Factory
 
             ]
         );
-        
+
         Score::factory()->create([
             'judge_id' => 5,
             'contest_id' => 1,
-            'criteria_id' => 3,
+            'criteria_id' => 1,
             'contest_category' => 'Sports Wear',
             'score' => [
                 [
@@ -4203,7 +4203,7 @@ class ScoreFactory extends Factory
         Score::factory()->create([
             'judge_id' => 5,
             'contest_id' => 1,
-            'criteria_id' => 3,
+            'criteria_id' => 1,
             'contest_category' => 'Barong/Filipiana Competition',
             'score' => [
                 [
