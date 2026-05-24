@@ -18,116 +18,12 @@ class JudgesGroupFactory extends Factory
     public function definition(): array
     {
         return [
-            'criteria_id' => 1,
+            'criteria_id' => 3,
             'judge_id' => [2, 3, 4, 5],
-            [
-                'level' => 'preliminary',
-                'content' => 'Production Number',
-                'judges' => [
-                    [
-                        'request_edit' => false,
-                        'status' => false,
-                        'judge_id' => 2
-                    ],
-                    [
-                        'request_edit' => false,
-                        'status' => false,
-                        'judge_id' => 3
-                    ],
-                    [
-                        'request_edit' => false,
-                        'status' => false,
-                        'judge_id' => 4
-                    ],
-                    [
-                        'request_edit' => false,
-                        'status' => false,
-                        'judge_id' => 5
-                    ],
-                ],
-            ],
-            [
-                'level' => 'preliminary',
-                'content' => 'Swimwear',
-                'judges' => [
-                    [
-                        'request_edit' => false,
-                        'status' => false,
-                        'judge_id' => 2
-                    ],
-                    [
-                        'request_edit' => false,
-                        'status' => false,
-                        'judge_id' => 3
-                    ],
-                    [
-                        'request_edit' => false,
-                        'status' => false,
-                        'judge_id' => 4
-                    ],
-                    [
-                        'request_edit' => false,
-                        'status' => false,
-                        'judge_id' => 5
-                    ],
-                ],
-            ],
-            [
-                'level' => 'preliminary',
-                'content' => 'Casual Interview',
-                'judges' => [
-                    [
-                        'request_edit' => false,
-                        'status' => false,
-                        'judge_id' => 2
-                    ],
-                    [
-                        'request_edit' => false,
-                        'status' => false,
-                        'judge_id' => 3
-                    ],
-                    [
-                        'request_edit' => false,
-                        'status' => false,
-                        'judge_id' => 4
-                    ],
-                    [
-                        'request_edit' => false,
-                        'status' => false,
-                        'judge_id' => 5
-                    ],
-                ],
-            ],
-            [
-                'level' => 'preliminary',
-                'content' => 'Formal Wear',
-                'judges' => [
-                    [
-                        'request_edit' => false,
-                        'status' => false,
-                        'judge_id' => 2
-                    ],
-                    [
-                        'request_edit' => false,
-                        'status' => false,
-                        'judge_id' => 3
-                    ],
-                    [
-                        'request_edit' => false,
-                        'status' => false,
-                        'judge_id' => 4
-                    ],
-                    [
-                        'request_edit' => false,
-                        'status' => false,
-                        'judge_id' => 5
-                    ],
-                ],
-            ],
-            [
+            'judges' => [
                 [
-                    'level' => 'final',
-                    'content' => 'Final Round',
+                    'level' => 'preliminary',
+                    'content' => 'Production Number',
                     'judges' => [
                         [
                             'request_edit' => false,
@@ -150,8 +46,115 @@ class JudgesGroupFactory extends Factory
                             'judge_id' => 5
                         ],
                     ],
+                ],
+                [
+                    'level' => 'preliminary',
+                    'content' => 'Swimwear',
+                    'judges' => [
+                        [
+                            'request_edit' => false,
+                            'status' => false,
+                            'judge_id' => 2
+                        ],
+                        [
+                            'request_edit' => false,
+                            'status' => false,
+                            'judge_id' => 3
+                        ],
+                        [
+                            'request_edit' => false,
+                            'status' => false,
+                            'judge_id' => 4
+                        ],
+                        [
+                            'request_edit' => false,
+                            'status' => false,
+                            'judge_id' => 5
+                        ],
+                    ],
+                ],
+                [
+                    'level' => 'preliminary',
+                    'content' => 'Casual Interview',
+                    'judges' => [
+                        [
+                            'request_edit' => false,
+                            'status' => false,
+                            'judge_id' => 2
+                        ],
+                        [
+                            'request_edit' => false,
+                            'status' => false,
+                            'judge_id' => 3
+                        ],
+                        [
+                            'request_edit' => false,
+                            'status' => false,
+                            'judge_id' => 4
+                        ],
+                        [
+                            'request_edit' => false,
+                            'status' => false,
+                            'judge_id' => 5
+                        ],
+                    ],
+                ],
+                [
+                    'level' => 'preliminary',
+                    'content' => 'Formal Wear',
+                    'judges' => [
+                        [
+                            'request_edit' => false,
+                            'status' => false,
+                            'judge_id' => 2
+                        ],
+                        [
+                            'request_edit' => false,
+                            'status' => false,
+                            'judge_id' => 3
+                        ],
+                        [
+                            'request_edit' => false,
+                            'status' => false,
+                            'judge_id' => 4
+                        ],
+                        [
+                            'request_edit' => false,
+                            'status' => false,
+                            'judge_id' => 5
+                        ],
+                    ],
+                ],
+                [
+                    [
+                        'level' => 'final',
+                        'content' => 'Final Round',
+                        'judges' => [
+                            [
+                                'request_edit' => false,
+                                'status' => false,
+                                'judge_id' => 2
+                            ],
+                            [
+                                'request_edit' => false,
+                                'status' => false,
+                                'judge_id' => 3
+                            ],
+                            [
+                                'request_edit' => false,
+                                'status' => false,
+                                'judge_id' => 4
+                            ],
+                            [
+                                'request_edit' => false,
+                                'status' => false,
+                                'judge_id' => 5
+                            ],
+                        ],
+                    ]
                 ]
             ]
+
         ];
     }
 }

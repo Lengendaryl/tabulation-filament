@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use Spatie\Permission\Models\Role;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
@@ -21,7 +22,13 @@ class User extends Authenticatable
     {
         static::created(function (User $user) {
             // This ensures every new account is a Super Admin automatically
-            $user->assignRole('super_admin');
+
+            $superAdminRole = Role::firstOrCreate([
+                'name' => 'super_admin',
+                'guard_name' => 'web',
+            ]);
+
+            $user->assignRole($superAdminRole);
         });
     }
     /**
