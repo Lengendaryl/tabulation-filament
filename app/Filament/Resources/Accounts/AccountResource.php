@@ -48,7 +48,6 @@ class AccountResource extends Resource
     {
         return [
             'index' => ListAccounts::route('/'),
-            'create' => CreateAccount::route('/create'),
             'edit' => EditAccount::route('/{record}/edit'),
         ];
     }
