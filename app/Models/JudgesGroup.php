@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class JudgesGroup extends Model
 {
+    use HasFactory;
     protected $fillable = ['criteria_id', 'judges', 'judge_id'];
 
     protected $casts = [
