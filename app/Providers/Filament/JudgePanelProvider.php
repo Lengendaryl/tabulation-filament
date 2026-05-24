@@ -11,6 +11,7 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Enums\Width;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -30,6 +31,7 @@ class JudgePanelProvider extends PanelProvider
             ->topNavigation()
             ->path('')
             ->login()
+            ->maxContentWidth(Width::Full)
             ->plugins([
                 AuthUIEnhancerPlugin::make()->formPanelPosition('left'),
             ])
