@@ -92,7 +92,7 @@
 
             {{-- Final Content Section --}}
             <div class="space-y-10" x-show="activeTab === 'final'" x-cloak>
-                <flux:button  variant="primary" color="violet">Print
+                <flux:button variant="primary" color="violet">Print
                 </flux:button>
                 <div class="space-y-10" id="final">
                     <x-printable-header />
@@ -265,13 +265,24 @@
                                 </flux:card>
                             </flux:card>
                         @endforeach
-                        <div class="flex flex-col justify-center items-center uppercase">
-                            <p class="font-medium text-xl border-b">
-                                {{ $judgeItem['judge']['name'] }}
-                            </p>
-                            <p class="text-center">
-                                JUDGE
-                            </p>
+                        <div class="flex flex-col justify-center items-center uppercase gap-4">
+                            <div>
+                                <p class="font-medium  border-b">
+                                    {{ $judgeItem['judge']['name'] }}
+                                </p>
+                                <p class="text-center text-xs">
+                                    JUDGE
+                                </p>
+                            </div>
+
+                            <div>
+                                <p class="font-medium  border-b">
+                                    {{ auth()->user()->name }}
+                                </p>
+                                <p class="text-center text-xs">
+                                    TABULATOR
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
