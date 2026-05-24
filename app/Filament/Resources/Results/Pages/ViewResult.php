@@ -91,7 +91,7 @@ class ViewResult extends ViewRecord
         $this->score = Score::where('criteria_id', $this->record->id)->with(['judge', 'criteria'])->get();
 
         $this->criteria = Criteria::where('id', $this->record->id)->get();
- 
+
         $this->loadJudgesGroup();
     }
 
@@ -101,50 +101,5 @@ class ViewResult extends ViewRecord
         $this->loadJudgesGroup();
     }
 
-    public function toggleStatus(string $originalCategory, string $level, int $judgeId)
-    {
-        $groups = JudgesGroup::where('criteria_id', $this->record->id)->get();
-
-        foreach ($groups as $group) {
-
-            $judges = $group->judges;
-            $updated = false;
-
-            foreach ($judges as $i => $competitionLevel) {
-
-                if (
-                    ($competitionLevel['content'] ?? null) !== $originalCategory ||
-                    ($competitionLevel['level'] ?? null) !== $level
-                ) {
-                    continue;
-                }
-
-                foreach ($competitionLevel['judges'] as $j => $judgeStatus) {
-
-                    if (($judgeStatus['judge_id'] ?? null) == $judgeId) {
-
-                        // ✅ TOGGLE instead of forcing true
-                        $currentStatus = $judges[$i]['judges'][$j]['status'] ?? false;
-                        $statusRequestEdit = $judges[$i]['judges'][$j]['request_edit'] ?? false;
-                        $judges[$i]['judges'][$j]['status'] = !$currentStatus;
-                        $judges[$i]['judges'][$j]['request_edit'] = !$statusRequestEdit;
-
-                        $updated = true;
-
-                        break 2;
-                    }
-                }
-            }
-            broadcast(new JudgeSubmittedEvent(
-                $judgeId,
-                $originalCategory,
-            ))->toOthers();
-            if ($updated) {
-                $group->judges = $judges;
-                $group->save();
-
-                $this->loadJudgesGroup();
-            }
-        }
-    }
+   
 }
