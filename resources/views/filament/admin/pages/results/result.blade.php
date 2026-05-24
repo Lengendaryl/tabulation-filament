@@ -43,39 +43,37 @@
     </flux:card>
 
     <div x-data="{ activeTab: 'preliminary' }" label="Content tabs">
-        <div class="w-fit">
-            <x-filament::tabs>
-                <x-filament::tabs.item alpine-active="activeTab === 'preliminary'" x-on:click="activeTab = 'preliminary'">
-                    PRELIMINARY
+        <x-filament::tabs class="w-fit">
+            <x-filament::tabs.item alpine-active="activeTab === 'preliminary'" x-on:click="activeTab = 'preliminary'">
+                PRELIMINARY
+            </x-filament::tabs.item>
+
+            <x-filament::tabs.item alpine-active="activeTab === 'final'" x-on:click="activeTab = 'final'">
+                FINAL
+            </x-filament::tabs.item>
+
+            <x-filament::tabs.item alpine-active="activeTab === 'major_awards'"
+                x-on:click="activeTab = 'major_awards'">
+                MAJOR AWARDS
+            </x-filament::tabs.item>
+
+            <x-filament::tabs.item alpine-active="activeTab === 'top_result'" x-on:click="activeTab = 'top_result'">
+                TOP {{ $topParticipants }} RESULTS
+            </x-filament::tabs.item>
+
+            <x-filament::tabs.item alpine-active="activeTab === 'final_result'"
+                x-on:click="activeTab = 'final_result'">
+                FINAL RESULTS
+            </x-filament::tabs.item>
+
+            @foreach (collect($criteria)->unique('judge.id') as $item)
+                <x-filament::tabs.item alpine-active="activeTab === '{{ $item['judge']['name'] }}'"
+                    x-on:click="activeTab = '{{ $item['judge']['name'] }}'" class="uppercase">
+                    {{ $item['judge']['name'] }}
                 </x-filament::tabs.item>
+            @endforeach
 
-                <x-filament::tabs.item alpine-active="activeTab === 'final'" x-on:click="activeTab = 'final'">
-                    FINAL
-                </x-filament::tabs.item>
-
-                <x-filament::tabs.item alpine-active="activeTab === 'major_awards'"
-                    x-on:click="activeTab = 'major_awards'">
-                    MAJOR AWARDS
-                </x-filament::tabs.item>
-
-                <x-filament::tabs.item alpine-active="activeTab === 'top_result'" x-on:click="activeTab = 'top_result'">
-                    TOP {{ $topParticipants }} RESULTS
-                </x-filament::tabs.item>
-
-                <x-filament::tabs.item alpine-active="activeTab === 'final_result'"
-                    x-on:click="activeTab = 'final_result'">
-                    FINAL RESULTS
-                </x-filament::tabs.item>
-
-                @foreach (collect($criteria)->unique('judge.id') as $item)
-                    <x-filament::tabs.item alpine-active="activeTab === '{{ $item['judge']['name'] }}'"
-                        x-on:click="activeTab = '{{ $item['judge']['name'] }}'" class="uppercase">
-                        {{ $item['judge']['name'] }}
-                    </x-filament::tabs.item>
-                @endforeach
-
-            </x-filament::tabs>
-        </div>
+        </x-filament::tabs>
         <div class="mt-4">
             {{-- Preliminary Content Section --}}
             <div class="space-y-10" x-show="activeTab === 'preliminary'" x-cloak>
