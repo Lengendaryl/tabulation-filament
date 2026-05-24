@@ -169,100 +169,137 @@
                                     ->filter(fn($p) => data_get($p, 'participant.participant.gender') === 'female')
                                     ->sortBy(fn($p) => data_get($p, 'participant.participant.participant_no'));
                             @endphp
-                            <flux:card class="space-y-8 uppercase">
+                            <flux:card class="space-y-8 uppercase ">
                                 <flux:heading size="xl" class="text-center uppercase">
                                     {{ $categoryItem['contest_category'] }}
                                 </flux:heading>
-                                {{-- MALE --}}
-                                <flux:card>
-                                    <div class="border-b border-zinc-800/10 dark:border-white/20">
-                                        <p class="mb-2 font-semibold text-xl">
-                                            MALE CANDIDATES
-                                        </p>
-                                    </div>
-                                    <flux:table>
-                                        <flux:table.columns>
-                                            <flux:table.column>
-                                                Participant
-                                            </flux:table.column>
-                                            @foreach ($dynamicDynamicCriteria as $criterion)
+
+                                <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                                    {{-- MALE --}}
+                                    <flux:card class="w-full">
+                                        <div class="border-b border-zinc-800/10 dark:border-white/20">
+                                            <p class="mb-2 font-semibold text-xl">
+                                                MALE CANDIDATES
+                                            </p>
+                                        </div>
+                                        <flux:table class="font-bold">
+                                            <flux:table.columns>
                                                 <flux:table.column>
-                                                    {{ $criterion }}
+                                                    <div class="text-center w-full">Participant</div>
                                                 </flux:table.column>
-                                            @endforeach
-                                            <flux:table.column>Total</flux:table.column>
-                                            <flux:table.column>Rank</flux:table.column>
-                                        </flux:table.columns>
-                                        <flux:table.rows>
-                                            @foreach ($maleParticipants as $participant)
-                                                <flux:table.row>
-                                                    <flux:table.cell>
-                                                        {{ data_get($participant, 'participant.participant.participant_no') }}
-                                                    </flux:table.cell>
-                                                    @foreach ($dynamicDynamicCriteria as $criterion)
-                                                        @php
-                                                            $key = Str::slug($criterion);
-                                                        @endphp
-                                                        <flux:table.cell>
-                                                            {{ $participant['scores'][$key] ?? 0 }}
-                                                        </flux:table.cell>
-                                                    @endforeach
-                                                    <flux:table.cell>
-                                                        {{ $participant['total_score'] }}
-                                                    </flux:table.cell>
-                                                    <flux:table.cell>
-                                                        {{ $participant['rank'] }}
-                                                    </flux:table.cell>
-                                                </flux:table.row>
-                                            @endforeach
-                                        </flux:table.rows>
-                                    </flux:table>
-                                </flux:card>
-                                {{-- FEMALE --}}
-                                <flux:card>
-                                    <div class="border-b border-zinc-800/10 dark:border-white/20">
-                                        <p class="mb-2 font-semibold text-xl">
-                                            FEMALE CANDIDATES
-                                        </p>
-                                    </div>
-                                    <flux:table>
-                                        <flux:table.columns>
-                                            <flux:table.column>
-                                                Participant
-                                            </flux:table.column>
-                                            @foreach ($dynamicDynamicCriteria as $criterion)
+                                                @foreach ($dynamicDynamicCriteria as $criterion)
+                                                    <flux:table.column>
+                                                        <div class="text-center w-full">{{ $criterion }}</div>
+                                                    </flux:table.column>
+                                                @endforeach
                                                 <flux:table.column>
-                                                    {{ $criterion }}
+                                                    <div class="text-center w-full">Total</div>
                                                 </flux:table.column>
-                                            @endforeach
-                                            <flux:table.column>Total</flux:table.column>
-                                            <flux:table.column>Rank</flux:table.column>
-                                        </flux:table.columns>
-                                        <flux:table.rows>
-                                            @foreach ($femaleParticipants as $participant)
-                                                <flux:table.row>
-                                                    <flux:table.cell>
-                                                        {{ data_get($participant, 'participant.participant.participant_no') }}
-                                                    </flux:table.cell>
-                                                    @foreach ($dynamicDynamicCriteria as $criterion)
-                                                        @php
-                                                            $key = Str::slug($criterion);
-                                                        @endphp
+                                                <flux:table.column>
+                                                    <div class="text-center w-full">Rank</div>
+                                                </flux:table.column>
+                                            </flux:table.columns>
+                                            <flux:table.rows>
+                                                @foreach ($maleParticipants as $participant)
+                                                    @php
+                                                        $rankValue = (float) $participant['rank'];
+                                                        // Highlight top 4 participants dynamically
+                                                        $sortedRanks = collect($maleParticipants)
+                                                            ->pluck('rank')
+                                                            ->map(fn($r) => (float) $r)
+                                                            ->sort()
+                                                            ->values();
+                                                        $cutoffRank = $sortedRanks[3] ?? null;
+                                                        $isHighlighted =
+                                                            $cutoffRank !== null && $rankValue <= $cutoffRank;
+                                                        $rowBg = $isHighlighted ? 'bg-violet-600/60' : '';
+                                                    @endphp
+                                                    <flux:table.row class="{{ $rowBg }} text-center">
                                                         <flux:table.cell>
-                                                            {{ $participant['scores'][$key] ?? 0 }}
+                                                            {{ data_get($participant, 'participant.participant.participant_no') }}
                                                         </flux:table.cell>
-                                                    @endforeach
-                                                    <flux:table.cell>
-                                                        {{ $participant['total_score'] }}
-                                                    </flux:table.cell>
-                                                    <flux:table.cell>
-                                                        {{ $participant['rank'] }}
-                                                    </flux:table.cell>
-                                                </flux:table.row>
-                                            @endforeach
-                                        </flux:table.rows>
-                                    </flux:table>
-                                </flux:card>
+                                                        @foreach ($dynamicDynamicCriteria as $criterion)
+                                                            @php
+                                                                $key = Str::slug($criterion);
+                                                            @endphp
+                                                            <flux:table.cell>
+                                                                {{ $participant['scores'][$key] ?? 0 }}
+                                                            </flux:table.cell>
+                                                        @endforeach
+                                                        <flux:table.cell>
+                                                            {{ $participant['total_score'] }}
+                                                        </flux:table.cell>
+                                                        <flux:table.cell>
+                                                            {{ $participant['rank'] }}
+                                                        </flux:table.cell>
+                                                    </flux:table.row>
+                                                @endforeach
+                                            </flux:table.rows>
+                                        </flux:table>
+                                    </flux:card>
+                                    {{-- FEMALE --}}
+                                    <flux:card class="w-full">
+                                        <div class="border-b border-zinc-800/10 dark:border-white/20">
+                                            <p class="mb-2 font-semibold text-xl">
+                                                FEMALE CANDIDATES
+                                            </p>
+                                        </div>
+                                        <flux:table class="font-bold">
+                                            <flux:table.columns>
+                                                <flux:table.column>
+                                                    <div class="text-center w-full">Participant</div>
+                                                </flux:table.column>
+                                                @foreach ($dynamicDynamicCriteria as $criterion)
+                                                    <flux:table.column>
+                                                        <div class="text-center w-full">{{ $criterion }}</div>
+                                                    </flux:table.column>
+                                                @endforeach
+                                                <flux:table.column>
+                                                    <div class="text-center w-full">Total</div>
+                                                </flux:table.column>
+                                                <flux:table.column>
+                                                    <div class="text-center w-full">Rank</div>
+                                                </flux:table.column>
+                                            </flux:table.columns>
+                                            <flux:table.rows>
+                                                @foreach ($femaleParticipants as $participant)
+                                                    @php
+                                                        $rankValue = (float) $participant['rank'];
+                                                        // Highlight top 4 participants dynamically
+                                                        $sortedRanks = collect($maleParticipants)
+                                                            ->pluck('rank')
+                                                            ->map(fn($r) => (float) $r)
+                                                            ->sort()
+                                                            ->values();
+                                                        $cutoffRank = $sortedRanks[3] ?? null;
+                                                        $isHighlighted =
+                                                            $cutoffRank !== null && $rankValue <= $cutoffRank;
+                                                        $rowBg = $isHighlighted ? 'bg-violet-600/60' : '';
+                                                    @endphp
+                                                    <flux:table.row class="{{ $rowBg }} text-center">
+                                                        <flux:table.cell>
+                                                            {{ data_get($participant, 'participant.participant.participant_no') }}
+                                                        </flux:table.cell>
+                                                        @foreach ($dynamicDynamicCriteria as $criterion)
+                                                            @php
+                                                                $key = Str::slug($criterion);
+                                                            @endphp
+                                                            <flux:table.cell>
+                                                                {{ $participant['scores'][$key] ?? 0 }}
+                                                            </flux:table.cell>
+                                                        @endforeach
+                                                        <flux:table.cell>
+                                                            {{ $participant['total_score'] }}
+                                                        </flux:table.cell>
+                                                        <flux:table.cell>
+                                                            {{ $participant['rank'] }}
+                                                        </flux:table.cell>
+                                                    </flux:table.row>
+                                                @endforeach
+                                            </flux:table.rows>
+                                        </flux:table>
+                                    </flux:card>
+                                </div>
                             </flux:card>
                         @endforeach
                         <div class="flex flex-col justify-center items-center uppercase gap-4">
