@@ -18,7 +18,7 @@ class JudgesGroupFactory extends Factory
     public function definition(): array
     {
         return [
-            'criteria_id' => 3,
+            'criteria_id' => 1,
             'judge_id' => [2, 3, 4, 5],
             'judges' => [
                 [

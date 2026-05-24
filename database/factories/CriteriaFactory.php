@@ -31,9 +31,10 @@ class CriteriaFactory extends Factory
                         "total" => 100,
                         "content" => "Production Number",
                         "criteria" => [
-                            ["criterion" => "Confidence and Beauty", "score" => 40],
-                            ["criterion" => "Master and Delivery of Introduction", "score" => 50],
-                            ["criterion" => "Audience Impact", "score" => 10],
+                            ["criterion" => "Showmanship", "score" => 40],
+                            ["criterion" => "Projection", "score" => 20],
+                            ["criterion" => "Mastery and Coordination", "score" => 30],
+                            ["criterion" => "Overall Impact", "score" => 10],
                         ]
                     ],
                 ],
@@ -42,12 +43,12 @@ class CriteriaFactory extends Factory
                     "data" => [
                         "level" => "preliminary",
                         "total" => 100,
-                        "content" => "Swimwear",
+                        "content" => "Sports Wear",
                         "criteria" => [
-                            ["criterion" => "Poise and Bearing", "score" => 30],
-                            ["criterion" => "Beauty", "score" => 30],
-                            ["criterion" => "Execution", "score" => 30],
-                            ["criterion" => "Audience Impact", "score" => 10],
+                            ["criterion" => "Confidence & Stage Presence", "score" => 30],
+                            ["criterion" => "Body & Fitness", "score" => 30],
+                            ["criterion" => "Personality", "score" => 30],
+                            ["criterion" => "Overall Look", "score" => 10],
                         ]
                     ],
                 ],
@@ -56,28 +57,28 @@ class CriteriaFactory extends Factory
                     "data" => [
                         "level" => "preliminary",
                         "total" => 100,
-                        "content" => "Casual Interview",
+                        "content" => "Barong/Filipiana Competition",
                         "criteria" => [
-                            ["criterion" => "Sincerity & Grace Under Pressure", "score" => 40],
-                            ["criterion" => "Content", "score" => 50],
-                            ["criterion" => "Audience Impact", "score" => 10],
+                            ["criterion" => "Elegance", "score" => 40],
+                            ["criterion" => "Poise and Bearing", "score" => 40],
+                            ["criterion" => "Overall Impact", "score" =>20],
                         ]
                     ],
                 ],
-                [
-                    "type" => "contest",
-                    "data" => [
-                        "level" => "preliminary",
-                        "total" => 100,
-                        "content" => "Formal Wear",
-                        "criteria" => [
-                            ["criterion" => "Elegance", "score" => 30],
-                            ["criterion" => "Beauty", "score" => 30],
-                            ["criterion" => "Poise and Bearing", "score" => 30],
-                            ["criterion" => "Audience Impact", "score" => 10],
-                        ]
-                    ],
-                ],
+                // [
+                //     "type" => "contest",
+                //     "data" => [
+                //         "level" => "preliminary",
+                //         "total" => 100,
+                //         "content" => "Formal Wear",
+                //         "criteria" => [
+                //             ["criterion" => "Elegance", "score" => 30],
+                //             ["criterion" => "Beauty", "score" => 30],
+                //             ["criterion" => "Poise and Bearing", "score" => 30],
+                //             ["criterion" => "Audience Impact", "score" => 10],
+                //         ]
+                //     ],
+                // ],
                 [
                     "type" => "contest",
                     "data" => [

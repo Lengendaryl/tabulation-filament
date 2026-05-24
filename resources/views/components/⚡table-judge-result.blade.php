@@ -1,5 +1,8 @@
 <?php
 
+use App\Events\JudgeSubmittedEvent;
+use App\Models\Criteria;
+use App\Models\JudgesGroup;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 
@@ -8,6 +11,59 @@ new class extends Component {
     public Collection $judges;
     public Collection $contest;
     public array $judgeStatusMap = [];
+    public Criteria $record;
+
+    public function mount(Criteria $record)
+    {
+        $this->record = $record;
+    }
+    
+    public function toggleStatus(string $originalCategory, string $level, int $judgeId)
+    {
+        $groups = JudgesGroup::where('criteria_id', $this->record->id)->get();
+
+        foreach ($groups as $group) {
+
+            $judges = $group->judges;
+            $updated = false;
+
+            foreach ($judges as $i => $competitionLevel) {
+
+                if (
+                    ($competitionLevel['content'] ?? null) !== $originalCategory ||
+                    ($competitionLevel['level'] ?? null) !== $level
+                ) {
+                    continue;
+                }
+
+                foreach ($competitionLevel['judges'] as $j => $judgeStatus) {
+
+                    if (($judgeStatus['judge_id'] ?? null) == $judgeId) {
+
+                        // ✅ TOGGLE instead of forcing true
+                        $currentStatus = $judges[$i]['judges'][$j]['status'] ?? false;
+                        $statusRequestEdit = $judges[$i]['judges'][$j]['request_edit'] ?? false;
+                        $judges[$i]['judges'][$j]['status'] = !$currentStatus;
+                        $judges[$i]['judges'][$j]['request_edit'] = !$statusRequestEdit;
+
+                        $updated = true;
+
+                        break 2;
+                    }
+                }
+            }
+            broadcast(new JudgeSubmittedEvent(
+                $judgeId,
+                $originalCategory,
+            ))->toOthers();
+            if ($updated) {
+                $group->judges = $judges;
+                $group->save();
+
+                $this->loadJudgesGroup();
+            }
+        }
+    }
 };
 ?>
 
