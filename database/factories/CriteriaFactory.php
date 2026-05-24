@@ -19,7 +19,7 @@ class CriteriaFactory extends Factory
     {
         return [
             'contest_id' => 1,
-            'judges' => [2, 3, 4],
+            'judges' => [2, 3, 4, 5],
             'qualified_participant' => 3,
             'final_scoring_method' => 'finalprelim',
             'preliminary_scoring_method' => 'default',
