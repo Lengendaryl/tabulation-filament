@@ -26,6 +26,7 @@ class ViewResult extends ViewRecord
     }
     protected $listeners = [
         'echo:judging,.JudgeSubmittedEvent' => 'handleJudgeSubmitted',
+        'judge-status-changed' => 'loadJudgesGroup',
     ];
     public array $submittedJudges = [];
     public array $result;
@@ -34,8 +35,9 @@ class ViewResult extends ViewRecord
     public Collection $judgesGroup;
     public array $judgesInfo;
     public array $participants = [];
+    public array $judgeStatusMap = [];
 
-    private function loadJudgesGroup()
+    public function loadJudgesGroup()
     {
         $judgesGroup = JudgesGroup::where('criteria_id', $this->record->id)->get();
 
@@ -82,6 +84,23 @@ class ViewResult extends ViewRecord
 
             return $group;
         });
+
+        $map = [];
+        foreach ($this->judgesGroup as $group) {
+            foreach ($group->judges as $levelGroup) {
+                $categoryName = $levelGroup['content'] ?? null;
+                foreach ($levelGroup['judges'] ?? [] as $judgeStatus) {
+                    $judgeId = $judgeStatus['judge_id'] ?? null;
+                    if ($categoryName && $judgeId) {
+                        $map[$categoryName][$judgeId] = [
+                            'status'       => $judgeStatus['status'] ?? false,
+                            'request_edit' => $judgeStatus['request_edit'] ?? false,
+                        ];
+                    }
+                }
+            }
+        }
+        $this->judgeStatusMap = $map;
     }
 
     public function mount(int|string $record): void
@@ -100,6 +119,4 @@ class ViewResult extends ViewRecord
     {
         $this->loadJudgesGroup();
     }
-
-   
 }
