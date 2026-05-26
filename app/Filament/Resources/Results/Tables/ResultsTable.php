@@ -8,6 +8,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 
 class ResultsTable
 {
@@ -15,9 +16,16 @@ class ResultsTable
     {
         return $table
             ->columns([
-                TextColumn::make('category'),
-                TextColumn::make('organizer'),
-                TextColumn::make('contest_type')
+                TextColumn::make('contest.category')
+                    ->label('Contest Category'),
+                TextColumn::make('contest.organizer')
+                    ->label('Organizer'),
+                TextColumn::make('contest.scoring_type')
+                    ->label('Scoring Type')
+                    ->formatStateUsing(fn(string $state): string => Str::title(str_replace('_', ' ', $state))),
+                TextColumn::make('contest.contest_type')
+                    ->label('Type')
+                    ->formatStateUsing(fn($state): string => Str::title($state))
             ])
             ->filters([
                 //
