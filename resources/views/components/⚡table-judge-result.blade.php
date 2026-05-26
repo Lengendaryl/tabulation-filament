@@ -1,6 +1,7 @@
 <?php
 
 use App\Events\JudgeSubmittedEvent;
+use App\Filament\Resources\Results\Pages\ViewResult;
 use App\Models\Criteria;
 use App\Models\JudgesGroup;
 use Illuminate\Support\Collection;
@@ -11,17 +12,49 @@ new class extends Component {
     public Collection $judges;
     public Collection $contest;
     public array $judgeStatusMap = [];
-    public Criteria $record;
+    public collection $criteria;
 
-    public function mount(Criteria $record)
+    protected $listeners = [
+        'echo:judging,.JudgeSubmittedEvent' => 'handleJudgeSubmitted',
+    ];
+    public function buildJudgeStatusMap(): void
     {
-        $this->record = $record;
+        $groups = JudgesGroup::where('criteria_id', $this->criteria[0]['id'])->get();
+        $map = [];
+
+        foreach ($groups as $group) {
+            foreach ($group->judges as $levelGroup) {
+                $categoryName = $levelGroup['content'] ?? null;
+                foreach ($levelGroup['judges'] ?? [] as $judgeStatus) {
+                    $judgeId = $judgeStatus['judge_id'] ?? null;
+                    if ($categoryName && $judgeId) {
+                        $map[$categoryName][$judgeId] = [
+                            'status'       => $judgeStatus['status'] ?? false,
+                            'request_edit' => $judgeStatus['request_edit'] ?? false,
+                        ];
+                    }
+                }
+            }
+        }
+
+        $this->judgeStatusMap = $map;
     }
-    
+
+    // ✅ Add this
+    public function mount(): void
+    {
+        $this->buildJudgeStatusMap();
+    }
+
+    // ✅ Add this
+    public function handleJudgeSubmitted(): void
+    {
+        $this->buildJudgeStatusMap();
+    }
+
     public function toggleStatus(string $originalCategory, string $level, int $judgeId)
     {
-        $groups = JudgesGroup::where('criteria_id', $this->record->id)->get();
-
+        $groups = JudgesGroup::where('criteria_id', $this->criteria[0]['id'])->get();
         foreach ($groups as $group) {
 
             $judges = $group->judges;
@@ -52,15 +85,15 @@ new class extends Component {
                     }
                 }
             }
-            broadcast(new JudgeSubmittedEvent(
-                $judgeId,
-                $originalCategory,
-            ))->toOthers();
+
             if ($updated) {
                 $group->judges = $judges;
                 $group->save();
-
-                $this->loadJudgesGroup();
+                $this->buildJudgeStatusMap();
+                broadcast(new JudgeSubmittedEvent(
+                    $judgeId,
+                    $originalCategory,
+                ))->toOthers();
             }
         }
     }
@@ -68,7 +101,7 @@ new class extends Component {
 ?>
 
 <div class="space-y-2">
-    <p class="text-xl font-bold">{{ $heading }} JUDGES CONTEST</p>
+    <p class="text-xl font-bold">{{ $heading }} JUDGES CONTESTsad</p>
     <flux:table class="border-b">
         <flux:table.columns>
             <flux:table.column>JUDGES</flux:table.column>
