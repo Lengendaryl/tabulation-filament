@@ -2,16 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+#[Fillable(['participant'])]
 class Participant extends Model
 {
     use HasFactory;
-    protected $fillable = [
-        'participant',
-    ];
-
+   
     protected $casts = [
         'participant' => 'array',
     ];
