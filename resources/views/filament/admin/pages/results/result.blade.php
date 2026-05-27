@@ -22,12 +22,12 @@
         @endphp
 
         {{-- PRELIMINARY --}}
-        <livewire:table-judge-result heading="PRELIMINARY" :judges="$judges" :contest="$preliminaryContents" 
-            :criteria="$criteria"/>
+        <livewire:table-judge-result heading="PRELIMINARY" :judges="$judges" :contest="$preliminaryContents"
+            :criteria="$criteria" :score="$score"/>
 
         {{-- FINAL --}}
         <livewire:table-judge-result heading="FINAL" :judges="$judges" :contest="$finalContents"
-            :criteria="$criteria" />
+            :criteria="$criteria" :score="$score"/>
 
     </flux:card>
 
