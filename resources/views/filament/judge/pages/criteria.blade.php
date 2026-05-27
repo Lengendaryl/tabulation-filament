@@ -21,8 +21,7 @@
         @foreach ($allCriteria->first()->criteria as $group)
             @php
                 $thisTabId = Str::slug($group['data']['content']);
-            @endphp
-            @php
+
                 $groupedParticipants = $allCriteria
                     ->first()
                     ->contest->participants->sortBy(fn($p) => $p['participant']['participant_no'])
