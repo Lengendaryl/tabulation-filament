@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+#[Fillable(['criteria_id', 'judges', 'judge_id'])]
 class JudgesGroup extends Model
 {
     use HasFactory;
-    protected $fillable = ['criteria_id', 'judges', 'judge_id'];
+
 
     protected $casts = [
         'judges' => 'array',

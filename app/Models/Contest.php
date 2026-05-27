@@ -34,4 +34,9 @@ class Contest extends Model
     {
         return $this->hasMany(Score::class);
     }
+
+    public function results()
+    {
+        return $this->hasMany(Result::class);
+    }
 }

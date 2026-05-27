@@ -2,22 +2,24 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+#[Fillable([
+    'criteria',
+    'judges',
+    'contest_id',
+    'qualified_participant',
+    'final_scoring_method',
+    'preliminary_scoring_method',
+    'preliminary_round_percentage_score',
+    'final_round_percentage_score',
+])]
 class Criteria extends Model
 {
     use HasFactory;
-    protected $fillable = [
-        'criteria',
-        'judges',
-        'contest_id',
-        'qualified_participant',
-        'final_scoring_method',
-        'preliminary_scoring_method',
-        'preliminary_round_percentage_score',
-        'final_round_percentage_score',
-    ];
+
 
     protected $casts = [
         'criteria' => 'array',
