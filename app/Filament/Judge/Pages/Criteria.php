@@ -10,6 +10,7 @@ use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Livewire\Attributes\On;
 
 class Criteria extends Page
 {
@@ -26,9 +27,9 @@ class Criteria extends Page
     private string $level;
     private string $contestCategory;
     private bool $status;
-    protected $listeners = [
-        'echo:judging,.JudgeSubmittedEvent' => 'granted',
-    ];
+    public int $userId;
+
+    #[On('echo-private:judge.{userId},.JudgeSubmittedEvent')]
     public function granted()
     {
         Notification::make()
@@ -42,7 +43,7 @@ class Criteria extends Page
         // Fetch your data here
         $criteriaId = $this->criteriaId = request('criteria');
         $this->allCriteria = ModelsCriteria::where('id', $criteriaId)->with(['contest.participants'])->get();
-
+        $this->userId = Auth::id();
 
         if ($this->allCriteria->isEmpty()) return;
 
@@ -57,7 +58,7 @@ class Criteria extends Page
 
         $this->loadScoresByTab($this->activeTab);
 
-        $record = Score::where('judge_id', auth()->id())
+        $record = Score::where('judge_id', $this->userId)
             ->where('contest_id', $this->allCriteria->first()->contest_id)
             ->where('contest_category', $this->tabLabels[$this->activeTab])
             ->where('criteria_id', $criteriaId)
@@ -83,7 +84,7 @@ class Criteria extends Page
             }
 
             foreach ($levelGroup['judges'] ?? [] as $judge) {
-                if (($judge['judge_id'] ?? null) == Auth::id()) {
+                if (($judge['judge_id'] ?? null) == $this->userId) {
                     return (bool) ($judge['status'] ?? false);
                 }
             }
@@ -96,7 +97,7 @@ class Criteria extends Page
         if (!empty($this->scores[$tab])) {
             return;
         }
-        $record = Score::where('judge_id', auth()->id())
+        $record = Score::where('judge_id', $this->userId)
             ->where('contest_id', $this->allCriteria->first()->contest_id)
             ->where('contest_category', $this->tabLabels[$this->activeTab])
             ->first();
@@ -214,7 +215,7 @@ class Criteria extends Page
                     'participant_id' => (int) $participantId, // Keeping the ID fallback tracking is usually good practice!
                     'participant' => $participantData,  // 💾 Storing the entire participant data object here
                     'level' => $this->allCriteria->first()->criteria[0]['data']['level'],
-                    'judge_id' => auth()->id(),
+                    'judge_id' => $this->userId,
                     'contest_id' => $this->allCriteria->first()->contest_id,
                     'criteria' => $this->criteriaId,
                     'scores' => $criteria,
@@ -252,7 +253,7 @@ class Criteria extends Page
                     }
 
                     foreach ($competitionLevel['judges'] as &$judgeStatus) {
-                        if ($judgeStatus['judge_id'] === Auth::id()) {
+                        if ($judgeStatus['judge_id'] === $this->userId) {
                             $judgeStatus['status'] = true;
                             $isUpdated = true;
 
@@ -272,7 +273,7 @@ class Criteria extends Page
             };
 
             broadcast(new JudgeSubmittedEvent(
-                auth()->id(),
+                $this->userId,
                 $originalCategory,
             ))->toOthers();
 
@@ -311,7 +312,7 @@ class Criteria extends Page
 
                 foreach ($competitionLevel['judges'] as $j => $judgeStatus) {
 
-                    if (($judgeStatus['judge_id'] ?? null) == Auth::id()) {
+                    if (($judgeStatus['judge_id'] ?? null) == $this->userId) {
                         $judges[$i]['judges'][$j]['request_edit'] = true;
                         $updated = true;
                         break 2;
@@ -326,7 +327,7 @@ class Criteria extends Page
         }
 
         broadcast(new JudgeSubmittedEvent(
-            auth()->id(),
+            $this->userId,
             $originalCategory,
         ))->toOthers();
 
