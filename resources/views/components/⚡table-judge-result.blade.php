@@ -1,8 +1,6 @@
 <?php
 
 use App\Events\JudgeSubmittedEvent;
-use App\Filament\Resources\Results\Pages\ViewResult;
-use App\Models\Criteria;
 use App\Models\JudgesGroup;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\On;
@@ -13,8 +11,9 @@ new class extends Component {
     public Collection $judges;
     public Collection $contest;
     public array $judgeStatusMap = [];
-    public collection $criteria;
-
+    public Collection $criteria;
+    public Collection $score;
+    
     public function buildJudgeStatusMap(): void
     {
         $groups = JudgesGroup::where('criteria_id', $this->criteria[0]['id'])->get();
@@ -42,6 +41,7 @@ new class extends Component {
     public function mount(): void
     {
         $this->buildJudgeStatusMap();
+        logger($this->score);
     }
 
     #[On('echo:judging,.JudgeSubmittedEvent')]
