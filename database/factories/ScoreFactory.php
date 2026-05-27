@@ -32,6 +32,7 @@ class ScoreFactory extends Factory
                 'contest_id' => 1,
                 'criteria_id' => 1,
                 'contest_category' => 'Production Number',
+                'level' => 'preliminary',
                 'score' => [
                     [
                         "rank" => 6,
@@ -414,6 +415,7 @@ class ScoreFactory extends Factory
             'contest_id' => 1,
             'criteria_id' => 1,
             'contest_category' => 'Sports Wear',
+            'level' => 'preliminary',
             'score' => [
                 [
                     "rank" => 5,
@@ -796,6 +798,7 @@ class ScoreFactory extends Factory
                 'contest_id' => 1,
                 'criteria_id' => 1,
                 'contest_category' => 'Barong/Filipiana Competition',
+                'level' => 'preliminary',
                 'score' => [
                     [
                         "rank" => 3.5,
@@ -1167,6 +1170,7 @@ class ScoreFactory extends Factory
                 'contest_id' => 1,
                 'criteria_id' => 1,
                 'contest_category' => 'Production Number',
+                'level' => 'preliminary',
                 'score' => [
                     [
                         "rank" => 2,
@@ -1549,6 +1553,7 @@ class ScoreFactory extends Factory
             'contest_id' => 1,
             'criteria_id' => 1,
             'contest_category' => 'Sports Wear',
+            'level' => 'preliminary',
             'score' => [
                 [
                     "rank" => 1,
@@ -1931,6 +1936,7 @@ class ScoreFactory extends Factory
             'contest_id' => 1,
             'criteria_id' => 1,
             'contest_category' => 'Barong/Filipiana Competition',
+            'level' => 'preliminary',
             'score' => [
                 [
                     "rank" => 3.5,
@@ -2302,6 +2308,7 @@ class ScoreFactory extends Factory
             'contest_id' => 1,
             'criteria_id' => 1,
             'contest_category' => 'Production Number',
+            'level' => 'preliminary',
             'score' => [
                 [
                     "rank" => 6,
@@ -2687,6 +2694,7 @@ class ScoreFactory extends Factory
                 'contest_id' => 1,
                 'criteria_id' => 1,
                 'contest_category' => 'Sports Wear',
+                'level' => 'preliminary',
                 'score' => [
                     [
                         "rank" => 5,
@@ -3070,6 +3078,7 @@ class ScoreFactory extends Factory
             'contest_id' => 1,
             'criteria_id' => 1,
             'contest_category' => 'Barong/Filipiana Competition',
+            'level' => 'preliminary',
             'score' => [
                 [
                     "rank" => 4.5,
@@ -3440,6 +3449,7 @@ class ScoreFactory extends Factory
                 'contest_id' => 1,
                 'criteria_id' => 1,
                 'contest_category' => 'Production Number',
+                'level' => 'preliminary',
                 'score' => [
                     [
                         "rank" => 5,
@@ -3823,6 +3833,7 @@ class ScoreFactory extends Factory
             'contest_id' => 1,
             'criteria_id' => 1,
             'contest_category' => 'Sports Wear',
+            'level' => 'preliminary',
             'score' => [
                 [
                     "rank" => 5,
@@ -4205,6 +4216,7 @@ class ScoreFactory extends Factory
             'contest_id' => 1,
             'criteria_id' => 1,
             'contest_category' => 'Barong/Filipiana Competition',
+            'level' => 'preliminary',
             'score' => [
                 [
                     "rank" => 6,

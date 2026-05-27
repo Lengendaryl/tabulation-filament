@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignIdFor(Criteria::class)->constrained()->cascadeOnDelete();
             $table->json('score');
             $table->string('contest_category');
+            $table->enum('level',['preliminary','final']);
             $table->timestamps();
         });
     }

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 
-#[Fillable(['contest_id', 'criteria_id', 'score', 'contest_category'])]
+#[Fillable(['judge_id','contest_id', 'criteria_id', 'score', 'contest_category', 'level'])]
 class Score extends Model
 {
     use HasFactory;
