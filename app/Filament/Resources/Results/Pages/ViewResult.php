@@ -11,7 +11,7 @@ use App\Models\Score;
 use App\Models\User;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Database\Eloquent\Collection;
-
+use Livewire\Attributes\On;
 
 class ViewResult extends ViewRecord
 {
@@ -24,10 +24,7 @@ class ViewResult extends ViewRecord
             // EditAction::make(),
         ];
     }
-    protected $listeners = [
-        'echo:judging,.JudgeSubmittedEvent' => 'handleJudgeSubmitted',
-        'judge-status-changed' => 'loadJudgesGroup',
-    ];
+
     public array $submittedJudges = [];
     public array $result;
     public Collection $score;
@@ -114,7 +111,7 @@ class ViewResult extends ViewRecord
         $this->loadJudgesGroup();
     }
 
-
+    #[On('echo:judging,.JudgeSubmittedEvent')]
     public function handleJudgeSubmitted(): void
     {
         $this->loadJudgesGroup();

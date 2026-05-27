@@ -5,6 +5,7 @@ use App\Filament\Resources\Results\Pages\ViewResult;
 use App\Models\Criteria;
 use App\Models\JudgesGroup;
 use Illuminate\Support\Collection;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 new class extends Component {
@@ -14,9 +15,6 @@ new class extends Component {
     public array $judgeStatusMap = [];
     public collection $criteria;
 
-    protected $listeners = [
-        'echo:judging,.JudgeSubmittedEvent' => 'handleJudgeSubmitted',
-    ];
     public function buildJudgeStatusMap(): void
     {
         $groups = JudgesGroup::where('criteria_id', $this->criteria[0]['id'])->get();
@@ -46,7 +44,7 @@ new class extends Component {
         $this->buildJudgeStatusMap();
     }
 
-    // ✅ Add this
+    #[On('echo:judging,.JudgeSubmittedEvent')]
     public function handleJudgeSubmitted(): void
     {
         $this->buildJudgeStatusMap();
