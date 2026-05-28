@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 
-#[Fillable(['judge_id', 'contest_id', 'result', 'round'])]
+#[Fillable(['contest_id', 'criteria_id', 'result', 'contest_category', 'round'])]
 
 class Result extends Model
 {
@@ -21,6 +21,11 @@ class Result extends Model
 
     public function contest()
     {
-        return $this->belongsTo(Contest::class, 'judge_id');
+        return $this->belongsTo(Contest::class);
+    }
+
+    public function criteria()
+    {
+        return $this->belongsTo(Criteria::class);
     }
 }
