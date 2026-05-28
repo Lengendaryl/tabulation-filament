@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignIdFor(Contest::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Criteria::class)->constrained()->cascadeOnDelete();
             $table->json('result');
-            $table->json('contest_category');
+            $table->string('contest_category');
             $table->enum('round', ['preliminary', 'final', 'prelimFinal']);
             $table->timestamps();
         });

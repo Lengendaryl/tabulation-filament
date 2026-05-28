@@ -2,6 +2,8 @@
 
 use App\Events\JudgeSubmittedEvent;
 use App\Models\JudgesGroup;
+use App\Models\Result;
+use App\Models\Score;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -13,7 +15,7 @@ new class extends Component {
     public array $judgeStatusMap = [];
     public Collection $criteria;
     public Collection $score;
-    
+
     public function buildJudgeStatusMap(): void
     {
         $groups = JudgesGroup::where('criteria_id', $this->criteria[0]['id'])->get();
@@ -26,7 +28,7 @@ new class extends Component {
                     $judgeId = $judgeStatus['judge_id'] ?? null;
                     if ($categoryName && $judgeId) {
                         $map[$categoryName][$judgeId] = [
-                            'status'       => $judgeStatus['status'] ?? false,
+                            'status' => $judgeStatus['status'] ?? false,
                             'request_edit' => $judgeStatus['request_edit'] ?? false,
                         ];
                     }
@@ -41,7 +43,6 @@ new class extends Component {
     public function mount(): void
     {
         $this->buildJudgeStatusMap();
-        logger($this->score);
     }
 
     #[On('echo:judging,.JudgeSubmittedEvent')]
@@ -54,23 +55,16 @@ new class extends Component {
     {
         $groups = JudgesGroup::where('criteria_id', $this->criteria[0]['id'])->get();
         foreach ($groups as $group) {
-
             $judges = $group->judges;
             $updated = false;
 
             foreach ($judges as $i => $competitionLevel) {
-
-                if (
-                    ($competitionLevel['content'] ?? null) !== $originalCategory ||
-                    ($competitionLevel['level'] ?? null) !== $level
-                ) {
+                if (($competitionLevel['content'] ?? null) !== $originalCategory || ($competitionLevel['level'] ?? null) !== $level) {
                     continue;
                 }
 
                 foreach ($competitionLevel['judges'] as $j => $judgeStatus) {
-
                     if (($judgeStatus['judge_id'] ?? null) == $judgeId) {
-
                         // ✅ TOGGLE instead of forcing true
                         $currentStatus = $judges[$i]['judges'][$j]['status'] ?? false;
                         $statusRequestEdit = $judges[$i]['judges'][$j]['request_edit'] ?? false;
@@ -88,18 +82,103 @@ new class extends Component {
                 $group->judges = $judges;
                 $group->save();
                 $this->buildJudgeStatusMap();
-                broadcast(new JudgeSubmittedEvent(
-                    $judgeId,
-                    $originalCategory,
-                ))->toOthers();
+                broadcast(new JudgeSubmittedEvent($judgeId, $originalCategory))->toOthers();
             }
         }
+    }
+
+    public function tabulate(string $level, string $contestCategory)
+    {
+
+        $judgeCount = JudgesGroup::where('criteria_id', $this->criteria[0]['id'])->pluck('judge_id')->flatten()->count();
+
+        $participantTotalRank = Score::where('criteria_id', $this->criteria[0]['id'])->where('contest_category', $contestCategory)->where('level', $level)->get();
+
+        $results = collect($participantTotalRank)->flatMap(function ($judgeScore) {
+
+            return collect($judgeScore->score)->map(function ($item) use ($judgeScore) {
+                return [
+                    'judge' => $judgeScore['judge']['name'],
+                    'participant_id' => $item['participant_id'],
+                    'rank' => $item['rank'],
+                    'participant' => $item['participant'],
+                    'total_score' => $item['total_score']
+
+                ];
+            });
+        })
+            ->groupBy('participant_id')
+            ->map(function ($items) use ($judgeCount) {
+                $first = $items->first();
+                return [
+                    'participant' => $first['participant'],
+                    'gender' => $first['participant']['participant']['gender'],
+                    'total_rank' => $items->sum('rank'),
+                    'total' => $items->sum('total_score') / $judgeCount,
+                    'final_rank' => null,
+                    'judges' => $items->map(function ($i) {
+                        return [
+                            'judge' => $i['judge'],
+                            'rank' => $i['rank'],
+                            'total_score' => $i['total_score']
+                        ];
+                    })->values(),
+                ];
+            })->groupBy('gender')
+            ->map(function ($group) {
+
+                $sorted = $group->sortBy('total_rank')->values();
+                $result = collect();
+
+                $i = 0;
+                $n = $sorted->count();
+
+                while ($i < $n) {
+
+                    $current = $sorted[$i]['total_rank'];
+                    $start = $i;
+                    $end = $i;
+
+                    while ($end + 1 < $n && $sorted[$end + 1]['total_rank'] == $current) {
+                        $end++;
+                    }
+
+                    $rank = (($start + 1) + ($end + 1)) / 2;
+
+                    for ($j = $start; $j <= $end; $j++) {
+                        $item = $sorted[$j];
+                        $item['final_rank'] = $rank;
+                        $result->push($item);
+                    }
+
+                    $i = $end + 1;
+                }
+
+                return $result;
+            })
+            ->flatten(1)
+            ->sortBy(function ($item) {
+                return $item['participant']['participant']['participant_no'];
+            })
+            ->values();
+
+        Result::updateOrCreate(
+            [
+                'contest_id' => $this->score[0]['contest_id'],
+                'criteria_id' => $this->criteria[0]['id'],
+                'contest_category' => $contestCategory,
+                'round' => $level,
+            ],
+            [
+                'result' => $results,
+            ]
+        );
     }
 };
 ?>
 
 <div class="space-y-2">
-    <p class="text-xl font-bold">{{ $heading }} JUDGES CONTESTsad</p>
+    <p class="text-xl font-bold">{{ $heading }} JUDGES CONTEST</p>
     <flux:table class="border-b">
         <flux:table.columns>
             <flux:table.column>JUDGES</flux:table.column>
@@ -142,5 +221,24 @@ new class extends Component {
             @endforeach
         </flux:table.rows>
     </flux:table>
-    <flux:button variant="primary" color="violet" class="w-full">TABULATE</flux:button>
+
+    <div class="flex items-center justify-between gap-4 ">
+        @foreach ($contest as $content)
+        @php
+        $categoryName = $content['content'];
+        @endphp
+        <flux:card class="w-full p-4 space-y-4">
+            <div>
+                <flux:heading size="lg" class="uppercase">{{ $categoryName }}</flux:heading>
+            </div>
+            <div>
+                <flux:button variant="primary" color="violet"
+                    class="w-full hover:bg-violet-600 hover:shadow-lg hover:shadow-violet-600/50"
+                    wire:click="tabulate('{{ Str::lower($heading) }}','{{ $categoryName }}')">
+                    TABULATE {{ Str::upper($categoryName) }}
+                </flux:button>
+            </div>
+        </flux:card>
+        @endforeach
+    </div>
 </div>
