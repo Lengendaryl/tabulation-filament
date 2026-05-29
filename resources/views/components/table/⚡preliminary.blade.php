@@ -53,7 +53,7 @@ new class extends Component {
                             </div>
                             <flux:table.columns>
                                 <flux:table.column>
-                                    <p class="w-full text-center font-bold">No</p>
+                                    <p class="w-full text-center font-bold">NO</p>
                                 </flux:table.column>
                                 @foreach ($scores->first()['judges'] as $judge)
                                     <flux:table.column>

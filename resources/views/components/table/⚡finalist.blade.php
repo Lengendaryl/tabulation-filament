@@ -53,9 +53,28 @@ new class extends Component {
                             </div>
                             <flux:table.columns>
                                 <flux:table.column>
-                                    <p class="w-full text-center font-bold">No</p>
+                                    <p class="w-full text-center font-bold">NO</p>
                                 </flux:table.column>
-
+                                @foreach ($scores->first()['categories'] as $score)
+                                    <flux:table.column>
+                                        <div class="flex flex-col font-bold w-full">
+                                            <p class="w-full text-center font-bold uppercase text-wrap">
+                                                {{ $score['contest_category'] }}
+                                            </p>
+                                            <div class="flex justify-between gap-2 lg:gap-0">
+                                                <p>
+                                                    TOTAL
+                                                </p>
+                                                <p class="text-wrap">
+                                                    TOTAL RANK
+                                                </p>
+                                                <p class="text-wrap">
+                                                    FINAL RANK
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </flux:table.column>
+                                @endforeach
                                 <flux:table.column>
                                     <p class="w-full text-center font-bold">TOTAL</p>
                                 </flux:table.column>
@@ -70,13 +89,8 @@ new class extends Component {
                                 @foreach ($scores as $score)
                                     @php
                                         $rankValue = (float) $score['grand_final_rank'];
-
                                         $isHighlighted = $cutoffRank !== null && $rankValue <= $cutoffRank;
-
                                         $rowBg = $isHighlighted ? 'bg-violet-600/60' : '';
-                                        logger($rowBg);
-                                        logger($isHighlighted);
-                                        logger($rankValue);
 
                                     @endphp
                                     <flux:table.row class="{{ $rowBg }}">
@@ -85,7 +99,16 @@ new class extends Component {
                                                 {{ $score['participant']['participant']['participant_no'] }}
                                             </p>
                                         </flux:table.cell>
-
+                                        @foreach ($score['categories'] as $category)
+                                            <flux:table.cell>
+                                                <div
+                                                    class="flex justify-between items-center text-black dark:text-white">
+                                                    <span>{{ number_format($category['total_score'], 2) }}</span>
+                                                    <span>{{ number_format($category['total_rank'], 2) }}</span>
+                                                    <span>{{ number_format($category['final_rank'], 2) }}</span>
+                                                </div>
+                                            </flux:table.cell>
+                                        @endforeach
                                         <flux:table.cell>
                                             <p class="text-center dark:text-white text-black">
                                                 {{ number_format($score['grand_total'], 2) }}
