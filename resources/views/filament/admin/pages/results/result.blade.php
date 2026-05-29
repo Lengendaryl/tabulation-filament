@@ -24,11 +24,11 @@
         {{-- JUDGES --}}
         {{-- PRELIMINARY --}}
         <livewire:table.judge-status heading="PRELIMINARY" :judges="$judges" :contest="$preliminaryContents" :criteria="$criteria"
-            :score="$score" roundType="preliminary"/>
+            :score="$score" roundType="preliminary" />
 
         {{-- FINAL --}}
         <livewire:table.judge-status heading="FINAL" :judges="$judges" :contest="$finalContents" :criteria="$criteria"
-            :score="$score" roundType="final"/>
+            :score="$score" roundType="final" />
 
     </flux:card>
 
@@ -76,8 +76,13 @@
                 <div class="space-y-10" id="preliminary">
                     <x-printable-header />
                     <h2 class="text-center text-3xl font-bold">CONSOLIDATED RESULT</h2>
-                    <livewire:table.finalist />
-                    <livewire:table.preliminary gender="Male" :criteria="$criteria" :score="$score" roundType="preliminary" />
+                    <flux:card class="space-y-6">
+                        <livewire:table.finalist gender="Male" :criteria="$criteria" :score="$score"
+                            roundType="preliminary" />
+
+                        <livewire:table.preliminary gender="Male" :criteria="$criteria" :score="$score"
+                            roundType="preliminary" />
+                    </flux:card>
                 </div>
             </div>
 
@@ -88,7 +93,8 @@
                 <div class="space-y-10" id="final">
                     <x-printable-header />
                     <h2 class="text-center text-3xl font-bold">CONSOLIDATED RESULT</h2>
-                    <livewire:table.preliminary  gender="Male" :criteria="$criteria" :score="$score" roundType="final" />
+                    <livewire:table.preliminary gender="Male" :criteria="$criteria" :score="$score"
+                        roundType="final" />
                 </div>
             </div>
 
