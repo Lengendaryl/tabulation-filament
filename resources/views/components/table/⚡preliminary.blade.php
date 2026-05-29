@@ -14,7 +14,9 @@ new class extends Component {
     public function mount()
     {
         $this->result = Result::where('contest_id', $this->score[0]['contest_id'])
-            ->where('criteria_id', $this->criteria[0]['id'])->where('round', $this->roundType)
+            ->where('criteria_id', $this->criteria[0]['id'])
+            ->where('round', $this->roundType)
+            ->whereNotIn('contest_category', ['Top Finalist'])
             ->get();
     }
 };
