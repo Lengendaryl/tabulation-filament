@@ -209,7 +209,7 @@
                                                             $cutoffRank = $sortedRanks[3] ?? null;
                                                             $isHighlighted =
                                                                 $cutoffRank !== null && $rankValue <= $cutoffRank;
-                                                            $rowBg = $isHighlighted ? 'bg-violet-600/60' : '';
+                                                            $rowBg = $isHighlighted ? 'bg-gradient-to-r from-violet-600/50 via-violet-600 to-transparent ring-2 ring-inset ring-violet-600' : '';
                                                         @endphp
                                                         <flux:table.row class="{{ $rowBg }} text-center">
                                                             <flux:table.cell>
@@ -271,7 +271,7 @@
                                                             $cutoffRank = $sortedRanks[3] ?? null;
                                                             $isHighlighted =
                                                                 $cutoffRank !== null && $rankValue <= $cutoffRank;
-                                                            $rowBg = $isHighlighted ? 'bg-violet-600/60' : '';
+                                                            $rowBg = $isHighlighted ? 'bg-gradient-to-r from-violet-600/50 via-violet-600 to-transparent ring-2 ring-inset ring-violet-600' : '';
                                                         @endphp
                                                         <flux:table.row class="{{ $rowBg }} text-center">
                                                             <flux:table.cell>
