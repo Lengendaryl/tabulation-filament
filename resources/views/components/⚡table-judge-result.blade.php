@@ -271,7 +271,7 @@ new class extends Component {
             [
                 'contest_id' => $this->score[0]['contest_id'],
                 'criteria_id' => $this->criteria[0]['id'],
-                'contest_category' => 'top finalist',
+                'contest_category' => 'Top Finalist',
                 'round' => $level,
             ],
             [
