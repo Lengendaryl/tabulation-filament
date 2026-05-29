@@ -18,6 +18,7 @@ new class extends Component {
     public Collection $score;
     public int $judgeCount;
     public int $criteriaCount;
+    public string $roundType = 'preliminary';
     public function buildJudgeStatusMap(): void
     {
         $groups = JudgesGroup::where('criteria_id', $this->criteria[0]['id'])->get();
@@ -190,7 +191,6 @@ new class extends Component {
 
     public function tabulateFinalist(string $level)
     {
-
         $score = Result::where('criteria_id', $this->criteria[0]['id'])
             ->where('round', $level)
             ->get();
@@ -202,11 +202,11 @@ new class extends Component {
                 return collect($judgeScore->result)->map(function ($item) use ($judgeScore) {
                     return [
                         'contest_category' => $judgeScore['contest_category'],
-                        'participant_id'   => $item['participant']['id'],
-                        'participant'      => $item['participant'],
+                        'participant_id' => $item['participant']['id'],
+                        'participant' => $item['participant'],
                         'total_rank' => $item['total_rank'],
-                        'total_score'      => $item['total'],
-                        'final_rank'       => $item['final_rank'],
+                        'total_score' => $item['total'],
+                        'final_rank' => $item['final_rank'],
                     ];
                 });
             })
@@ -216,20 +216,21 @@ new class extends Component {
                 $first = $items->first();
 
                 // ✅ Build per-category scores dynamically
-                $categoryScores = $items->keyBy('contest_category')
-                    ->map(fn($cat) => [
+                $categoryScores = $items->keyBy('contest_category')->map(
+                    fn($cat) => [
                         'total_score' => $cat['total_score'],
                         'total_rank' => $cat['total_rank'],
-                        'final_rank'  => $cat['final_rank'],
-                    ]);
+                        'final_rank' => $cat['final_rank'],
+                    ],
+                );
 
                 return [
-                    'participant'      => $first['participant'],
-                    'participant_no'   => $first['participant']['participant']['participant_no'],
-                    'gender'           => $first['participant']['participant']['gender'],
-                    'categories'       => $categoryScores,          // keyed by category name
+                    'participant' => $first['participant'],
+                    'participant_no' => $first['participant']['participant']['participant_no'],
+                    'gender' => $first['participant']['participant']['gender'],
+                    'categories' => $categoryScores, // keyed by category name
                     'grand_total_rank' => $items->sum('total_rank'),
-                    'grand_total'      => $items->sum('total_score') / $criteriaCount, // ✅ sum of all category scores
+                    'grand_total' => $items->sum('total_score') / $criteriaCount, // ✅ sum of all category scores
                     'grand_final_rank' => null,
                 ];
             })
@@ -288,78 +289,79 @@ new class extends Component {
         <flux:table.columns>
             <flux:table.column>JUDGES</flux:table.column>
             @foreach ($contest as $content)
-            <flux:table.column class="uppercase text-wrap">{{ $content['content'] }}</flux:table.column>
-            <flux:table.column>ACTION</flux:table.column>
+                <flux:table.column class="uppercase text-wrap">{{ $content['content'] }}</flux:table.column>
+                <flux:table.column>ACTION</flux:table.column>
             @endforeach
         </flux:table.columns>
         <flux:table.rows>
             @foreach ($judges as $judge)
-            <flux:table.row class="uppercase">
-                <flux:table.cell>{{ $judge['name'] }}</flux:table.cell>
-                @foreach ($contest as $content)
-                @php
-                $categoryName = $content['content'];
-                $judgeId = $judge['judge_id'];
-                $level = $content['level'];
-                $status = $judgeStatusMap[$categoryName][$judgeId]['status'] ?? false;
-                $request = $judgeStatusMap[$categoryName][$judgeId]['request_edit'] ?? false;
-                @endphp
-                <flux:table.cell>
-                    <flux:badge variant="solid" color="{{ $status ? 'green' : 'red' }}" size="sm"
-                        icon="{{ $status ? 'check-circle' : 'x-circle' }}">
-                        {{ $status ? 'SUBMITTED' : 'UNSUBMITTED' }}
-                    </flux:badge>
-                </flux:table.cell>
-                <flux:table.cell class="flex items-center gap-1">
-                    <flux:button
-                        wire:click="toggleStatus('{{ $categoryName }}', '{{ $level }}','{{ $judgeId }}')"
-                        :variant="$status ? null : 'primary'" color="violet" size="xs">
-                        {{ $status ? 'DISABLED' : 'ENABLED' }}
-                    </flux:button>
+                <flux:table.row class="uppercase">
+                    <flux:table.cell>{{ $judge['name'] }}</flux:table.cell>
+                    @foreach ($contest as $content)
+                        @php
+                            $categoryName = $content['content'];
+                            $judgeId = $judge['judge_id'];
+                            $level = $content['level'];
+                            $status = $judgeStatusMap[$categoryName][$judgeId]['status'] ?? false;
+                            $request = $judgeStatusMap[$categoryName][$judgeId]['request_edit'] ?? false;
+                        @endphp
+                        <flux:table.cell>
+                            <flux:badge variant="solid" color="{{ $status ? 'green' : 'red' }}" size="sm"
+                                icon="{{ $status ? 'check-circle' : 'x-circle' }}">
+                                {{ $status ? 'SUBMITTED' : 'UNSUBMITTED' }}
+                            </flux:badge>
+                        </flux:table.cell>
+                        <flux:table.cell class="flex items-center gap-1">
+                            <flux:button
+                                wire:click="toggleStatus('{{ $categoryName }}', '{{ $level }}','{{ $judgeId }}')"
+                                :variant="$status ? null : 'primary'" color="violet" size="xs">
+                                {{ $status ? 'DISABLED' : 'ENABLED' }}
+                            </flux:button>
 
-                    @if ($request)
-                    <flux:icon.pencil variant="mini" class="text-violet-400" />
-                    @endif
-                </flux:table.cell>
-                @endforeach
-            </flux:table.row>
+                            @if ($request)
+                                <flux:icon.pencil variant="mini" class="text-violet-400" />
+                            @endif
+                        </flux:table.cell>
+                    @endforeach
+                </flux:table.row>
             @endforeach
         </flux:table.rows>
     </flux:table>
 
     <div class="flex items-center justify-between gap-4 ">
         @foreach ($contest as $content)
-        @php
-        $categoryName = $content['content'];
-        @endphp
-        <flux:card class="w-full p-4 space-y-4">
-            <div>
-                <flux:heading size="lg" class="uppercase">{{ $categoryName }}</flux:heading>
-            </div>
-            <div>
-                <flux:button variant="primary" color="violet"
-                    class="w-full hover:bg-violet-600 hover:shadow-lg hover:shadow-violet-600/50"
-                    wire:click="tabulate('{{ Str::lower($heading) }}','{{ $categoryName }}')">
-                    TABULATE {{ Str::upper($categoryName) }}
-                </flux:button>
-            </div>
-        </flux:card>
-        @endforeach
-        <flux:card class="w-full p-4 space-y-4">
             @php
-            logger();
+                $categoryName = $content['content'];
             @endphp
-            <div>
-                <flux:heading size="lg" class="uppercase">TOP {{ $criteria[0]['qualified_participant'] }} FINALIST
-                </flux:heading>
-            </div>
-            <div>
-                <flux:button variant="primary" color="violet"
-                    class="w-full hover:bg-violet-600 hover:shadow-lg hover:shadow-violet-600/50"
-                    wire:click="tabulateFinalist('{{ Str::lower($heading) }}')">
-                    TABULATE TOP {{ $criteria[0]['qualified_participant'] }} FINALIST
-                </flux:button>
-            </div>
-        </flux:card>
+            <flux:card class="w-full p-4 space-y-4">
+                <div>
+                    <flux:heading size="lg" class="uppercase">{{ $categoryName }}</flux:heading>
+                </div>
+                <div>
+                    <flux:button variant="primary" color="violet"
+                        class="w-full hover:bg-violet-600 hover:shadow-lg hover:shadow-violet-600/50"
+                        wire:click="tabulate('{{ Str::lower($heading) }}','{{ $categoryName }}')">
+                        TABULATE {{ Str::upper($categoryName) }}
+                    </flux:button>
+                </div>
+            </flux:card>
+        @endforeach
+        @if ($roundType == 'preliminary')
+            <flux:card class="w-full p-4 space-y-4">
+                <div>
+                    <flux:heading size="lg" class="uppercase">TOP {{ $criteria[0]['qualified_participant'] }}
+                        FINALIST
+                    </flux:heading>
+                </div>
+
+                <div>
+                    <flux:button variant="primary" color="violet"
+                        class="w-full hover:bg-violet-600 hover:shadow-lg hover:shadow-violet-600/50"
+                        wire:click="tabulateFinalist('{{ Str::lower($heading) }}')">
+                        TABULATE TOP {{ $criteria[0]['qualified_participant'] }} FINALIST
+                    </flux:button>
+                </div>
+            </flux:card>
+        @endif
     </div>
 </div>

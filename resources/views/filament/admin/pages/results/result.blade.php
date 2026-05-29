@@ -24,11 +24,11 @@
         {{-- JUDGES --}}
         {{-- PRELIMINARY --}}
         <livewire:table.judge-status heading="PRELIMINARY" :judges="$judges" :contest="$preliminaryContents" :criteria="$criteria"
-            :score="$score" />
+            :score="$score" roundType="preliminary"/>
 
         {{-- FINAL --}}
         <livewire:table.judge-status heading="FINAL" :judges="$judges" :contest="$finalContents" :criteria="$criteria"
-            :score="$score" />
+            :score="$score" roundType="final"/>
 
     </flux:card>
 
