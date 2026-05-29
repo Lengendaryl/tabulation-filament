@@ -22,12 +22,12 @@
         @endphp
 
         {{-- PRELIMINARY --}}
-        <livewire:table-judge-result heading="PRELIMINARY" :judges="$judges" :contest="$preliminaryContents"
-            :criteria="$criteria" :score="$score"/>
+        <livewire:table-judge-result heading="PRELIMINARY" :judges="$judges" :contest="$preliminaryContents" :criteria="$criteria"
+            :score="$score" />
 
         {{-- FINAL --}}
-        <livewire:table-judge-result heading="FINAL" :judges="$judges" :contest="$finalContents"
-            :criteria="$criteria" :score="$score"/>
+        <livewire:table-judge-result heading="FINAL" :judges="$judges" :contest="$finalContents" :criteria="$criteria"
+            :score="$score" />
 
     </flux:card>
 
@@ -75,9 +75,7 @@
                 <div class="space-y-10" id="preliminary">
                     <x-printable-header />
                     <h2 class="text-center text-3xl font-bold">CONSOLIDATED RESULT</h2>
-                    <x-table gender="Male">
-                        {{-- Preliminary Table Data --}}
-                    </x-table>
+                    <livewire:table gender="Male" :criteria="$criteria" :score="$score" />
                 </div>
             </div>
 
