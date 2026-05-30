@@ -6,6 +6,7 @@ use App\Models\Criteria;
 use App\Models\JudgesGroup;
 use App\Models\Result;
 use App\Models\Score;
+use Filament\Notifications\Notification;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -20,6 +21,7 @@ new class extends Component {
     public int $judgeCount;
     public int $criteriaCount;
     public string $roundType = 'preliminary';
+
     public function buildJudgeStatusMap(): void
     {
         $groups = JudgesGroup::where('criteria_id', $this->criteria[0]['id'])->get();
@@ -189,6 +191,12 @@ new class extends Component {
             ],
         );
 
+        Notification::make()
+            ->title('Score Tabulated')
+            ->success()
+            ->body('You can now see the tabulated result.')
+            ->send();
+
         broadcast(new TabulateEvent());
     }
 
@@ -287,7 +295,12 @@ new class extends Component {
             ],
         );
 
-
+        Notification::make()
+            ->title('Score Tabulated')
+            ->success()
+            ->body('You can now see the tabulated result.')
+            ->send();
+            
         broadcast(new TabulateEvent());
     }
 };
