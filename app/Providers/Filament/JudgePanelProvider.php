@@ -2,7 +2,8 @@
 
 namespace App\Providers\Filament;
 
-use DiogoGPinto\AuthUIEnhancer\AuthUIEnhancerPlugin;
+use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
+use Caresome\FilamentAuthDesigner\Enums\MediaPosition;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -10,7 +11,6 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Width;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
@@ -33,7 +33,13 @@ class JudgePanelProvider extends PanelProvider
             ->login()
             ->maxContentWidth(Width::Full)
             ->plugins([
-                AuthUIEnhancerPlugin::make()->formPanelPosition('left'),
+                AuthDesignerPlugin::make()
+                    ->login(
+                        fn($config) => $config
+                            ->media(asset('asset/bisu_building.jpg'))
+                            ->mediaPosition(MediaPosition::Left)
+                            ->mediaSize('50%')
+                    )
             ])
             ->renderHook(
                 'panels::head.end',
