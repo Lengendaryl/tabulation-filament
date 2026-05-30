@@ -27,8 +27,6 @@ new class extends Component {
             $this->majorAward();
         } elseif ($this->tabType == 'top') {
             $this->topResult();
-
-            logger($this->topResult);
         }
     }
 

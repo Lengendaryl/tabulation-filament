@@ -5,6 +5,7 @@ namespace App\Filament\Judge\Pages;
 use App\Events\JudgeSubmittedEvent;
 use App\Models\Criteria as ModelsCriteria;
 use App\Models\JudgesGroup;
+use App\Models\Result;
 use App\Models\Score;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
@@ -28,6 +29,7 @@ class Criteria extends Page
     private string $contestCategory;
     private bool $status;
     public int $userId;
+    public array $grandFinalParticipants = [];
 
     #[On('echo-private:judge.{userId},.JudgeSubmittedEvent')]
     public function granted()
@@ -47,9 +49,24 @@ class Criteria extends Page
 
         if ($this->allCriteria->isEmpty()) return;
 
+        $contestId = $this->allCriteria->first()->contest_id;
+
+        $grandFinalResult = Result::where('contest_id', $contestId)->where('criteria_id', $criteriaId)
+            ->where('contest_category', 'Top Finalist')
+            ->first();
+
+        if ($grandFinalResult) {
+            $this->grandFinalParticipants = collect($grandFinalResult->result)
+                ->groupBy('gender')
+                ->flatMap(fn($group) => $group->sortBy('grand_final_rank')->take(3))
+                ->pluck('participant.id')
+                ->toArray();
+        }
+
+
         foreach ($this->allCriteria->first()->criteria as $item) {
             $content = $item['data']['content'];
-            $this->tabLabels[Str::slug($content)] = $content; // ✅ preserve original
+            $this->tabLabels[Str::slug($content)] = $content;
         }
 
         $firstContent = $this->allCriteria->first()->criteria[0]['data']['content'];

@@ -21,11 +21,24 @@
         @foreach ($allCriteria->first()->criteria as $group)
             @php
                 $thisTabId = Str::slug($group['data']['content']);
+                $isFinalLevel = $group['data']['level'] === 'final';
+
+                $finalIds = $this->grandFinalParticipants;
 
                 $groupedParticipants = $allCriteria
                     ->first()
-                    ->contest->participants->sortBy(fn($p) => $p['participant']['participant_no'])
-                    ->groupBy(fn($p) => $p['participant']['gender']);
+                    ->contest->participants->when($isFinalLevel, function ($collection) use ($finalIds) {
+                        return $collection->filter(fn($p) => in_array($p->id, $finalIds));
+                    })
+                    ->sortBy(fn($p) => $p['participant']['participant_no'])
+                    ->groupBy(fn($p) => $p['participant']['gender'])
+                    ->sortBy(
+                        fn($group, $gender) => match (strtolower($gender)) {
+                            'male' => 0,
+                            'female' => 1,
+                            default => 2,
+                        },
+                    );
             @endphp
             @if ($activeTab === $thisTabId)
                 <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
