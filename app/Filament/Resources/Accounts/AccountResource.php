@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Builder;
 class AccountResource extends Resource
 {
     protected static ?string $model = User::class;
-
+    protected static ?string $navigationLabel = 'Accounts';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::Users;
 
     public static function form(Schema $schema): Schema
@@ -48,8 +48,6 @@ class AccountResource extends Resource
     {
         return [
             'index' => ListAccounts::route('/'),
-            'create' => CreateAccount::route('/create'),
-            'edit' => EditAccount::route('/{record}/edit'),
         ];
     }
 }

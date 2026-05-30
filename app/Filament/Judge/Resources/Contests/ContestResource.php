@@ -5,6 +5,7 @@ namespace App\Filament\Judge\Resources\Contests;
 use App\Filament\Judge\Resources\Contests\Pages\CreateContest;
 use App\Filament\Judge\Resources\Contests\Pages\EditContest;
 use App\Filament\Judge\Resources\Contests\Pages\ListContests;
+use App\Filament\Judge\Resources\Contests\Pages\ViewContest;
 use App\Filament\Judge\Resources\Contests\RelationManagers\CriteriaRelationManager;
 use App\Filament\Judge\Resources\Contests\Schemas\ContestForm;
 use App\Filament\Judge\Resources\Contests\Tables\ContestsTable;
@@ -36,6 +37,7 @@ class ContestResource extends Resource
         return parent::getTableQuery()
             ->where('contest_id', auth()->id());
     }
+
     public static function getRelations(): array
     {
         return [
@@ -49,7 +51,7 @@ class ContestResource extends Resource
             'index' => ListContests::route('/'),
             'create' => CreateContest::route('/create'),
             'edit' => EditContest::route('/{record}/edit'),
-            // 'view' => ViewContest::route('/{record}/view')
+            'view' => ViewContest::route('/{record}/view')
         ];
     }
 }

@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use Spatie\Permission\Models\Role;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
@@ -17,7 +18,19 @@ class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, HasRoles;
+    protected static function booted(): void
+    {
+        static::created(function (User $user) {
+            // This ensures every new account is a Super Admin automatically
 
+            $superAdminRole = Role::firstOrCreate([
+                'name' => 'super_admin',
+                'guard_name' => 'web',
+            ]);
+
+            $user->assignRole($superAdminRole);
+        });
+    }
     /**
      * Get the attributes that should be cast.
      *
@@ -34,5 +47,15 @@ class User extends Authenticatable
     public function contests()
     {
         return $this->belongsToMany(Contest::class);
+    }
+
+    public function scores()
+    {
+        return $this->hasMany(Score::class, 'judge_id');
+    }
+
+    public function results()
+    {
+        return $this->hasMany(Result::class, 'judge_id');
     }
 }

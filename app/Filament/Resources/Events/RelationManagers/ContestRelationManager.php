@@ -3,13 +3,11 @@
 namespace App\Filament\Resources\Events\RelationManagers;
 
 use App\Filament\Resources\Contests\ContestResource;
-use App\Filament\Resources\Criterias\CriteriaResource;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
-use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
@@ -33,41 +31,40 @@ class ContestRelationManager extends RelationManager
                     FileUpload::make('poster')->directory('contest'),
                     Grid::make(3)->schema([
                         Grid::make(2)->schema([
-                            TextInput::make('name')
-                                ->required()
-                                ->maxLength(255),
                             TextInput::make('category')->label('Contest Category')
                                 ->required()
-                                ->maxLength(255)
+                                ->maxLength(255),
+                            TextInput::make('organizer')
+                                ->required()
+                                ->maxLength(255),
                         ])->columnSpanFull(),
                         Grid::make(1)->schema([
                             Textarea::make('description')
                                 ->required()
                                 ->maxLength(255)
                         ])->columnSpanFull(),
-                        Grid::make(2)->schema([
-                            TextInput::make('organizer')
-                                ->required()
-                                ->maxLength(255),
+                        Grid::make(3)->schema([
                             Select::make('scoring_type')->label('Type of Scoring')
                                 ->options([
                                     'point_based_single' => 'Point Based Single',
-                                    'point_based_mutliple' => 'Point Based Mutliple',
+                                    'point_based_multiple' => 'Point Based Multiple',
                                     'rank_based_single' => 'Rank Based Single',
-                                    'rank_based_mutliple' => 'Rank Based Mutliple'
-                                ]),
+                                    'rank_based_multiple' => 'Rank Based Multiple'
+                                ])->required(),
                             Select::make('contest_type')->label('Type of Contest')
                                 ->options([
                                     'individual' => 'Individual',
                                     'team' => 'Team',
-                                ]),
+                                ])->required(),
                             Select::make('gender_category')
                                 ->options([
                                     'male' => 'Male',
                                     'female' => 'Female',
                                     'male&female' => 'Male & Female'
-                                ]),
-                            DateTimePicker::make('date')->native(false)
+                                ])->required(),
+                        ])->columnSpanFull(),
+                        Grid::make(2)->schema([
+                            DatePicker::make('date')->native(false)
                                 ->required(),
                             TextInput::make('venue')
                                 ->required()
@@ -83,11 +80,9 @@ class ContestRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('name')
             ->columns([
-                TextColumn::make('name')
-                    ->searchable(),
+                TextColumn::make('category')->label('Contest category')->searchable(),
                 TextColumn::make('organizer'),
                 TextColumn::make('contest_type'),
-                TextColumn::make('category'),
                 TextColumn::make('created_at'),
             ])
             ->filters([

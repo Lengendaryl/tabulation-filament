@@ -2,30 +2,52 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+#[Fillable([
+    'criteria',
+    'judges',
+    'contest_id',
+    'qualified_participant',
+    'final_scoring_method',
+    'preliminary_scoring_method',
+    'preliminary_round_percentage_score',
+    'final_round_percentage_score',
+])]
 class Criteria extends Model
 {
-    protected $fillable = [
-        'criteria',
-        'judges',
-        'contest_id',
-        'qualified_participant',
-        'final_scoring_method',
-        'preliminary_scoring_method',
-        'preliminary_round_percentage_score',
-        'final_round_percentage_score',
-    ];
+    use HasFactory;
+
 
     protected $casts = [
         'criteria' => 'array',
         'judges' => 'array',
     ];
 
-    public function judges()
+    public function judge()
     {
         return $this->belongsToMany(User::class);
     }
 
+    public function contest()
+    {
+        return $this->belongsTo(Contest::class);
+    }
 
+    public function scores()
+    {
+        return $this->hasMany(Score::class);
+    }
+
+    public function judgesGroups()
+    {
+        return $this->hasMany(JudgesGroup::class);
+    }
+
+    public function results()
+    {
+        return $this->hasMany(Result::class);
+    }
 }

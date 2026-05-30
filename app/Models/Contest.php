@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-#[Fillable(['name','category', 'description', 'organizer', 'scoring_type', 'contest_type', 'gender_category', 'date', 'venue', 'poster'])]
+#[Fillable(['name', 'category', 'description', 'organizer', 'scoring_type', 'contest_type', 'gender_category', 'date', 'venue', 'poster'])]
 class Contest extends Model
 {
+    use HasFactory;
     public function events()
     {
         return $this->belongsTo(Event::class);
@@ -23,7 +25,18 @@ class Contest extends Model
         return $this->hasMany(Participant::class);
     }
 
-    public function judges(){
+    public function judges()
+    {
         return $this->belongsToMany(User::class);
+    }
+
+    public function score()
+    {
+        return $this->hasMany(Score::class);
+    }
+
+    public function results()
+    {
+        return $this->hasMany(Result::class);
     }
 }

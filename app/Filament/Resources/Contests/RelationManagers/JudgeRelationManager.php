@@ -13,6 +13,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class JudgeRelationManager extends RelationManager
 {
@@ -44,7 +45,7 @@ class JudgeRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                CreateAction::make(),
+                CreateAction::make()->label('Add Judge'),
             ])
             ->recordActions([
                 EditAction::make(),

@@ -26,8 +26,8 @@ class EventsTable
                 //
             ])
             ->recordActions([
-                // ViewAction::make(),
-                EditAction::make(),
+                EditAction::make()->label('View')
+                    ->icon('heroicon-m-eye'),
                 DeleteAction::make()
             ])
             ->toolbarActions([

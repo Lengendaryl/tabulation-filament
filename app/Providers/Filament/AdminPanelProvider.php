@@ -2,8 +2,12 @@
 
 namespace App\Providers\Filament;
 
-use BezhanSalleh\FilamentShield\FilamentShield;
+use App\Filament\Pages\Auth\Login;
+use App\Filament\Resources\Roles\RoleResource;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
+use Caresome\FilamentAuthDesigner\Enums\MediaPosition;
+use DiogoGPinto\AuthUIEnhancer\AuthUIEnhancerPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -20,6 +24,8 @@ use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\Support\Enums\Width;
+use Illuminate\Support\Facades\Blade;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -29,13 +35,41 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->maxContentWidth(Width::Full)
+            ->viteTheme(['resources/css/filament/admin/theme.css', 'resources/css/app.css'])
+            ->renderHook(
+                'panels::head.end',
+                fn() => Blade::render('@vite(["resources/js/app.js"])')
+            )
+            ->topNavigation()
             ->login()
             ->registration()
-            ->colors([
-                'primary' => Color::Amber,
-            ])
             ->plugins([
-                FilamentShieldPlugin::make(),
+                FilamentShieldPlugin::make()
+                    ->gridColumns([
+                        'default' => 1,
+                        'sm' => 4,
+                        'lg' => 6
+                    ])
+                    ->sectionColumnSpan(1)
+                    ->checkboxListColumns([
+                        'default' => 1,
+                        'sm' => 2,
+                        'lg' => 4,
+                    ])
+                    ->resourceCheckboxListColumns([
+                        'default' => 1,
+                        'sm' => 2,
+                    ]),
+                AuthDesignerPlugin::make()
+                    ->defaults(
+                        fn($config) => $config
+                            ->media(asset('asset/bisu_building.jpg'))
+                            ->mediaPosition(MediaPosition::Left)
+                            ->mediaSize('50%')
+                    )->login()
+                    ->registration()
+
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
@@ -75,6 +109,6 @@ class AdminPanelProvider extends PanelProvider
                     900 => '#221037',
                     950 => '#160a24',
                 ],
-            ])->viteTheme('resources/css/filament/admin/theme.css');
+            ]);
     }
 }
