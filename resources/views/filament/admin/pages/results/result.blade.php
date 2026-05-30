@@ -93,8 +93,10 @@
                 <div class="space-y-10" id="final">
                     <x-printable-header />
                     <h2 class="text-center text-3xl font-bold">CONSOLIDATED RESULT</h2>
-                    <livewire:table.preliminary gender="Male" :criteria="$criteria" :score="$score"
-                        roundType="final" />
+                    <flux:card class="space-y-6">
+                        <livewire:table.preliminary gender="Male" :criteria="$criteria" :score="$score"
+                            roundType="final" />
+                    </flux:card>
                 </div>
             </div>
 
