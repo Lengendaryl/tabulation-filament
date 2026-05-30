@@ -80,7 +80,7 @@
                         <livewire:table.finalist gender="Male" :criteria="$criteria" :score="$score"
                             roundType="preliminary" />
 
-                        <livewire:table.preliminary gender="Male" :criteria="$criteria" :score="$score"
+                        <livewire:table.preliminary gender="Female" :criteria="$criteria" :score="$score"
                             roundType="preliminary" />
                     </flux:card>
                 </div>
@@ -100,14 +100,12 @@
 
             {{-- Major Awards Content Section --}}
             <div class="space-y-10" x-show="activeTab === 'major_awards'" x-cloak>
-                @php
-                    $test = ['sad'];
-                @endphp
                 <flux:button variant="primary" color="violet">Print
                 </flux:button>
                 <div class="space-y-10" id="major_awards">
                     <x-printable-header />
-                    <x-printable-result heading="MAJOR AWARD" :category="$test" :judges="$test" />
+                    <livewire:table.result heading="MAJOR AWARDS" :criteria="$criteria" :score="$score"
+                        roundType="preliminary" :judges="$judges" tabType="major" />
                 </div>
             </div>
 
@@ -115,10 +113,10 @@
                 <flux:button variant="primary" color="violet">Print
                 </flux:button>
                 <div class="space-y-10" id="top_result">
-
                     <x-printable-header />
-                    <x-printable-result heading="TOP {{ $topParticipants }} RESULT" subHeading="{{ $topParticipants }}"
-                        :category="$test" :judges="$test" />
+                    <livewire:table.result heading="TOP {{ $topParticipants }} RESULT"
+                        subHeading="{{ $topParticipants }}" :criteria="$criteria" :score="$score"
+                        roundType="preliminary" :judges="$judges" tabType="top" />
                 </div>
             </div>
 
@@ -127,7 +125,8 @@
                 </flux:button>
                 <div class="space-y-10" id="final_result">
                     <x-printable-header />
-                    <x-printable-result heading="FINAL RESULT" :category="$test" :judges="$test" />
+                    <x-printable-result heading="FINAL RESULT" :criteria="$criteria" :score="$score"
+                        roundType="preliminary" />
                 </div>
             </div>
             @foreach (collect($score)->unique('judge.id') as $judgeItem)
@@ -209,7 +208,9 @@
                                                             $cutoffRank = $sortedRanks[3] ?? null;
                                                             $isHighlighted =
                                                                 $cutoffRank !== null && $rankValue <= $cutoffRank;
-                                                            $rowBg = $isHighlighted ? 'bg-gradient-to-r from-violet-600/50 via-violet-600 to-transparent ring-2 ring-inset ring-violet-600' : '';
+                                                            $rowBg = $isHighlighted
+                                                                ? 'bg-gradient-to-r from-violet-600/50 via-violet-600 to-transparent ring-2 ring-inset ring-violet-600'
+                                                                : '';
                                                         @endphp
                                                         <flux:table.row class="{{ $rowBg }} text-center">
                                                             <flux:table.cell>
@@ -271,7 +272,9 @@
                                                             $cutoffRank = $sortedRanks[3] ?? null;
                                                             $isHighlighted =
                                                                 $cutoffRank !== null && $rankValue <= $cutoffRank;
-                                                            $rowBg = $isHighlighted ? 'bg-gradient-to-r from-violet-600/50 via-violet-600 to-transparent ring-2 ring-inset ring-violet-600' : '';
+                                                            $rowBg = $isHighlighted
+                                                                ? 'bg-gradient-to-r from-violet-600/50 via-violet-600 to-transparent ring-2 ring-inset ring-violet-600'
+                                                                : '';
                                                         @endphp
                                                         <flux:table.row class="{{ $rowBg }} text-center">
                                                             <flux:table.cell>
