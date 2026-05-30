@@ -301,7 +301,7 @@ new class extends Component {
             @foreach ($judges as $judge)
                 <flux:table.row class="uppercase">
                     <flux:table.cell>
-                        <p class="text-black font-medium">{{ $judge['name'] }}</p>
+                        <p class="text-black font-medium dark:text-white">{{ $judge['name'] }}</p>
                     </flux:table.cell>
                     @foreach ($contest as $content)
                         @php
