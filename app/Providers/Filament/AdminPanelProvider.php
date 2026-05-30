@@ -5,6 +5,8 @@ namespace App\Providers\Filament;
 use App\Filament\Pages\Auth\Login;
 use App\Filament\Resources\Roles\RoleResource;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
+use Caresome\FilamentAuthDesigner\Enums\MediaPosition;
 use DiogoGPinto\AuthUIEnhancer\AuthUIEnhancerPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -59,7 +61,15 @@ class AdminPanelProvider extends PanelProvider
                         'default' => 1,
                         'sm' => 2,
                     ]),
-                AuthUIEnhancerPlugin::make()
+                AuthDesignerPlugin::make()
+                    ->defaults(
+                        fn($config) => $config
+                            ->media(asset('asset/bisu_building.jpg'))
+                            ->mediaPosition(MediaPosition::Left)
+                            ->mediaSize('50%')
+                    )->login()
+                    ->registration()
+
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
