@@ -129,8 +129,8 @@
                 </flux:button>
                 <div class="space-y-10" id="final_result">
                     <x-printable-header />
-                    <x-printable-result heading="FINAL RESULT" :criteria="$criteria" :score="$score"
-                        roundType="preliminary" />
+                    <livewire:table.result heading="FINAL RESULT"  :criteria="$criteria"
+                        :score="$score" roundType="prelimFinal" :judges="$judges" tabType="final" />
                 </div>
             </div>
             @foreach (collect($score)->unique('judge.id') as $judgeItem)
@@ -318,7 +318,7 @@
                             @endforeach
                             <div class="flex flex-col justify-center items-center uppercase gap-4">
                                 <div>
-                                    <p class="font-medium  border-b border-black">
+                                    <p class="font-medium  border-b border-black dark:border-white ">
                                         {{ $judgeItem['judge']['name'] }}
                                     </p>
                                     <p class="text-center text-xs">
@@ -327,7 +327,7 @@
                                 </div>
 
                                 <div>
-                                    <p class="font-medium  border-b border-black">
+                                    <p class="font-medium  border-b border-black dark:border-white ">
                                         {{ auth()->user()->name }}
                                     </p>
                                     <p class="text-center text-xs">
