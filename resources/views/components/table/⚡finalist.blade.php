@@ -37,7 +37,7 @@ new class extends Component {
 
             @php
                 $groupedResults = collect($res->result)->groupBy('gender');
-            @endphp
+            @endphp 
 
             <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
                 @foreach ($groupedResults as $gender => $scores)
