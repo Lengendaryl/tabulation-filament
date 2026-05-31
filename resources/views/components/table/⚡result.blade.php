@@ -58,7 +58,7 @@ new class extends Component {
 
 
 <div class="font-serif space-y-10">
-    <div class=" border-t border-b p-2">
+    <div class=" border-t border-b p-2 border-black">
         <h2 class="text-2xl font-bold text-center">
             {{ $heading }}
         </h2>
@@ -73,7 +73,7 @@ new class extends Component {
     @if ($tabType === 'major')
         <div class="flex flex-col justify-center w-full">
             @foreach ($this->majorAward as $results)
-                <div class="flex flex-col w-full justify-evenly border-b border-dashed p-4">
+                <div class="flex flex-col w-full justify-evenly border-b border-dashed border-black p-4">
                     <div class="text-center">
                         <p class="font-bold">Best in {{ $results['contest_category'] }}</p>
                         <p>Category</p>
@@ -104,7 +104,7 @@ new class extends Component {
     @elseif ($tabType === 'top')
         <div class="flex flex-col justify-center    w-full">
             @foreach ($this->topResult as $results)
-                <div class="flex flex-col w-full justify-evenly border-b border-dashed p-4">
+                <div class="flex flex-col w-full justify-evenly border-b border-dashed border-black p-4">
                     <div class="flex flex-col gap-8 w-full justify-evenly">
                         <div class="flex w-full justify-evenly">
                             @foreach ($results->result['male'] as $res)
@@ -138,13 +138,13 @@ new class extends Component {
         <div class="grid grid-cols-2 place-items-center gap-4">
             @foreach ($judges as $judge)
                 <div class="text-center mt-4">
-                    <p class="font-medium border-b">{{ $judge['name'] }}</p>
+                    <p class="font-medium border-b border-black">{{ $judge['name'] }}</p>
                     <p class="text-xs">JUDGE</p>
                 </div>
             @endforeach
         </div>
         <div class="w-fit text-center mt-4">
-            <p class="font-medium  border-b">
+            <p class="font-medium  border-b border-black">
                 {{ auth()->user()->name }}
             </p>
             <p class="text-center text-xs">
