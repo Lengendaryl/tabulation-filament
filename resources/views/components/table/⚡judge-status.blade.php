@@ -193,7 +193,7 @@ new class extends Component {
 
         Notification::make()
             ->title('Score Tabulated')
-            ->success()
+            ->color('success')
             ->body('You can now see the tabulated result.')
             ->send();
 
@@ -297,10 +297,10 @@ new class extends Component {
 
         Notification::make()
             ->title('Score Tabulated')
-            ->success()
+            ->color('success')
             ->body('You can now see the tabulated result.')
             ->send();
-            
+
         broadcast(new TabulateEvent());
     }
 };

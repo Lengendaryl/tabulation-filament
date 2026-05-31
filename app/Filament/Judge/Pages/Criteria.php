@@ -36,7 +36,7 @@ class Criteria extends Page
     {
         Notification::make()
             ->title('Request Granted')
-            ->success()
+            ->color('success')
             ->body('You can now edit the score.')
             ->send();
     }
@@ -218,7 +218,10 @@ class Criteria extends Page
             $contestParticipants = $this->allCriteria->first()->contest->participants;
 
             $score = collect();
+            $activeGroup = collect($this->allCriteria->first()->criteria)
+                ->first(fn($g) => Str::slug($g['data']['content']) === $category);
 
+            $level = $activeGroup['data']['level'] ?? 'preliminary';
             foreach ($participantsScores as $participantId => $criteria) {
 
                 // Find the specific participant match from our relationship collection
@@ -229,9 +232,9 @@ class Criteria extends Page
 
                 $score->push([
                     'contest_category' => $originalCategory,
-                    'participant_id' => (int) $participantId, // Keeping the ID fallback tracking is usually good practice!
-                    'participant' => $participantData,  // 💾 Storing the entire participant data object here
-                    'level' => $this->allCriteria->first()->criteria[0]['data']['level'],
+                    'participant_id' => (int) $participantId,
+                    'participant' => $participantData,
+                    'level' => $level,
                     'judge_id' => $this->userId,
                     'contest_id' => $this->allCriteria->first()->contest_id,
                     'criteria' => $this->criteriaId,
@@ -249,6 +252,7 @@ class Criteria extends Page
                     'contest_id' => $this->allCriteria->first()->contest_id,
                     'criteria_id' => $this->criteriaId,
                     'contest_category' => $originalCategory,
+                    'level' => $level,
                 ],
                 [
                     'score' => $score->toArray(),
@@ -296,13 +300,13 @@ class Criteria extends Page
 
             Notification::make()
                 ->title('Scores Submitted Successfully')
-                ->success()
+                ->color('success')
                 ->body("$originalCategory scores have been recorded.")
                 ->send();
         } catch (\Exception $e) {
             Notification::make()
                 ->title('Submission Failed')
-                ->danger()
+                ->color('danger')
                 ->body('An error occurred: ' . $e->getMessage())
                 ->send();
         }
@@ -350,7 +354,7 @@ class Criteria extends Page
 
         Notification::make()
             ->title('Edit Request Sent')
-            ->success()
+            ->color('success')
             ->body('Your request to edit the scores has been sent to the administrator.')
             ->send();
     }

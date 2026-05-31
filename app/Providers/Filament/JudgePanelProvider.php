@@ -8,9 +8,12 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Notifications\Livewire\Notifications;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\Support\Enums\Alignment;
+use Filament\Support\Enums\VerticalAlignment;
 use Filament\Support\Enums\Width;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
@@ -28,6 +31,10 @@ class JudgePanelProvider extends PanelProvider
     {
         return $panel
             ->id('judge')
+            ->bootUsing(function () {
+                Notifications::alignment(Alignment::Center);
+                Notifications::verticalAlignment(VerticalAlignment::Center);
+            })
             ->topNavigation()
             ->path('')
             ->login()
