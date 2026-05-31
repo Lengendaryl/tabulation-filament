@@ -128,7 +128,7 @@ class JudgesGroupFactory extends Factory
                 [
                     [
                         'level' => 'final',
-                        'content' => 'Final Round',
+                        'content' => 'Final Question and Answer',
                         'judges' => [
                             [
                                 'request_edit' => false,
