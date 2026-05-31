@@ -95,7 +95,6 @@ new class extends Component {
                                         $rankValue = (float) $score['grand_final_rank'];
 
                                         $isHighlighted = $cutoffRank !== null && $rankValue <= $cutoffRank;
-                                        logger($isHighlighted);
                                         $rowBg = $isHighlighted
                                             ? 'bg-gradient-to-r from-violet-600/50 via-violet-600 to-transparent ring-2 ring-inset ring-violet-600'
                                             : '';

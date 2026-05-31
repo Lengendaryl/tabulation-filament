@@ -17,7 +17,7 @@ class ContestForm
         return $schema
             ->components([
                 Grid::make(1)->schema([
-                    FileUpload::make('poster')->directory('contest'),
+                    FileUpload::make('poster')->image()->directory('contest')->disk('public'),
                     Grid::make(3)->schema([
                         Grid::make(2)->schema([
                             TextInput::make('category')->label('Contest Category')

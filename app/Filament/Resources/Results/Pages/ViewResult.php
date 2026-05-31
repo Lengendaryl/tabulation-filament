@@ -106,7 +106,7 @@ class ViewResult extends ViewRecord
         $this->participants = Participant::all()->toArray();
         $this->score = Score::where('criteria_id', $this->record->id)->with(['judge', 'criteria'])->get();
 
-        $this->criteria = Criteria::where('id', $this->record->id)->get();
+        $this->criteria = Criteria::where('id', $this->record->id)->with(['contest.event'])->get();
 
         $this->loadJudgesGroup();
     }
