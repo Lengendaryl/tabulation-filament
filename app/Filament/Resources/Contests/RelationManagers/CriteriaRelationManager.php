@@ -219,7 +219,7 @@ class CriteriaRelationManager extends RelationManager
                                 $level = $block['data']['level'] ?? 'Unknown';
 
                                 Notification::make()
-                                    ->danger()
+                                    ->color('danger')
                                     ->title('Validation Error')
                                     ->body("{$content} ({$level}) total must not exceed 100")
                                     ->send();

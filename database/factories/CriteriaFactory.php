@@ -61,7 +61,7 @@ class CriteriaFactory extends Factory
                         "criteria" => [
                             ["criterion" => "Elegance", "score" => 40],
                             ["criterion" => "Poise and Bearing", "score" => 40],
-                            ["criterion" => "Overall Impact", "score" =>20],
+                            ["criterion" => "Overall Impact", "score" => 20],
                         ]
                     ],
                 ],
@@ -84,11 +84,12 @@ class CriteriaFactory extends Factory
                     "data" => [
                         "level" => "final",
                         "total" => 100,
-                        "content" => "Final Round",
+                        "content" => "Final Question and Answer",
                         "criteria" => [
-                            ["criterion" => "Grace Under Pressure", "score" => 40],
                             ["criterion" => "Content", "score" => 50],
-                            ["criterion" => "Audience Impact", "score" => 10],
+                            ["criterion" => "Delivery", "score" => 30],
+                            ["criterion" => "Stage Presence", "score" => 10],
+                            ["criterion" => "Overall Impact", "score" => 10],
                         ]
                     ],
                 ],

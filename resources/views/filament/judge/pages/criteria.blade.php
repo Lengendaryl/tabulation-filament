@@ -22,7 +22,10 @@
             @php
                 $thisTabId = Str::slug($group['data']['content']);
                 $isFinalLevel = $group['data']['level'] === 'final';
-
+                $activeGroup = collect($allCriteria->first()->criteria)->first(
+                    fn($g) => Str::slug($g['data']['content']) === $activeTab,
+                );
+                $activeIsFinalLevel = $activeGroup['data']['level'] === 'final';
                 $finalIds = $this->grandFinalParticipants;
 
                 $groupedParticipants = $allCriteria
@@ -39,6 +42,8 @@
                             default => 2,
                         },
                     );
+
+                $isLocked = isset($activeTab) ? $this->isSubmitted($activeTab) : true;
             @endphp
             @if ($activeTab === $thisTabId)
                 <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
@@ -64,9 +69,7 @@
                                     </flux:button>
                                 </div>
                             </div>
-                            @php
-                                $isLocked = $this->isSubmitted($activeTab);
-                            @endphp
+
                             <div x-data="rankingSystem(
                                 $wire.entangle('scores'),
                                 @js($participants->pluck('id')->values()),
@@ -143,21 +146,24 @@
                 </div>
             @endif
         @endforeach
-        <div class="flex items-center justify-end gap-2">
-            <flux:button variant="primary" type="submit"
-                class="{{ $isLocked ? 'opacity-50 pointer-events-none cursor-not-allowed' : '' }}"
-                :disabled="$isLocked"
-                @click="if(!{{ $isLocked ? 'true' : 'false' }}) { isShowing = true; $wire.submit(); }">
-                Submit
-            </flux:button>
 
-            @if ($isLocked)
-                <flux:button wire:click="requestEdit" variant="primary" type="button">
-                    Request Edit Score
+        @if (!$activeIsFinalLevel || !empty($finalIds))
+            <div class="flex items-center justify-end gap-2">
+                <flux:button variant="primary" type="submit"
+                    class="{{ $isLocked ? 'opacity-50 pointer-events-none cursor-not-allowed' : '' }}"
+                    :disabled="$isLocked" wire:loading.attr="disabled" wire:target="submit">
+
+                    <flux:icon.loading wire:loading class="animate-spin size-4" wire:target="submit" />
+                    Submit
                 </flux:button>
-            @endif
+                @if ($isLocked)
+                    <flux:button wire:click="requestEdit" variant="primary" type="button" wire:loading.attr="disabled"
+                        wire:target="requestEdit">
+                        Request Edit Score
+                    </flux:button>
+                @endif
+            </div>
+        @endif
 
-        </div>
     </form>
-
 </x-filament-panels::page>

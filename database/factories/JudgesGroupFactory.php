@@ -99,60 +99,33 @@ class JudgesGroupFactory extends Factory
                         ],
                     ],
                 ],
-                // [
-                //     'level' => 'preliminary',
-                //     'content' => 'Formal Wear',
-                //     'judges' => [
-                //         [
-                //             'request_edit' => false,
-                //             'status' => true,
-                //             'judge_id' => 2
-                //         ],
-                //         [
-                //             'request_edit' => false,
-                //             'status' => true,
-                //             'judge_id' => 3
-                //         ],
-                //         [
-                //             'request_edit' => false,
-                //             'status' => true,
-                //             'judge_id' => 4
-                //         ],
-                //         [
-                //             'request_edit' => false,
-                //             'status' => true,
-                //             'judge_id' => 5
-                //         ],
-                //     ],
-                // ],
                 [
-                    [
-                        'level' => 'final',
-                        'content' => 'Final Round',
-                        'judges' => [
-                            [
-                                'request_edit' => false,
-                                'status' => false,
-                                'judge_id' => 2
-                            ],
-                            [
-                                'request_edit' => false,
-                                'status' => false,
-                                'judge_id' => 3
-                            ],
-                            [
-                                'request_edit' => false,
-                                'status' => false,
-                                'judge_id' => 4
-                            ],
-                            [
-                                'request_edit' => false,
-                                'status' => false,
-                                'judge_id' => 5
-                            ],
+                    'level' => 'final',
+                    'content' => 'Final Question and Answer',
+                    'judges' => [
+                        [
+                            'request_edit' => false,
+                            'status' => false,
+                            'judge_id' => 2
                         ],
-                    ]
-                ]
+                        [
+                            'request_edit' => false,
+                            'status' => false,
+                            'judge_id' => 3
+                        ],
+                        [
+                            'request_edit' => false,
+                            'status' => false,
+                            'judge_id' => 4
+                        ],
+                        [
+                            'request_edit' => false,
+                            'status' => false,
+                            'judge_id' => 5
+                        ],
+                    ],
+                ],
+
             ]
 
         ];

@@ -21,7 +21,7 @@ new class extends Component {
     #[Computed]
     public function result()
     {
-        return  Result::where('contest_id', $this->score[0]['contest_id'])
+        return Result::where('contest_id', $this->score[0]['contest_id'])
             ->where('criteria_id', $this->criteria[0]['id'])
             ->where('round', $this->roundType)
             ->whereNotIn('contest_category', ['Top Finalist'])
@@ -32,113 +32,119 @@ new class extends Component {
 
 <div class="space-y-6">
     @foreach ($this->result as $res)
-    <div class="space-y-4">
+        <div class="space-y-4">
 
-        <div>
-            <flux:heading size="xl" class="text-center uppercase">
-                {{ $res->contest_category }}
-            </flux:heading>
-        </div>
+            <div>
+                <flux:heading size="xl" class="text-center uppercase">
+                    {{ $res->contest_category }}
+                </flux:heading>
+            </div>
 
-        @php
-        $groupedResults = collect($res->result)->groupBy('gender');
-        @endphp
-
-        <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
-            @foreach ($groupedResults as $gender => $scores)
             @php
-            // Sort ranks for this gender group only
-            $sortedRanks = $scores->pluck('final_rank')->sort()->values();
-            // Top 3 cutoff
-            $cutoffRank = $sortedRanks[2] ?? null;
+                $groupedResults = collect($res->result)->groupBy('gender')->sortBy(
+                    fn($group, $gender) => match (strtolower($gender)) {
+                        'male' => 0,
+                        'female' => 1,
+                        default => 2,
+                    },
+                );
             @endphp
-            <flux:card x:card class="w-full">
-                <flux:table class="font-bold">
-                    <div class="border-b border-zinc-800/10 dark:border-white/20 text-center ">
-                        <p class="text-xl font-bold uppercase mb-2">
-                            {{ $gender }} Candidates
-                        </p>
-                    </div>
-                    <flux:table.columns>
-                        <flux:table.column>
-                            <p class="w-full text-center font-bold">NO</p>
-                        </flux:table.column>
-                        @foreach ($scores->first()['judges'] as $judge)
-                        <flux:table.column>
-                            <div class="flex flex-col font-bold w-full">
-                                <p class="text-center">
-                                    {{ $judge['judge'] }}
-                                </p>
 
-                                <div class="flex justify-around uppercase text-xs">
-                                    <p>%</p>
-                                    <p>Rank</p>
-                                </div>
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                @foreach ($groupedResults as $gender => $scores)
+                    @php
+                        // Sort ranks for this gender group only
+                        $sortedRanks = $scores->pluck('final_rank')->sort()->values();
+                        // Top 3 cutoff
+                        $cutoffRank = $sortedRanks[2] ?? null;
+                    @endphp
+                    <flux:card x:card class="w-full">
+                        <flux:table class="font-bold">
+                            <div class="border-b border-zinc-800/10 dark:border-white/20 text-center ">
+                                <p class="text-xl font-bold uppercase mb-2">
+                                    {{ $gender }} Candidates
+                                </p>
                             </div>
-                        </flux:table.column>
-                        @endforeach
-                        <flux:table.column>
-                            <p class="w-full text-center font-bold">TOTAL</p>
-                        </flux:table.column>
-                        <flux:table.column>
-                            <p class="w-full text-center font-bold">TOTAL RANK</p>
-                        </flux:table.column>
-                        <flux:table.column>
-                            <p class="w-full text-center font-bold">FINAL RANK</p>
-                        </flux:table.column>
-                    </flux:table.columns>
-                    <flux:table.rows>
-                        @foreach ($scores as $score)
-                        @php
-                        $rankValue = (float) $score['final_rank'];
+                            <flux:table.columns>
+                                <flux:table.column>
+                                    <p class="w-full text-center font-bold">NO</p>
+                                </flux:table.column>
+                                @foreach ($scores->first()['judges'] as $judge)
+                                    <flux:table.column>
+                                        <div class="flex flex-col font-bold w-full">
+                                            <p class="text-center">
+                                                {{ $judge['judge'] }}
+                                            </p>
 
-                        $isHighlighted = $cutoffRank !== null && $rankValue <= $cutoffRank;
+                                            <div class="flex justify-around uppercase text-xs">
+                                                <p>%</p>
+                                                <p>Rank</p>
+                                            </div>
+                                        </div>
+                                    </flux:table.column>
+                                @endforeach
+                                <flux:table.column>
+                                    <p class="w-full text-center font-bold">TOTAL</p>
+                                </flux:table.column>
+                                <flux:table.column>
+                                    <p class="w-full text-center font-bold">TOTAL RANK</p>
+                                </flux:table.column>
+                                <flux:table.column>
+                                    <p class="w-full text-center font-bold">FINAL RANK</p>
+                                </flux:table.column>
+                            </flux:table.columns>
+                            <flux:table.rows>
+                                @foreach ($scores as $score)
+                                    @php
+                                        $rankValue = (float) $score['final_rank'];
 
-                            $rowBg=$isHighlighted
-                            ? 'bg-gradient-to-r from-violet-600/50 via-violet-600 to-transparent ring-2 ring-inset ring-violet-600'
-                            : '' ;
-                            @endphp
-                            <flux:table.row class="{{ $rowBg }}">
-                            <flux:table.cell>
-                                <p class="text-black dark:text-white text-center">
-                                    {{ $score['participant']['participant']['participant_no'] }}
-                                </p>
-                            </flux:table.cell>
-                            @foreach ($score['judges'] as $judge)
-                            <flux:table.cell>
-                                <div class="flex justify-around text-black dark:text-white">
-                                    <p>
-                                        {{ $judge['total_score'] }}
-                                    </p>
+                                        $isHighlighted = $cutoffRank !== null && $rankValue <= $cutoffRank;
 
-                                    <p>
-                                        {{ $judge['rank'] }}
-                                    </p>
-                                </div>
-                            </flux:table.cell>
-                            @endforeach
-                            <flux:table.cell>
-                                <p class="text-center dark:text-white text-black">
-                                    {{ number_format($score['total'], 2) }}
-                                </p>
-                            </flux:table.cell>
-                            <flux:table.cell>
-                                <p class="text-center dark:text-white text-black">
-                                    {{ number_format($score['total_rank'], 2) }}
-                                </p>
-                            </flux:table.cell>
-                            <flux:table.cell>
-                                <p class="text-center dark:text-white text-black">
-                                    {{ $score['final_rank'] }}
-                                </p>
-                            </flux:table.cell>
-                            </flux:table.row>
-                            @endforeach
-                    </flux:table.rows>
-                </flux:table>
-            </flux:card>
-            @endforeach
+                                        $rowBg = $isHighlighted
+                                            ? 'bg-gradient-to-r from-violet-600/50 via-violet-600 to-transparent ring-2 ring-inset ring-violet-600'
+                                            : '';
+                                    @endphp
+                                    <flux:table.row class="{{ $rowBg }}">
+                                        <flux:table.cell>
+                                            <p class="text-black dark:text-white text-center">
+                                                {{ $score['participant']['participant']['participant_no'] }}
+                                            </p>
+                                        </flux:table.cell>
+                                        @foreach ($score['judges'] as $judge)
+                                            <flux:table.cell>
+                                                <div class="flex justify-around text-black dark:text-white">
+                                                    <p>
+                                                        {{ $judge['total_score'] }}
+                                                    </p>
+
+                                                    <p>
+                                                        {{ $judge['rank'] }}
+                                                    </p>
+                                                </div>
+                                            </flux:table.cell>
+                                        @endforeach
+                                        <flux:table.cell>
+                                            <p class="text-center dark:text-white text-black">
+                                                {{ number_format($score['total'], 2) }}
+                                            </p>
+                                        </flux:table.cell>
+                                        <flux:table.cell>
+                                            <p class="text-center dark:text-white text-black">
+                                                {{ number_format($score['total_rank'], 2) }}
+                                            </p>
+                                        </flux:table.cell>
+                                        <flux:table.cell>
+                                            <p class="text-center dark:text-white text-black">
+                                                {{ $score['final_rank'] }}
+                                            </p>
+                                        </flux:table.cell>
+                                    </flux:table.row>
+                                @endforeach
+                            </flux:table.rows>
+                        </flux:table>
+                    </flux:card>
+                @endforeach
+            </div>
         </div>
-    </div>
     @endforeach
 </div>
