@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 class Contest extends Model
 {
     use HasFactory;
-    public function events()
+    public function event()
     {
         return $this->belongsTo(Event::class);
     }

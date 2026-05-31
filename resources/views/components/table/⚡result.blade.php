@@ -154,7 +154,6 @@ new class extends Component {
         <div class="flex flex-col justify-center w-full">
             @foreach ($this->finalResult as $results)
                 @php
-                    logger($criteria);
                     $labels = [
                         1 => $results['contest']['category'],
                         2 => $results['contest']['category'] . ' Second Runner Up',

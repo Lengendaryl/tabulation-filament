@@ -74,7 +74,7 @@
                 <flux:button variant="primary" color="violet">Print
                 </flux:button>
                 <div class="space-y-10" id="preliminary">
-                    <x-printable-header />
+                    <livewire:result-header :contest="$criteria" />
                     <h2 class="text-center text-3xl font-bold">CONSOLIDATED RESULT</h2>
                     <flux:card class="space-y-6">
                         <livewire:table.finalist gender="Male" :criteria="$criteria" :score="$score"
@@ -91,7 +91,7 @@
                 <flux:button variant="primary" color="violet">Print
                 </flux:button>
                 <div class="space-y-10" id="final">
-                    <x-printable-header />
+                    <livewire:result-header :contest="$criteria" />
                     <h2 class="text-center text-3xl font-bold">CONSOLIDATED RESULT</h2>
                     <flux:card class="space-y-6">
                         <livewire:table.preliminary gender="Male" :criteria="$criteria" :score="$score"
@@ -107,7 +107,7 @@
                 <flux:button variant="primary" color="violet">Print
                 </flux:button>
                 <div class="space-y-10" id="major_awards">
-                    <x-printable-header />
+                    <livewire:result-header :contest="$criteria" />
                     <livewire:table.result heading="MAJOR AWARDS" :criteria="$criteria" :score="$score"
                         roundType="preliminary" :judges="$judges" tabType="major" />
                 </div>
@@ -117,7 +117,7 @@
                 <flux:button variant="primary" color="violet">Print
                 </flux:button>
                 <div class="space-y-10" id="top_result">
-                    <x-printable-header />
+                    <livewire:result-header :contest="$criteria" />
                     <livewire:table.result heading="TOP {{ $topParticipants }} RESULT"
                         subHeading="{{ $topParticipants }}" :criteria="$criteria" :score="$score"
                         roundType="preliminary" :judges="$judges" tabType="top" />
@@ -128,9 +128,9 @@
                 <flux:button variant="primary" color="violet">Print
                 </flux:button>
                 <div class="space-y-10" id="final_result">
-                    <x-printable-header />
-                    <livewire:table.result heading="FINAL RESULT"  :criteria="$criteria"
-                        :score="$score" roundType="prelimFinal" :judges="$judges" tabType="final" />
+                    <livewire:result-header :contest="$criteria" />
+                    <livewire:table.result heading="FINAL RESULT" :criteria="$criteria" :score="$score"
+                        roundType="prelimFinal" :judges="$judges" tabType="final" />
                 </div>
             </div>
             @foreach (collect($score)->unique('judge.id') as $judgeItem)
@@ -146,7 +146,7 @@
                             <flux:button variant="primary" color="violet">
                                 Print
                             </flux:button>
-                            <x-printable-header />
+                            <livewire:result-header :contest="$criteria" />
                             <p class="text-center uppercase font-bold text-3xl">
                                 {{ $judgeItem['judge']['name'] }}
                             </p>

@@ -50,4 +50,8 @@ class Criteria extends Model
     {
         return $this->hasMany(Result::class);
     }
+    public function events()
+    {
+        return $this->belongsTo(Event::class, 'event_id');
+    }
 }
