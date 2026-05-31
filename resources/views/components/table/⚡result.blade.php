@@ -65,82 +65,82 @@ new class extends Component {
     </div>
 
     @if ($subHeading)
-    <div>
-        <h3 class="text-center text-xl">TOP {{ $subHeading }} FINALIST</h3>
-    </div>
+        <div>
+            <h3 class="text-center text-xl">TOP {{ $subHeading }} FINALIST</h3>
+        </div>
     @endif
 
     @if ($tabType === 'major')
-    <div class="flex flex-col justify-center w-full">
-        @foreach ($this->majorAward as $results)
-        <div class="flex flex-col w-full justify-evenly border-b border-dashed p-4">
-            <div class="text-center">
-                <p class="font-bold">Best in {{ $results['contest_category'] }}</p>
-                <p>Category</p>
-            </div>
-            <div class="flex w-full justify-evenly">
-                @foreach ($results->result['male'] as $res)
-                <div class="flex justify-around font-bold">
+        <div class="flex flex-col justify-center w-full">
+            @foreach ($this->majorAward as $results)
+                <div class="flex flex-col w-full justify-evenly border-b border-dashed p-4">
                     <div class="text-center">
-                        <p class="text-lg">CANDIDATE
-                            NO.{{ $res['participant']['participant']['participant_no'] }}</p>
-                        <p>Male</p>
+                        <p class="font-bold">Best in {{ $results['contest_category'] }}</p>
+                        <p>Category</p>
+                    </div>
+                    <div class="flex w-full justify-evenly">
+                        @foreach ($results->result['male'] as $res)
+                            <div class="flex justify-around font-bold">
+                                <div class="text-center">
+                                    <p class="text-lg">CANDIDATE
+                                        NO.{{ $res['participant']['participant']['participant_no'] }}</p>
+                                    <p>Male</p>
+                                </div>
+                            </div>
+                        @endforeach
+                        @foreach ($results->result['female'] as $res)
+                            <div class="flex justify-around font-bold">
+                                <div class="text-center">
+                                    <p class="text-lg">CANDIDATE
+                                        NO.{{ $res['participant']['participant']['participant_no'] }}</p>
+                                    <p>Female</p>
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
-                @endforeach
-                @foreach ($results->result['female'] as $res)
-                <div class="flex justify-around font-bold">
-                    <div class="text-center">
-                        <p class="text-lg">CANDIDATE
-                            NO.{{ $res['participant']['participant']['participant_no'] }}</p>
-                        <p>Female</p>
-                    </div>
-                </div>
-                @endforeach
-            </div>
+            @endforeach
         </div>
-        @endforeach
-    </div>
     @elseif ($tabType === 'top')
-    <div class="flex flex-col justify-center    w-full">
-        @foreach ($this->topResult as $results)
-        <div class="flex flex-col w-full justify-evenly border-b border-dashed p-4">
-            <div class="flex flex-col gap-8 w-full justify-evenly">
-                <div class="flex w-full justify-evenly">
-                    @foreach ($results->result['male'] as $res)
-                    <div class="flex justify-around font-bold">
-                        <div class="text-center">
-                            <p class="text-lg">CANDIDATE
-                                NO.{{ $res['participant']['participant']['participant_no'] }}</p>
-                            <p>Male</p>
+        <div class="flex flex-col justify-center    w-full">
+            @foreach ($this->topResult as $results)
+                <div class="flex flex-col w-full justify-evenly border-b border-dashed p-4">
+                    <div class="flex flex-col gap-8 w-full justify-evenly">
+                        <div class="flex w-full justify-evenly">
+                            @foreach ($results->result['male'] as $res)
+                                <div class="flex justify-around font-bold">
+                                    <div class="text-center">
+                                        <p class="text-lg">CANDIDATE
+                                            NO.{{ $res['participant']['participant']['participant_no'] }}</p>
+                                        <p>Male</p>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                        <div class="flex w-full justify-evenly">
+                            @foreach ($results->result['female'] as $res)
+                                <div class="flex justify-around font-bold">
+                                    <div class="text-center">
+                                        <p class="text-lg">CANDIDATE
+                                            NO.{{ $res['participant']['participant']['participant_no'] }}</p>
+                                        <p>Female</p>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
-                    @endforeach
                 </div>
-                <div class="flex w-full justify-evenly">
-                    @foreach ($results->result['female'] as $res)
-                    <div class="flex justify-around font-bold">
-                        <div class="text-center">
-                            <p class="text-lg">CANDIDATE
-                                NO.{{ $res['participant']['participant']['participant_no'] }}</p>
-                            <p>Female</p>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-            </div>
+            @endforeach
         </div>
-        @endforeach
-    </div>
     @endif
 
     <div class="flex flex-col justify-center items-center  uppercase">
         <div class="grid grid-cols-2 place-items-center gap-4">
             @foreach ($judges as $judge)
-            <div class="text-center mt-4">
-                <p class="font-medium border-b">{{ $judge['name'] }}</p>
-                <p class="text-xs">JUDGE</p>
-            </div>
+                <div class="text-center mt-4">
+                    <p class="font-medium border-b">{{ $judge['name'] }}</p>
+                    <p class="text-xs">JUDGE</p>
+                </div>
             @endforeach
         </div>
         <div class="w-fit text-center mt-4">
