@@ -63,7 +63,7 @@
                                 class="absolute inset-0 z-10 bg-zinc-900/40 backdrop-blur-sm flex items-center justify-center">
                                 <div class="p-4 rounded-xl shadow-2xl flex flex-col items-center gap-2 bg-zinc-900">
                                     <flux:icon.lock-closed class="size-8 text-zinc-400" />
-                                    <p class="font-medium">Score is hidden</p>
+                                    <p class="font-medium text-white">Score is hidden</p>
                                     <flux:button variant="primary" size="sm" @click="isShowing = false">Reveal
                                         Table
                                     </flux:button>
