@@ -11,7 +11,7 @@ new class extends Component {
     public Collection $criteria;
     public Collection $score;
     public string $roundType;
-
+    public Collection $judges;
     #[On('echo:tabulate,.Tabulate')]
     public function refreshData()
     {
@@ -101,7 +101,7 @@ new class extends Component {
                                         $isHighlighted = $cutoffRank !== null && $rankValue <= $cutoffRank;
 
                                         $rowBg = $isHighlighted
-                                            ? 'bg-gradient-to-r from-violet-600/50 via-violet-600 to-transparent ring-2 ring-inset ring-violet-600'
+                                            ? 'bg-violet-600/10 ring-1 ring-inset ring-violet-500 text-white'
                                             : '';
                                     @endphp
                                     <flux:table.row class="{{ $rowBg }}">
@@ -145,6 +145,28 @@ new class extends Component {
                     </flux:card>
                 @endforeach
             </div>
+
         </div>
     @endforeach
+
+    @if ($roundType == 'preliminary')
+        <div class="flex flex-col justify-center items-center  uppercase">
+            <div class="grid grid-cols-2 place-items-center gap-4">
+                @foreach ($judges as $judge)
+                    <div class="text-center mt-4">
+                        <p class="font-medium  border-b border-black dark:border-white ">{{ $judge['name'] }}</p>
+                        <p class="text-xs">JUDGE</p>
+                    </div>
+                @endforeach
+            </div>
+            <div class="w-fit text-center mt-4">
+                <p class="font-medium  border-b border-black dark:border-white ">
+                    {{ auth()->user()->name }}
+                </p>
+                <p class="text-center text-xs">
+                    TABULATOR
+                </p>
+            </div>
+        </div>
+    @endif
 </div>
