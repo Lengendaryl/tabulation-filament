@@ -97,8 +97,17 @@
                                     </flux:table.columns>
                                     <flux:table.rows>
                                         @foreach ($participants as $participant)
-                                            <flux:table.row>
-                                                <flux:table.cell variant="strong" class=" text-center">
+                                            <flux:table.row
+                                                x-bind:class="{
+                                                    'bg-violet-600/10 ring-1 ring-inset ring-violet-500 text-white': (
+                                                        () => {
+                                                            let r = rankings['{{ $participant['id'] }}'];
+                                                            return r !== undefined && r !== '-' && r >=
+                                                                1 && r <= 3.5;
+                                                        })
+                                                        ()
+                                                }">
+                                                <flux:table.cell variant="strong" class=" text-center z-10">
                                                     {{ $participant['participant']['participant_no'] }}
                                                 </flux:table.cell>
                                                 @foreach ($group['data']['criteria'] as $index => $item)
@@ -125,15 +134,7 @@
                                                 }">
                                                     0
                                                 </flux:table.cell>
-                                                <flux:table.cell variant="strong" class=" text-center"
-                                                    x-bind:class="{
-                                                        'bg-violet-600/60 text-white': (() => {
-                                                                let r = rankings['{{ $participant['id'] }}'];
-                                                                return r !== undefined && r !== '-' && r >=
-                                                                    1 && r <= 3.5;
-                                                            })
-                                                            ()
-                                                    }">
+                                                <flux:table.cell variant="strong" class=" text-center">
                                                     <span x-text="rankings['{{ $participant['id'] }}'] || '-'"></span>
                                                 </flux:table.cell>
                                             </flux:table.row>
