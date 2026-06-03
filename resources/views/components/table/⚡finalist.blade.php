@@ -37,7 +37,7 @@ new class extends Component {
 
             @php
                 $groupedResults = collect($res->result)->groupBy('gender');
-            @endphp 
+            @endphp
 
             <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
                 @foreach ($groupedResults as $gender => $scores)
@@ -94,7 +94,7 @@ new class extends Component {
                                         $rankValue = (float) $score['grand_final_rank'];
                                         $isHighlighted = $cutoffRank !== null && $rankValue <= $cutoffRank;
                                         $rowBg = $isHighlighted
-                                            ? 'bg-gradient-to-r from-violet-600/50 via-violet-600 to-transparent ring-2 ring-inset ring-violet-600'
+                                            ? 'bg-violet-600/10 ring-1 ring-inset ring-violet-500 text-white'
                                             : '';
                                     @endphp
                                     <flux:table.row class="{{ $rowBg }}">

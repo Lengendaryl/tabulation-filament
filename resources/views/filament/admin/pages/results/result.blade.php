@@ -80,8 +80,8 @@
                         <livewire:table.finalist gender="Male" :criteria="$criteria" :score="$score"
                             roundType="preliminary" />
 
-                        <livewire:table.preliminary gender="Female" :criteria="$criteria" :score="$score"
-                            roundType="preliminary" />
+                        <livewire:table.preliminary gender="Female" :criteria="$criteria" :judges="$judges"
+                            :score="$score" roundType="preliminary" />
                     </flux:card>
                 </div>
             </div>
@@ -94,10 +94,10 @@
                     <livewire:result-header :contest="$criteria" />
                     <h2 class="text-center text-3xl font-bold">CONSOLIDATED RESULT</h2>
                     <flux:card class="space-y-6">
-                        <livewire:table.preliminary gender="Male" :criteria="$criteria" :score="$score"
-                            roundType="final" />
+                        <livewire:table.preliminary gender="Male" :criteria="$criteria" :judges="$judges"
+                            :score="$score" roundType="final" />
 
-                        <livewire:table.final-score :criteria="$criteria" />
+                        <livewire:table.final-score :criteria="$criteria" :judges="$judges"/>
                     </flux:card>
                 </div>
             </div>
@@ -213,7 +213,7 @@
                                                             $isHighlighted =
                                                                 $cutoffRank !== null && $rankValue <= $cutoffRank;
                                                             $rowBg = $isHighlighted
-                                                                ? 'bg-gradient-to-r from-violet-600/50 via-violet-600 to-transparent ring-2 ring-inset ring-violet-600'
+                                                                ? 'bg-violet-600/10 ring-1 ring-inset ring-violet-500 text-white'
                                                                 : '';
                                                         @endphp
                                                         <flux:table.row class="{{ $rowBg }} text-center">
@@ -282,7 +282,7 @@
                                                             $isHighlighted =
                                                                 $cutoffRank !== null && $rankValue <= $cutoffRank;
                                                             $rowBg = $isHighlighted
-                                                                ? 'bg-gradient-to-r from-violet-600/50 via-violet-600 to-transparent ring-2 ring-inset ring-violet-600'
+                                                                ? 'bg-violet-600/10 ring-1 ring-inset ring-violet-500 text-white'
                                                                 : '';
                                                         @endphp
                                                         <flux:table.row class="{{ $rowBg }} text-center">
@@ -327,7 +327,7 @@
                                 </div>
 
                                 <div>
-                                    <p class="font-medium  border-b border-black dark:border-white ">
+                                    <p class="font-medium text-center  border-b border-black dark:border-white ">
                                         {{ auth()->user()->name }}
                                     </p>
                                     <p class="text-center text-xs">
