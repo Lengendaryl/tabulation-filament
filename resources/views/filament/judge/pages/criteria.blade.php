@@ -78,21 +78,21 @@
                                 <flux:table>
                                     <flux:table.columns>
                                         <flux:table.column>
-                                            <p class="w-full text-center">No</p>
+                                            <p class="w-full text-center font-bold">No</p>
                                         </flux:table.column>
                                         @foreach ($group['data']['criteria'] as $item)
                                             <flux:table.column class="text-wrap ">
-                                                <div class="w-full text-center">
+                                                <div class="w-full text-center font-bold">
                                                     <p>{{ $item['criterion'] }}</p>
                                                     <p>{{ $item['score'] }}%</p>
                                                 </div>
                                             </flux:table.column>
                                         @endforeach
                                         <flux:table.column>
-                                            <p class="w-full text-center">Total</p>
+                                            <p class="w-full text-center font-bold">Total</p>
                                         </flux:table.column>
                                         <flux:table.column>
-                                            <p class="w-full text-center">Rank</p>
+                                            <p class="w-full text-center font-bold">Rank</p>
                                         </flux:table.column>
                                     </flux:table.columns>
                                     <flux:table.rows>
@@ -100,15 +100,16 @@
                                             <flux:table.row
                                                 x-bind:class="{
                                                     'bg-violet-600/10 ring-1 ring-inset ring-violet-500 text-white': (
-                                                        () => {
-                                                            let r = rankings['{{ $participant['id'] }}'];
-                                                            return r !== undefined && r !== '-' && r >=
-                                                                1 && r <= 3.5;
-                                                        })
+                                                            () => {
+                                                                let r = rankings['{{ $participant['id'] }}'];
+                                                                return r !== undefined && r !== '-' && r >=
+                                                                    1 && r <= 3.5;
+                                                            })
                                                         ()
                                                 }">
-                                                <flux:table.cell variant="strong" class=" text-center z-10">
-                                                    {{ $participant['participant']['participant_no'] }}
+                                                <flux:table.cell variant="strong">
+                                                    <p class="text-center font-bold">
+                                                        {{ $participant['participant']['participant_no'] }}</p>
                                                 </flux:table.cell>
                                                 @foreach ($group['data']['criteria'] as $index => $item)
                                                     @php $slug = Str::slug($item['criterion']); @endphp
@@ -123,19 +124,25 @@
                                                             x-on:input="if(!results['{{ $participant['id'] }}']) results['{{ $participant['id'] }}'] = {};
                                                             results['{{ $participant['id'] }}']['{{ $slug }}'] = Number($event.target.value)"
                                                             wire:model="scores.{{ $activeTab }}.{{ $participant['id'] }}.{{ $slug }}"
-                                                            :disabled="$isLocked"
-                                                            placeholder="{{ $item['score'] }}%" />
+                                                            :disabled="$isLocked" placeholder="{{ $item['score'] }}%"
+                                                            class="font-bold" />
                                                     </flux:table.cell>
                                                 @endforeach
-                                                <flux:table.cell variant="strong" class=" text-center"
-                                                    x-text="() => {
+                                                <flux:table.cell variant="strong">
+                                                    <p class="font-bold text-center"
+                                                        x-text="() => {
                                                     let pScores = results['{{ $activeTab }}']?.['{{ $participant['id'] }}'] || {};
                                                     return Object.values(pScores).reduce((a, b) => Number(a) + Number(b), 0) + '%';
                                                 }">
-                                                    0
+                                                    </p>
                                                 </flux:table.cell>
-                                                <flux:table.cell variant="strong" class=" text-center">
-                                                    <span x-text="rankings['{{ $participant['id'] }}'] || '-'"></span>
+
+
+
+
+                                                <flux:table.cell variant="strong" class="text-center">
+                                                    <span class="font-bold"
+                                                        x-text="rankings['{{ $participant['id'] }}'] || '-'"></span>
                                                 </flux:table.cell>
                                             </flux:table.row>
                                         @endforeach
