@@ -136,10 +136,6 @@
                                                 }">
                                                     </p>
                                                 </flux:table.cell>
-
-
-
-
                                                 <flux:table.cell variant="strong" class="text-center">
                                                     <span class="font-bold"
                                                         x-text="rankings['{{ $participant['id'] }}'] || '-'"></span>
