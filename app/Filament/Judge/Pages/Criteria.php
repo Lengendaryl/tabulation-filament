@@ -24,6 +24,7 @@ class Criteria extends Page
     public array $scores = [];
     private $ranks = [];
     public ?int $criteriaId = null;
+    public ?int $contestId  = null;
     public array $tabLabels = [];
     private string $level;
     private string $contestCategory;
@@ -43,15 +44,16 @@ class Criteria extends Page
     public function mount()
     {
         // Fetch your data here
-        $criteriaId = $this->criteriaId = request('criteria');
-        $this->allCriteria = ModelsCriteria::where('id', $criteriaId)->with(['contest.participants'])->get();
+        $this->criteriaId = request('criteria');
+
+        $this->allCriteria = ModelsCriteria::where('id', $this->criteriaId)->with(['contest.participants'])->get();
         $this->userId = Auth::id();
 
         if ($this->allCriteria->isEmpty()) return;
 
-        $contestId = $this->allCriteria->first()->contest_id;
+        $this->contestId =  $this->allCriteria->first()->contest_id;
 
-        $grandFinalResult = Result::where('contest_id', $contestId)->where('criteria_id', $criteriaId)
+        $grandFinalResult = Result::where('contest_id', $this->contestId)->where('criteria_id', $this->criteriaId)
             ->where('contest_category', 'Top Finalist')
             ->first();
 
@@ -76,9 +78,9 @@ class Criteria extends Page
         $this->loadScoresByTab($this->activeTab);
 
         $record = Score::where('judge_id', $this->userId)
-            ->where('contest_id', $this->allCriteria->first()->contest_id)
+            ->where('contest_id', $this->contestId)
             ->where('contest_category', $this->tabLabels[$this->activeTab])
-            ->where('criteria_id', $criteriaId)
+            ->where('criteria_id', $this->criteriaId )
             ->first();
 
         if ($record && !empty($record->score)) {
@@ -114,14 +116,16 @@ class Criteria extends Page
         if (!empty($this->scores[$tab])) {
             return;
         }
+
         $record = Score::where('judge_id', $this->userId)
-            ->where('contest_id', $this->allCriteria->first()->contest_id)
-            ->where('contest_category', $this->tabLabels[$this->activeTab])
+            ->where('contest_id', $this->contestId)
+            ->where('criteria_id', $this->criteriaId)
+            ->where('contest_category', $this->tabLabels[$tab])
             ->first();
 
         // reset tab data to avoid mixing old values
         $this->scores[$tab] = [];
-
+        logger($record);
         if ($record && !empty($record->score)) {
             foreach ($record->score as $item) {
                 $pId = $item['participant_id'];
