@@ -66,16 +66,16 @@ new class extends Component {
                                             <p class="w-full text-center font-bold uppercase text-wrap">
                                                 {{ $score['contest_category'] }}
                                             </p>
-                                            <div class="flex justify-between gap-2 lg:gap-0">
-                                                <p>
+                                            <div class="flex justify-between gap-2">
+                                                <span>
                                                     TOTAL
-                                                </p>
-                                                <p class="text-wrap">
+                                                </span>
+                                                <span class="text-wrap">
                                                     TOTAL RANK
-                                                </p>
-                                                <p class="text-wrap">
+                                                </span>
+                                                <span class="text-wrap">
                                                     FINAL RANK
-                                                </p>
+                                                </span>
                                             </div>
                                         </div>
                                     </flux:table.column>
