@@ -22,7 +22,7 @@ class ContestFactory extends Factory
             'category' => $this->faker->word(),
             'organizer' => $this->faker->company(),
             'description' => $this->faker->sentence(),
-            'scoring_type' => $this->faker->randomElement(['point_based_single', 'point_based_mutliple', 'rank_based_single', 'rank_based_multiple']),
+            'scoring_type' => $this->faker->randomElement(['point_based', 'rank_based']),
             'contest_type' => $this->faker->randomElement(['individual', 'team']),
             'gender_category' => 'male&female',
             'date' => now(),
