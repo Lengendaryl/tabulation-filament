@@ -105,22 +105,22 @@ class JudgesGroupFactory extends Factory
                     'judges' => [
                         [
                             'request_edit' => false,
-                            'status' => false,
+                            'status' => true,
                             'judge_id' => 2
                         ],
                         [
                             'request_edit' => false,
-                            'status' => false,
+                            'status' => true,
                             'judge_id' => 3
                         ],
                         [
                             'request_edit' => false,
-                            'status' => false,
+                            'status' => true,
                             'judge_id' => 4
                         ],
                         [
                             'request_edit' => false,
-                            'status' => false,
+                            'status' => true,
                             'judge_id' => 5
                         ],
                     ],
