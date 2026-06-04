@@ -2,6 +2,7 @@
 
 use App\Events\JudgeSubmittedEvent;
 use App\Events\TabulateEvent;
+use App\Models\Contest;
 use App\Models\Criteria;
 use App\Models\JudgesGroup;
 use App\Models\Result;
@@ -26,7 +27,7 @@ new class extends Component {
     {
         $groups = JudgesGroup::where('criteria_id', $this->criteria[0]['id'])->get();
         $map = [];
-       
+
         foreach ($groups as $group) {
             foreach ($group->judges as $levelGroup) {
                 $categoryName = $levelGroup['content'] ?? null;
@@ -111,87 +112,94 @@ new class extends Component {
             ->where('level', $level)
             ->get();
 
-        $finalPrelim = Criteria::where('final_scoring_method', 'finalprelim')->where('id', $this->criteria[0]['id'])->exists();
+        $finalPrelim = Criteria::where('final_scoring_method', 'finalprelim')
+            ->where('id', $this->criteria[0]['id'])
+            ->exists();
+        $contestType = Contest::where('id', $this->criteria[0]['contest_id'])->value('contest_type');
 
-        $results = collect($score)
-            ->flatMap(function ($judgeScore) {
-                return collect($judgeScore->score)->map(function ($item) use ($judgeScore) {
+        if ($contestType == 'individual') {
+            $results = collect($score)
+                ->flatMap(function ($judgeScore) {
+                    return collect($judgeScore->score)->map(function ($item) use ($judgeScore) {
+                        return [
+                            'judge' => $judgeScore['judge']['name'],
+                            'participant_id' => $item['participant_id'],
+                            'rank' => $item['rank'],
+                            'participant' => $item['participant'],
+                            'total_score' => $item['total_score'],
+                        ];
+                    });
+                })
+                ->groupBy('participant_id')
+                ->map(function ($items) use ($judgeCount) {
+                    $first = $items->first();
                     return [
-                        'judge' => $judgeScore['judge']['name'],
-                        'participant_id' => $item['participant_id'],
-                        'rank' => $item['rank'],
-                        'participant' => $item['participant'],
-                        'total_score' => $item['total_score'],
+                        'participant' => $first['participant'],
+                        'gender' => $first['participant']['participant']['gender'],
+                        'total_rank' => $items->sum('rank'),
+                        'total' => $items->sum('total_score') / $judgeCount,
+                        'final_rank' => null,
+                        'judges' => $items
+                            ->map(function ($i) {
+                                return [
+                                    'judge' => $i['judge'],
+                                    'rank' => $i['rank'],
+                                    'total_score' => $i['total_score'],
+                                ];
+                            })
+                            ->values(),
                     ];
-                });
-            })
-            ->groupBy('participant_id')
-            ->map(function ($items) use ($judgeCount) {
-                $first = $items->first();
-                return [
-                    'participant' => $first['participant'],
-                    'gender' => $first['participant']['participant']['gender'],
-                    'total_rank' => $items->sum('rank'),
-                    'total' => $items->sum('total_score') / $judgeCount,
-                    'final_rank' => null,
-                    'judges' => $items
-                        ->map(function ($i) {
-                            return [
-                                'judge' => $i['judge'],
-                                'rank' => $i['rank'],
-                                'total_score' => $i['total_score'],
-                            ];
-                        })
-                        ->values(),
-                ];
-            })
-            ->groupBy('gender')
-            ->map(function ($group) {
-                $sorted = $group->sortBy('total_rank')->values();
-                $result = collect();
+                })
+                ->groupBy('gender')
+                ->map(function ($group) {
+                    $sorted = $group->sortBy('total_rank')->values();
+                    $result = collect();
 
-                $i = 0;
-                $n = $sorted->count();
+                    $i = 0;
+                    $n = $sorted->count();
 
-                while ($i < $n) {
-                    $current = $sorted[$i]['total_rank'];
-                    $start = $i;
-                    $end = $i;
+                    while ($i < $n) {
+                        $current = $sorted[$i]['total_rank'];
+                        $start = $i;
+                        $end = $i;
 
-                    while ($end + 1 < $n && $sorted[$end + 1]['total_rank'] == $current) {
-                        $end++;
+                        while ($end + 1 < $n && $sorted[$end + 1]['total_rank'] == $current) {
+                            $end++;
+                        }
+
+                        $rank = ($start + 1 + ($end + 1)) / 2;
+
+                        for ($j = $start; $j <= $end; $j++) {
+                            $item = $sorted[$j];
+                            $item['final_rank'] = $rank;
+                            $result->push($item);
+                        }
+
+                        $i = $end + 1;
                     }
 
-                    $rank = ($start + 1 + ($end + 1)) / 2;
+                    return $result;
+                })
+                ->flatten(1)
+                ->sortBy(function ($item) {
+                    return $item['participant']['participant']['participant_no'];
+                })
+                ->values();
 
-                    for ($j = $start; $j <= $end; $j++) {
-                        $item = $sorted[$j];
-                        $item['final_rank'] = $rank;
-                        $result->push($item);
-                    }
-
-                    $i = $end + 1;
-                }
-
-                return $result;
-            })
-            ->flatten(1)
-            ->sortBy(function ($item) {
-                return $item['participant']['participant']['participant_no'];
-            })
-            ->values();
-
-        Result::updateOrCreate(
-            [
-                'contest_id' => $this->criteria[0]['contest_id'],
-                'criteria_id' => $this->criteria[0]['id'],
-                'contest_category' => $contestCategory,
-                'round' => $level,
-            ],
-            [
-                'result' => $results,
-            ],
-        );
+            Result::updateOrCreate(
+                [
+                    'contest_id' => $this->criteria[0]['contest_id'],
+                    'criteria_id' => $this->criteria[0]['id'],
+                    'contest_category' => $contestCategory,
+                    'round' => $level,
+                ],
+                [
+                    'result' => $results,
+                ],
+            );
+        } else {
+            logger('team');
+        }
 
         if ($finalPrelim) {
             $score = Result::where('criteria_id', $this->criteria[0]['id'])
@@ -258,16 +266,17 @@ new class extends Component {
                 ->sortBy('participant_no')
                 ->values();
 
+            $merged = $results
+                ->map(function ($item) use ($resultFinal) {
+                    $final = $resultFinal->firstWhere('participant_id', $item['participant_id']); // ✅ use participant_id
 
-            $merged = $results->map(function ($item) use ($resultFinal) {
-                $final = $resultFinal->firstWhere('participant_id', $item['participant_id']); // ✅ use participant_id
-
-                return array_merge($item, [
-                    'final_total' => $final ? $final['final_total'] : 0,
-                    'final_score' => $final ? $final['final_score'] : 0,
-                    'grand_total' => ($item['preliminary_score'] ?? 0) + ($final ? $final['final_score'] : 0),
-                ]);
-            })->filter(fn($item) => $item['final_total'] > 0 && $item['final_score'] > 0)
+                    return array_merge($item, [
+                        'final_total' => $final ? $final['final_total'] : 0,
+                        'final_score' => $final ? $final['final_score'] : 0,
+                        'grand_total' => ($item['preliminary_score'] ?? 0) + ($final ? $final['final_score'] : 0),
+                    ]);
+                })
+                ->filter(fn($item) => $item['final_total'] > 0 && $item['final_score'] > 0)
                 ->values();
 
             $merged = $merged
@@ -316,7 +325,11 @@ new class extends Component {
             );
         }
 
-        Notification::make()->title('Score Tabulated')->color('success')->body('You can now see the tabulated result.')->send();
+        Notification::make()
+            ->title("Score Tabulated {$contestCategory}")
+            ->color('success')
+            ->body('You can now see the tabulated result.')
+            ->send();
 
         broadcast(new TabulateEvent());
     }
@@ -325,97 +338,105 @@ new class extends Component {
     {
         $score = Result::where('criteria_id', $this->criteria[0]['id'])
             ->where('round', $level)
+            ->whereNotIn('contest_category', ['Top Finalist'])
             ->get();
 
-        $judgeCount = $this->judgeCount;
+        $scoringType = Contest::where('id', $this->criteria[0]['contest_id'])->value('scoring_type');
+
+        $contestType = Contest::where('id', $this->criteria[0]['contest_id'])->value('contest_type');
+
         $criteriaCount = $this->criteriaCount;
-        $results = collect($score)
-            ->flatMap(function ($judgeScore) {
-                return collect($judgeScore->result)->map(function ($item) use ($judgeScore) {
+        if ($contestType == 'individual') {
+            $results = collect($score)
+                ->flatMap(function ($judgeScore) {
+                    logger($judgeScore);
+                    return collect($judgeScore->result)->map(function ($item) use ($judgeScore) {
+                        return [
+                            'contest_category' => $judgeScore['contest_category'],
+                            'participant_id' => $item['participant']['id'],
+                            'participant' => $item['participant'],
+                            'total_rank' => $item['total_rank'] ?? 0,
+                            'total_score' => $item['total'] ?? 0,
+                            'final_rank' => $item['final_rank'] ?? 0,
+                        ];
+                    });
+                })
+                // ✅ Group by participant — one row per person
+                ->groupBy('participant_id')
+                ->map(function ($items) use ($criteriaCount) {
+                    $first = $items->first();
+
+                    // ✅ Build per-category scores dynamically
+                    $categoryScores = $items
+                        ->keyBy('contest_category')
+                        ->map(
+                            fn($cat) => [
+                                'contest_category' => $cat['contest_category'],
+                                'total_score' => $cat['total_score'],
+                                'total_rank' => $cat['total_rank'],
+                                'final_rank' => $cat['final_rank'],
+                            ],
+                        )
+                        ->values();
+
                     return [
-                        'contest_category' => $judgeScore['contest_category'],
-                        'participant_id' => $item['participant']['id'],
-                        'participant' => $item['participant'],
-                        'total_rank' => $item['total_rank'],
-                        'total_score' => $item['total'],
-                        'final_rank' => $item['final_rank'],
+                        'participant' => $first['participant'],
+                        'participant_no' => $first['participant']['participant']['participant_no'],
+                        'gender' => $first['participant']['participant']['gender'],
+                        'categories' => $categoryScores, // keyed by category name
+                        'grand_total_rank' => $items->sum('total_rank'),
+                        'grand_total' => $items->sum('total_score') / $criteriaCount, // ✅ sum of all category scores
+                        'grand_final_rank' => null,
                     ];
-                });
-            })
-            // ✅ Group by participant — one row per person
-            ->groupBy('participant_id')
-            ->map(function ($items) use ($criteriaCount) {
-                $first = $items->first();
+                })
+                // ✅ Rank per gender by grand_total descending
+                ->groupBy('gender')
+                ->map(function ($group) use ($scoringType) {
+                    $sorted = $scoringType == 'rank_based' ? $group->sortBy('grand_total_rank')->values() : $group->sortByDesc('grand_total')->values();
+                    $result = collect();
+                    $i = 0;
+                    $n = $sorted->count();
 
-                // ✅ Build per-category scores dynamically
-                $categoryScores = $items
-                    ->keyBy('contest_category')
-                    ->map(
-                        fn($cat) => [
-                            'contest_category' => $cat['contest_category'],
-                            'total_score' => $cat['total_score'],
-                            'total_rank' => $cat['total_rank'],
-                            'final_rank' => $cat['final_rank'],
-                        ],
-                    )
-                    ->values();
+                    while ($i < $n) {
+                        $current = $scoringType == 'rank_based' ? $sorted[$i]['grand_total_rank'] : $sorted[$i]['grand_total'];
 
-                return [
-                    'participant' => $first['participant'],
-                    'participant_no' => $first['participant']['participant']['participant_no'],
-                    'gender' => $first['participant']['participant']['gender'],
-                    'categories' => $categoryScores, // keyed by category name
-                    'grand_total_rank' => $items->sum('total_rank'),
-                    'grand_total' => $items->sum('total_score') / $criteriaCount, // ✅ sum of all category scores
-                    'grand_final_rank' => null,
-                ];
-            })
-            // ✅ Rank per gender by grand_total descending
-            ->groupBy('gender')
-            ->map(function ($group) {
-                $sorted = $group->sortBy('grand_total_rank')->values();
-                $result = collect();
-                $i = 0;
-                $n = $sorted->count();
+                        $start = $i;
+                        $end = $i;
 
-                while ($i < $n) {
-                    $current = $sorted[$i]['grand_total_rank'];
-                    $start = $i;
-                    $end = $i;
+                        while ($end + 1 < $n && ($scoringType == 'rank_based' ? $sorted[$end + 1]['grand_total_rank'] == $current :  $sorted[$end + 1]['grand_total'] == $current)) {
+                            $end++;
+                        }
 
-                    while ($end + 1 < $n && $sorted[$end + 1]['grand_total_rank'] == $current) {
-                        $end++;
+                        $rank = ($start + 1 + ($end + 1)) / 2;
+
+                        for ($j = $start; $j <= $end; $j++) {
+                            $item = $sorted[$j];
+                            $item['grand_final_rank'] = $rank;
+                            $result->push($item);
+                        }
+
+                        $i = $end + 1;
                     }
 
-                    $rank = ($start + 1 + ($end + 1)) / 2;
+                    return $result;
+                })
+                ->flatten(1)
+                ->sortBy('participant_no')
+                ->values();
 
-                    for ($j = $start; $j <= $end; $j++) {
-                        $item = $sorted[$j];
-                        $item['grand_final_rank'] = $rank;
-                        $result->push($item);
-                    }
-
-                    $i = $end + 1;
-                }
-
-                return $result;
-            })
-            ->flatten(1)
-            ->sortBy('participant_no')
-            ->values();
-
-        Result::updateOrCreate(
-            [
-                'contest_id' => $this->criteria[0]['contest_id'],
-                'criteria_id' => $this->criteria[0]['id'],
-                'contest_category' => 'Top Finalist',
-                'round' => $level,
-            ],
-            [
-                'result' => $results,
-            ],
-        );
-
+            Result::updateOrCreate(
+                [
+                    'contest_id' => $this->criteria[0]['contest_id'],
+                    'criteria_id' => $this->criteria[0]['id'],
+                    'contest_category' => 'Top Finalist',
+                    'round' => $level,
+                ],
+                [
+                    'result' => $results,
+                ],
+            );
+        } else {
+        }
         Notification::make()->title('Score Tabulated')->color('success')->body('You can now see the tabulated result.')->send();
 
         broadcast(new TabulateEvent());
