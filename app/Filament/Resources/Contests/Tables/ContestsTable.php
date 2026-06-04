@@ -18,7 +18,6 @@ class ContestsTable
                 TextColumn::make("category"),
                 TextColumn::make("scoring_type"),
                 TextColumn::make("contest_type"),
-                TextColumn::make("gender_category"),
             ])
             ->filters([
                 //

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-#[Fillable(['name', 'category', 'description', 'organizer', 'scoring_type', 'contest_type', 'gender_category', 'date', 'venue', 'poster'])]
+#[Fillable(['name', 'category', 'description', 'organizer', 'scoring_type', 'contest_type', 'date', 'venue', 'poster'])]
 class Contest extends Model
 {
     use HasFactory;

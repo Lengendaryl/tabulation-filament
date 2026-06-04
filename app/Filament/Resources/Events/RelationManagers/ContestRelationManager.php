@@ -43,24 +43,16 @@ class ContestRelationManager extends RelationManager
                                 ->required()
                                 ->maxLength(255)
                         ])->columnSpanFull(),
-                        Grid::make(3)->schema([
+                        Grid::make(2)->schema([
                             Select::make('scoring_type')->label('Type of Scoring')
                                 ->options([
-                                    // 'point_based_single' => 'Point Based Single',
                                     'point_based' => 'Point Based',
                                     'rank_based' => 'Rank Based',
-                                    // 'rank_based_multiple' => 'Rank Based Multiple'
                                 ])->required(),
                             Select::make('contest_type')->label('Type of Contest')
                                 ->options([
                                     'individual' => 'Individual',
                                     'team' => 'Team',
-                                ])->required(),
-                            Select::make('gender_category')
-                                ->options([
-                                    'male' => 'Male',
-                                    'female' => 'Female',
-                                    'male&female' => 'Male & Female'
                                 ])->required(),
                         ])->columnSpanFull(),
                         Grid::make(2)->schema([
