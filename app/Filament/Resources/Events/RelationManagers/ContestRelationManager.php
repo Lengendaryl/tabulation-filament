@@ -46,10 +46,10 @@ class ContestRelationManager extends RelationManager
                         Grid::make(3)->schema([
                             Select::make('scoring_type')->label('Type of Scoring')
                                 ->options([
-                                    'point_based_single' => 'Point Based Single',
-                                    'point_based_multiple' => 'Point Based Multiple',
-                                    'rank_based_single' => 'Rank Based Single',
-                                    'rank_based_multiple' => 'Rank Based Multiple'
+                                    // 'point_based_single' => 'Point Based Single',
+                                    'point_based' => 'Point Based',
+                                    'rank_based' => 'Rank Based',
+                                    // 'rank_based_multiple' => 'Rank Based Multiple'
                                 ])->required(),
                             Select::make('contest_type')->label('Type of Contest')
                                 ->options([
