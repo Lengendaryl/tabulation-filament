@@ -16,7 +16,7 @@ new class extends Component {
     #[Computed]
     public function result()
     {
-        return Result::where('contest_id', $this->score[0]['contest_id'])
+        return Result::where('contest_id', $this->criteria[0]['contest_id'])
             ->where('criteria_id', $this->criteria[0]['id'])
             ->where('round', $this->roundType)
             ->where('contest_category', 'Top Finalist')

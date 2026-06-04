@@ -4582,797 +4582,797 @@ class ScoreFactory extends Factory
 
 
         //FINAL
-        // Score::factory()->create(
-        //     [
-        //         'judge_id' => 2,
-        //         'contest_id' => 1,
-        //         'criteria_id' => 1,
-        //         'contest_category' => 'Final Question and Answer',
-        //         'level' => 'final',
-        //         'score' => [
-        //             [
+        Score::factory()->create(
+            [
+                'judge_id' => 2,
+                'contest_id' => 1,
+                'criteria_id' => 1,
+                'contest_category' => 'Final Question and Answer',
+                'level' => 'final',
+                'score' => [
+                    [
 
-        //                 "rank" => 1.5,
-        //                 "level" => "final",
-        //                 "scores" => [
-        //                     "content" => "50",
-        //                     "delivery" => "27",
-        //                     "overall-impact" => "9",
-        //                     "stage-presence" => "8"
-        //                 ],
-        //                 "criteria" => 1,
-        //                 "judge_id" => 2,
-        //                 "contest_id" => 1,
-        //                 "participant" => [
-        //                     "id" => 4,
-        //                     "contest_id" => 1,
-        //                     "created_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "updated_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "participant" => [
-        //                         "age" => 21,
-        //                         "image" => "",
-        //                         "gender" => "male",
-        //                         "last_name" => "Jacobi",
-        //                         "first_name" => "Roscoe",
-        //                         "participant_no" => 4
-        //                     ]
-        //                 ],
-        //                 "total_score" => 94,
-        //                 "submitted_at" => "2026-06-04 09=>11=>15",
-        //                 "participant_id" => 4,
-        //                 "contest_category" => "Final Question and Answer"
-        //             ],
-        //             [
-        //                 "rank" => 1.5,
-        //                 "level" => "final",
-        //                 "scores" => [
-        //                     "content" => "50",
-        //                     "delivery" => "28",
-        //                     "overall-impact" => "8",
-        //                     "stage-presence" => "8"
-        //                 ],
-        //                 "criteria" => 1,
-        //                 "judge_id" => 2,
-        //                 "contest_id" => 1,
-        //                 "participant" => [
-        //                     "id" => 5,
-        //                     "contest_id" => 1,
-        //                     "created_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "updated_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "participant" => [
-        //                         "age" => 21,
-        //                         "image" => "",
-        //                         "gender" => "male",
-        //                         "last_name" => "Turcotte",
-        //                         "first_name" => "Grover",
-        //                         "participant_no" => 4
-        //                     ]
-        //                 ],
-        //                 "total_score" => 94,
-        //                 "submitted_at" => "2026-06-04 09=>11=>15",
-        //                 "participant_id" => 5,
-        //                 "contest_category" => "Final Question and Answer"
-        //             ],
-        //             [
-        //                 "rank" => 3,
-        //                 "level" => "final",
-        //                 "scores" => [
-        //                     "content" => "25",
-        //                     "delivery" => "15",
-        //                     "overall-impact" => "3",
-        //                     "stage-presence" => "4"
-        //                 ],
-        //                 "criteria" => 1,
-        //                 "judge_id" => 2,
-        //                 "contest_id" => 1,
-        //                 "participant" => [
-        //                     "id" => 6,
-        //                     "contest_id" => 1,
-        //                     "created_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "updated_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "participant" => [
-        //                         "age" => 21,
-        //                         "image" => "",
-        //                         "gender" => "male",
-        //                         "last_name" => "Bailey",
-        //                         "first_name" => "Keven",
-        //                         "participant_no" => 6
-        //                     ]
-        //                 ],
-        //                 "total_score" => 47,
-        //                 "submitted_at" => "2026-06-04 09=>11=>15",
-        //                 "participant_id" => 6,
-        //                 "contest_category" => "Final Question and Answer"
-        //             ],
-        //             [
-        //                 "rank" => 1,
-        //                 "level" => "final",
-        //                 "scores" => [
-        //                     "content" => "44",
-        //                     "delivery" => "29",
-        //                     "overall-impact" => "8",
-        //                     "stage-presence" => "9"
-        //                 ],
-        //                 "criteria" => 1,
-        //                 "judge_id" => 2,
-        //                 "contest_id" => 1,
-        //                 "participant" => [
-        //                     "id" => 8,
-        //                     "contest_id" => 1,
-        //                     "created_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "updated_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "participant" => [
-        //                         "age" => 21,
-        //                         "image" => "",
-        //                         "gender" => "female",
-        //                         "last_name" => "Johnson",
-        //                         "first_name" => "Madaline",
-        //                         "participant_no" => 2
-        //                     ]
-        //                 ],
-        //                 "total_score" => 90,
-        //                 "submitted_at" => "2026-06-04 09=>11=>15",
-        //                 "participant_id" => 8,
-        //                 "contest_category" => "Final Question and Answer"
-        //             ],
-        //             [
-        //                 "rank" => 3,
-        //                 "level" => "final",
-        //                 "scores" => [
-        //                     "content" => "40",
-        //                     "delivery" => "25",
-        //                     "overall-impact" => "7",
-        //                     "stage-presence" => "7"
-        //                 ],
-        //                 "criteria" => 1,
-        //                 "judge_id" => 2,
-        //                 "contest_id" => 1,
-        //                 "participant" => [
-        //                     "id" => 9,
-        //                     "contest_id" => 1,
-        //                     "created_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "updated_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "participant" => [
-        //                         "age" => 21,
-        //                         "image" => "",
-        //                         "gender" => "female",
-        //                         "last_name" => "Tromp",
-        //                         "first_name" => "Jermaine",
-        //                         "participant_no" => 3
-        //                     ]
-        //                 ],
-        //                 "total_score" => 79,
-        //                 "submitted_at" => "2026-06-04 09=>11=>15",
-        //                 "participant_id" => 9,
-        //                 "contest_category" => "Final Question and Answer"
-        //             ],
-        //             [
-        //                 "rank" => 2,
-        //                 "level" => "final",
-        //                 "scores" => [
-        //                     "content" => "45",
-        //                     "delivery" => "28",
-        //                     "overall-impact" => "8",
-        //                     "stage-presence" => "8"
-        //                 ],
-        //                 "criteria" => 1,
-        //                 "judge_id" => 2,
-        //                 "contest_id" => 1,
-        //                 "participant" => [
-        //                     "id" => 11,
-        //                     "contest_id" => 1,
-        //                     "created_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "updated_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "participant" => [
-        //                         "age" => 21,
-        //                         "image" => "",
-        //                         "gender" => "female",
-        //                         "last_name" => "Mertz",
-        //                         "first_name" => "Ashly",
-        //                         "participant_no" => 5
-        //                     ]
-        //                 ],
-        //                 "total_score" => 89,
-        //                 "submitted_at" => "2026-06-04 09=>11=>15",
-        //                 "participant_id" => 11,
-        //                 "contest_category" => "Final Question and Answer"
-        //             ],
-        //         ]
-        //     ]
-        // );
+                        "rank" => 1.5,
+                        "level" => "final",
+                        "scores" => [
+                            "content" => "50",
+                            "delivery" => "27",
+                            "overall-impact" => "9",
+                            "stage-presence" => "8"
+                        ],
+                        "criteria" => 1,
+                        "judge_id" => 2,
+                        "contest_id" => 1,
+                        "participant" => [
+                            "id" => 4,
+                            "contest_id" => 1,
+                            "created_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "updated_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "participant" => [
+                                "age" => 21,
+                                "image" => "",
+                                "gender" => "male",
+                                "last_name" => "Jacobi",
+                                "first_name" => "Roscoe",
+                                "participant_no" => 4
+                            ]
+                        ],
+                        "total_score" => 94,
+                        "submitted_at" => "2026-06-04 09=>11=>15",
+                        "participant_id" => 4,
+                        "contest_category" => "Final Question and Answer"
+                    ],
+                    [
+                        "rank" => 1.5,
+                        "level" => "final",
+                        "scores" => [
+                            "content" => "50",
+                            "delivery" => "28",
+                            "overall-impact" => "8",
+                            "stage-presence" => "8"
+                        ],
+                        "criteria" => 1,
+                        "judge_id" => 2,
+                        "contest_id" => 1,
+                        "participant" => [
+                            "id" => 5,
+                            "contest_id" => 1,
+                            "created_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "updated_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "participant" => [
+                                "age" => 21,
+                                "image" => "",
+                                "gender" => "male",
+                                "last_name" => "Turcotte",
+                                "first_name" => "Grover",
+                                "participant_no" => 4
+                            ]
+                        ],
+                        "total_score" => 94,
+                        "submitted_at" => "2026-06-04 09=>11=>15",
+                        "participant_id" => 5,
+                        "contest_category" => "Final Question and Answer"
+                    ],
+                    [
+                        "rank" => 3,
+                        "level" => "final",
+                        "scores" => [
+                            "content" => "25",
+                            "delivery" => "15",
+                            "overall-impact" => "3",
+                            "stage-presence" => "4"
+                        ],
+                        "criteria" => 1,
+                        "judge_id" => 2,
+                        "contest_id" => 1,
+                        "participant" => [
+                            "id" => 6,
+                            "contest_id" => 1,
+                            "created_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "updated_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "participant" => [
+                                "age" => 21,
+                                "image" => "",
+                                "gender" => "male",
+                                "last_name" => "Bailey",
+                                "first_name" => "Keven",
+                                "participant_no" => 6
+                            ]
+                        ],
+                        "total_score" => 47,
+                        "submitted_at" => "2026-06-04 09=>11=>15",
+                        "participant_id" => 6,
+                        "contest_category" => "Final Question and Answer"
+                    ],
+                    [
+                        "rank" => 1,
+                        "level" => "final",
+                        "scores" => [
+                            "content" => "44",
+                            "delivery" => "29",
+                            "overall-impact" => "8",
+                            "stage-presence" => "9"
+                        ],
+                        "criteria" => 1,
+                        "judge_id" => 2,
+                        "contest_id" => 1,
+                        "participant" => [
+                            "id" => 8,
+                            "contest_id" => 1,
+                            "created_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "updated_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "participant" => [
+                                "age" => 21,
+                                "image" => "",
+                                "gender" => "female",
+                                "last_name" => "Johnson",
+                                "first_name" => "Madaline",
+                                "participant_no" => 2
+                            ]
+                        ],
+                        "total_score" => 90,
+                        "submitted_at" => "2026-06-04 09=>11=>15",
+                        "participant_id" => 8,
+                        "contest_category" => "Final Question and Answer"
+                    ],
+                    [
+                        "rank" => 3,
+                        "level" => "final",
+                        "scores" => [
+                            "content" => "40",
+                            "delivery" => "25",
+                            "overall-impact" => "7",
+                            "stage-presence" => "7"
+                        ],
+                        "criteria" => 1,
+                        "judge_id" => 2,
+                        "contest_id" => 1,
+                        "participant" => [
+                            "id" => 9,
+                            "contest_id" => 1,
+                            "created_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "updated_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "participant" => [
+                                "age" => 21,
+                                "image" => "",
+                                "gender" => "female",
+                                "last_name" => "Tromp",
+                                "first_name" => "Jermaine",
+                                "participant_no" => 3
+                            ]
+                        ],
+                        "total_score" => 79,
+                        "submitted_at" => "2026-06-04 09=>11=>15",
+                        "participant_id" => 9,
+                        "contest_category" => "Final Question and Answer"
+                    ],
+                    [
+                        "rank" => 2,
+                        "level" => "final",
+                        "scores" => [
+                            "content" => "45",
+                            "delivery" => "28",
+                            "overall-impact" => "8",
+                            "stage-presence" => "8"
+                        ],
+                        "criteria" => 1,
+                        "judge_id" => 2,
+                        "contest_id" => 1,
+                        "participant" => [
+                            "id" => 11,
+                            "contest_id" => 1,
+                            "created_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "updated_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "participant" => [
+                                "age" => 21,
+                                "image" => "",
+                                "gender" => "female",
+                                "last_name" => "Mertz",
+                                "first_name" => "Ashly",
+                                "participant_no" => 5
+                            ]
+                        ],
+                        "total_score" => 89,
+                        "submitted_at" => "2026-06-04 09=>11=>15",
+                        "participant_id" => 11,
+                        "contest_category" => "Final Question and Answer"
+                    ],
+                ]
+            ]
+        );
 
-        // Score::factory()->create(
-        //     [
-        //         'judge_id' => 3,
-        //         'contest_id' => 1,
-        //         'criteria_id' => 1,
-        //         'contest_category' => 'Final Question and Answer',
-        //         'level' => 'final',
-        //         'score' => [
-        //             [
-        //                 "rank" => 1,
-        //                 "level" => "final",
-        //                 "scores" => [
-        //                     "content" => "48",
-        //                     "delivery" => "28",
-        //                     "overall-impact" => "7",
-        //                     "stage-presence" => "10"
-        //                 ],
-        //                 "criteria" => 1,
-        //                 "judge_id" => 3,
-        //                 "contest_id" => 1,
-        //                 "participant" => [
-        //                     "id" => 4,
-        //                     "contest_id" => 1,
-        //                     "created_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "updated_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "participant" => [
-        //                         "age" => 21,
-        //                         "image" => "",
-        //                         "gender" => "male",
-        //                         "last_name" => "Jacobi",
-        //                         "first_name" => "Roscoe",
-        //                         "participant_no" => 4
-        //                     ]
-        //                 ],
-        //                 "total_score" => 93,
-        //                 "submitted_at" => "2026-06-04 09=>19=>32",
-        //                 "participant_id" => 4,
-        //                 "contest_category" => "Final Question and Answer"
-        //             ],
-        //             [
-        //                 "rank" => 2,
-        //                 "level" => "final",
-        //                 "scores" => [
-        //                     "content" => "48",
-        //                     "delivery" => "27",
-        //                     "overall-impact" => "6",
-        //                     "stage-presence" => "9"
-        //                 ],
-        //                 "criteria" => 1,
-        //                 "judge_id" => 3,
-        //                 "contest_id" => 1,
-        //                 "participant" => [
-        //                     "id" => 5,
-        //                     "contest_id" => 1,
-        //                     "created_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "updated_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "participant" => [
-        //                         "age" => 21,
-        //                         "image" => "",
-        //                         "gender" => "male",
-        //                         "last_name" => "Turcotte",
-        //                         "first_name" => "Grover",
-        //                         "participant_no" => 4
-        //                     ]
-        //                 ],
-        //                 "total_score" => 90,
-        //                 "submitted_at" => "2026-06-04 09=>19=>32",
-        //                 "participant_id" => 5,
-        //                 "contest_category" => "Final Question and Answer"
-        //             ],
-        //             [
-        //                 "rank" => 3,
-        //                 "level" => "final",
-        //                 "scores" => [
-        //                     "content" => "42",
-        //                     "delivery" => "20",
-        //                     "overall-impact" => "5",
-        //                     "stage-presence" => "8"
-        //                 ],
-        //                 "criteria" => 1,
-        //                 "judge_id" => 3,
-        //                 "contest_id" => 1,
-        //                 "participant" => [
-        //                     "id" => 6,
-        //                     "contest_id" => 1,
-        //                     "created_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "updated_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "participant" => [
-        //                         "age" => 21,
-        //                         "image" => "",
-        //                         "gender" => "male",
-        //                         "last_name" => "Bailey",
-        //                         "first_name" => "Keven",
-        //                         "participant_no" => 6
-        //                     ]
-        //                 ],
-        //                 "total_score" => 75,
-        //                 "submitted_at" => "2026-06-04 09=>19=>32",
-        //                 "participant_id" => 6,
-        //                 "contest_category" => "Final Question and Answer"
-        //             ],
-        //             [
-        //                 "rank" => 1,
-        //                 "level" => "final",
-        //                 "scores" => [
-        //                     "content" => "48",
-        //                     "delivery" => "28",
-        //                     "overall-impact" => "8",
-        //                     "stage-presence" => "9"
-        //                 ],
-        //                 "criteria" => 1,
-        //                 "judge_id" => 3,
-        //                 "contest_id" => 1,
-        //                 "participant" => [
-        //                     "id" => 8,
-        //                     "contest_id" => 1,
-        //                     "created_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "updated_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "participant" => [
-        //                         "age" => 21,
-        //                         "image" => "",
-        //                         "gender" => "female",
-        //                         "last_name" => "Johnson",
-        //                         "first_name" => "Madaline",
-        //                         "participant_no" => 2
-        //                     ]
-        //                 ],
-        //                 "total_score" => 93,
-        //                 "submitted_at" => "2026-06-04 09=>19=>32",
-        //                 "participant_id" => 8,
-        //                 "contest_category" => "Final Question and Answer"
-        //             ],
-        //             [
-        //                 "rank" => 3,
-        //                 "level" => "final",
-        //                 "scores" => [
-        //                     "content" => "45",
-        //                     "delivery" => "26",
-        //                     "overall-impact" => "6",
-        //                     "stage-presence" => "6"
-        //                 ],
-        //                 "criteria" => 1,
-        //                 "judge_id" => 3,
-        //                 "contest_id" => 1,
-        //                 "participant" => [
-        //                     "id" => 9,
-        //                     "contest_id" => 1,
-        //                     "created_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "updated_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "participant" => [
-        //                         "age" => 21,
-        //                         "image" => "",
-        //                         "gender" => "female",
-        //                         "last_name" => "Tromp",
-        //                         "first_name" => "Jermaine",
-        //                         "participant_no" => 3
-        //                     ]
-        //                 ],
-        //                 "total_score" => 83,
-        //                 "submitted_at" => "2026-06-04 09=>19=>32",
-        //                 "participant_id" => 9,
-        //                 "contest_category" => "Final Question and Answer"
-        //             ],
-        //             [
-        //                 "rank" => 2,
-        //                 "level" => "final",
-        //                 "scores" => [
-        //                     "content" => "47",
-        //                     "delivery" => "27",
-        //                     "overall-impact" => "7",
-        //                     "stage-presence" => "9"
-        //                 ],
-        //                 "criteria" => 1,
-        //                 "judge_id" => 3,
-        //                 "contest_id" => 1,
-        //                 "participant" => [
-        //                     "id" => 11,
-        //                     "contest_id" => 1,
-        //                     "created_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "updated_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "participant" => [
-        //                         "age" => 21,
-        //                         "image" => "",
-        //                         "gender" => "female",
-        //                         "last_name" => "Mertz",
-        //                         "first_name" => "Ashly",
-        //                         "participant_no" => 5
-        //                     ]
-        //                 ],
-        //                 "total_score" => 90,
-        //                 "submitted_at" => "2026-06-04 09=>19=>32",
-        //                 "participant_id" => 11,
-        //                 "contest_category" => "Final Question and Answer"
-        //             ]
-        //         ]
-        //     ]
-        // );
+        Score::factory()->create(
+            [
+                'judge_id' => 3,
+                'contest_id' => 1,
+                'criteria_id' => 1,
+                'contest_category' => 'Final Question and Answer',
+                'level' => 'final',
+                'score' => [
+                    [
+                        "rank" => 1,
+                        "level" => "final",
+                        "scores" => [
+                            "content" => "48",
+                            "delivery" => "28",
+                            "overall-impact" => "7",
+                            "stage-presence" => "10"
+                        ],
+                        "criteria" => 1,
+                        "judge_id" => 3,
+                        "contest_id" => 1,
+                        "participant" => [
+                            "id" => 4,
+                            "contest_id" => 1,
+                            "created_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "updated_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "participant" => [
+                                "age" => 21,
+                                "image" => "",
+                                "gender" => "male",
+                                "last_name" => "Jacobi",
+                                "first_name" => "Roscoe",
+                                "participant_no" => 4
+                            ]
+                        ],
+                        "total_score" => 93,
+                        "submitted_at" => "2026-06-04 09=>19=>32",
+                        "participant_id" => 4,
+                        "contest_category" => "Final Question and Answer"
+                    ],
+                    [
+                        "rank" => 2,
+                        "level" => "final",
+                        "scores" => [
+                            "content" => "48",
+                            "delivery" => "27",
+                            "overall-impact" => "6",
+                            "stage-presence" => "9"
+                        ],
+                        "criteria" => 1,
+                        "judge_id" => 3,
+                        "contest_id" => 1,
+                        "participant" => [
+                            "id" => 5,
+                            "contest_id" => 1,
+                            "created_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "updated_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "participant" => [
+                                "age" => 21,
+                                "image" => "",
+                                "gender" => "male",
+                                "last_name" => "Turcotte",
+                                "first_name" => "Grover",
+                                "participant_no" => 4
+                            ]
+                        ],
+                        "total_score" => 90,
+                        "submitted_at" => "2026-06-04 09=>19=>32",
+                        "participant_id" => 5,
+                        "contest_category" => "Final Question and Answer"
+                    ],
+                    [
+                        "rank" => 3,
+                        "level" => "final",
+                        "scores" => [
+                            "content" => "42",
+                            "delivery" => "20",
+                            "overall-impact" => "5",
+                            "stage-presence" => "8"
+                        ],
+                        "criteria" => 1,
+                        "judge_id" => 3,
+                        "contest_id" => 1,
+                        "participant" => [
+                            "id" => 6,
+                            "contest_id" => 1,
+                            "created_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "updated_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "participant" => [
+                                "age" => 21,
+                                "image" => "",
+                                "gender" => "male",
+                                "last_name" => "Bailey",
+                                "first_name" => "Keven",
+                                "participant_no" => 6
+                            ]
+                        ],
+                        "total_score" => 75,
+                        "submitted_at" => "2026-06-04 09=>19=>32",
+                        "participant_id" => 6,
+                        "contest_category" => "Final Question and Answer"
+                    ],
+                    [
+                        "rank" => 1,
+                        "level" => "final",
+                        "scores" => [
+                            "content" => "48",
+                            "delivery" => "28",
+                            "overall-impact" => "8",
+                            "stage-presence" => "9"
+                        ],
+                        "criteria" => 1,
+                        "judge_id" => 3,
+                        "contest_id" => 1,
+                        "participant" => [
+                            "id" => 8,
+                            "contest_id" => 1,
+                            "created_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "updated_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "participant" => [
+                                "age" => 21,
+                                "image" => "",
+                                "gender" => "female",
+                                "last_name" => "Johnson",
+                                "first_name" => "Madaline",
+                                "participant_no" => 2
+                            ]
+                        ],
+                        "total_score" => 93,
+                        "submitted_at" => "2026-06-04 09=>19=>32",
+                        "participant_id" => 8,
+                        "contest_category" => "Final Question and Answer"
+                    ],
+                    [
+                        "rank" => 3,
+                        "level" => "final",
+                        "scores" => [
+                            "content" => "45",
+                            "delivery" => "26",
+                            "overall-impact" => "6",
+                            "stage-presence" => "6"
+                        ],
+                        "criteria" => 1,
+                        "judge_id" => 3,
+                        "contest_id" => 1,
+                        "participant" => [
+                            "id" => 9,
+                            "contest_id" => 1,
+                            "created_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "updated_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "participant" => [
+                                "age" => 21,
+                                "image" => "",
+                                "gender" => "female",
+                                "last_name" => "Tromp",
+                                "first_name" => "Jermaine",
+                                "participant_no" => 3
+                            ]
+                        ],
+                        "total_score" => 83,
+                        "submitted_at" => "2026-06-04 09=>19=>32",
+                        "participant_id" => 9,
+                        "contest_category" => "Final Question and Answer"
+                    ],
+                    [
+                        "rank" => 2,
+                        "level" => "final",
+                        "scores" => [
+                            "content" => "47",
+                            "delivery" => "27",
+                            "overall-impact" => "7",
+                            "stage-presence" => "9"
+                        ],
+                        "criteria" => 1,
+                        "judge_id" => 3,
+                        "contest_id" => 1,
+                        "participant" => [
+                            "id" => 11,
+                            "contest_id" => 1,
+                            "created_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "updated_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "participant" => [
+                                "age" => 21,
+                                "image" => "",
+                                "gender" => "female",
+                                "last_name" => "Mertz",
+                                "first_name" => "Ashly",
+                                "participant_no" => 5
+                            ]
+                        ],
+                        "total_score" => 90,
+                        "submitted_at" => "2026-06-04 09=>19=>32",
+                        "participant_id" => 11,
+                        "contest_category" => "Final Question and Answer"
+                    ]
+                ]
+            ]
+        );
 
-        // Score::factory()->create(
-        //     [
-        //         'judge_id' => 4,
-        //         'contest_id' => 1,
-        //         'criteria_id' => 1,
-        //         'contest_category' => 'Final Question and Answer',
-        //         'level' => 'final',
-        //         'score' => [
-        //             [
-        //                 "rank" => 1,
-        //                 "level" => "final",
-        //                 "scores" => [
-        //                     "content" => "48",
-        //                     "delivery" => "28",
-        //                     "overall-impact" => "10",
-        //                     "stage-presence" => "10"
-        //                 ],
-        //                 "criteria" => 1,
-        //                 "judge_id" => 4,
-        //                 "contest_id" => 1,
-        //                 "participant" => [
-        //                     "id" => 4,
-        //                     "contest_id" => 1,
-        //                     "created_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "updated_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "participant" => [
-        //                         "age" => 21,
-        //                         "image" => "",
-        //                         "gender" => "male",
-        //                         "last_name" => "Jacobi",
-        //                         "first_name" => "Roscoe",
-        //                         "participant_no" => 4
-        //                     ]
-        //                 ],
-        //                 "total_score" => 96,
-        //                 "submitted_at" => "2026-06-04 09=>24=>01",
-        //                 "participant_id" => 4,
-        //                 "contest_category" => "Final Question and Answer"
-        //             ],
-        //             [
-        //                 "rank" => 2,
-        //                 "level" => "final",
-        //                 "scores" => [
-        //                     "content" => "47",
-        //                     "delivery" => "27",
-        //                     "overall-impact" => "9",
-        //                     "stage-presence" => "9"
-        //                 ],
-        //                 "criteria" => 1,
-        //                 "judge_id" => 4,
-        //                 "contest_id" => 1,
-        //                 "participant" => [
-        //                     "id" => 5,
-        //                     "contest_id" => 1,
-        //                     "created_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "updated_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "participant" => [
-        //                         "age" => 21,
-        //                         "image" => "",
-        //                         "gender" => "male",
-        //                         "last_name" => "Turcotte",
-        //                         "first_name" => "Grover",
-        //                         "participant_no" => 4
-        //                     ]
-        //                 ],
-        //                 "total_score" => 92,
-        //                 "submitted_at" => "2026-06-04 09=>24=>01",
-        //                 "participant_id" => 5,
-        //                 "contest_category" => "Final Question and Answer"
-        //             ],
-        //             [
-        //                 "rank" => 3,
-        //                 "level" => "final",
-        //                 "scores" => [
-        //                     "content" => "40",
-        //                     "delivery" => "20",
-        //                     "overall-impact" => "7",
-        //                     "stage-presence" => "7"
-        //                 ],
-        //                 "criteria" => 1,
-        //                 "judge_id" => 4,
-        //                 "contest_id" => 1,
-        //                 "participant" => [
-        //                     "id" => 6,
-        //                     "contest_id" => 1,
-        //                     "created_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "updated_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "participant" => [
-        //                         "age" => 21,
-        //                         "image" => "",
-        //                         "gender" => "male",
-        //                         "last_name" => "Bailey",
-        //                         "first_name" => "Keven",
-        //                         "participant_no" => 6
-        //                     ]
-        //                 ],
-        //                 "total_score" => 74,
-        //                 "submitted_at" => "2026-06-04 09=>24=>01",
-        //                 "participant_id" => 6,
-        //                 "contest_category" => "Final Question and Answer"
-        //             ],
-        //             [
-        //                 "rank" => 2,
-        //                 "level" => "final",
-        //                 "scores" => [
-        //                     "content" => "46",
-        //                     "delivery" => "26",
-        //                     "overall-impact" => "8",
-        //                     "stage-presence" => "8"
-        //                 ],
-        //                 "criteria" => 1,
-        //                 "judge_id" => 4,
-        //                 "contest_id" => 1,
-        //                 "participant" => [
-        //                     "id" => 8,
-        //                     "contest_id" => 1,
-        //                     "created_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "updated_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "participant" => [
-        //                         "age" => 21,
-        //                         "image" => "",
-        //                         "gender" => "female",
-        //                         "last_name" => "Johnson",
-        //                         "first_name" => "Madaline",
-        //                         "participant_no" => 2
-        //                     ]
-        //                 ],
-        //                 "total_score" => 88,
-        //                 "submitted_at" => "2026-06-04 09=>24=>01",
-        //                 "participant_id" => 8,
-        //                 "contest_category" => "Final Question and Answer"
-        //             ],
-        //             [
-        //                 "rank" => 3,
-        //                 "level" => "final",
-        //                 "scores" => [
-        //                     "content" => "45",
-        //                     "delivery" => "26",
-        //                     "overall-impact" => "8",
-        //                     "stage-presence" => "8"
-        //                 ],
-        //                 "criteria" => 1,
-        //                 "judge_id" => 4,
-        //                 "contest_id" => 1,
-        //                 "participant" => [
-        //                     "id" => 9,
-        //                     "contest_id" => 1,
-        //                     "created_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "updated_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "participant" => [
-        //                         "age" => 21,
-        //                         "image" => "",
-        //                         "gender" => "female",
-        //                         "last_name" => "Tromp",
-        //                         "first_name" => "Jermaine",
-        //                         "participant_no" => 3
-        //                     ]
-        //                 ],
-        //                 "total_score" => 87,
-        //                 "submitted_at" => "2026-06-04 09=>24=>01",
-        //                 "participant_id" => 9,
-        //                 "contest_category" => "Final Question and Answer"
-        //             ],
-        //             [
-        //                 "rank" => 1,
-        //                 "level" => "final",
-        //                 "scores" => [
-        //                     "content" => "47",
-        //                     "delivery" => "27",
-        //                     "overall-impact" => "8",
-        //                     "stage-presence" => "9"
-        //                 ],
-        //                 "criteria" => 1,
-        //                 "judge_id" => 4,
-        //                 "contest_id" => 1,
-        //                 "participant" => [
-        //                     "id" => 11,
-        //                     "contest_id" => 1,
-        //                     "created_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "updated_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "participant" => [
-        //                         "age" => 21,
-        //                         "image" => "",
-        //                         "gender" => "female",
-        //                         "last_name" => "Mertz",
-        //                         "first_name" => "Ashly",
-        //                         "participant_no" => 5
-        //                     ]
-        //                 ],
-        //                 "total_score" => 91,
-        //                 "submitted_at" => "2026-06-04 09=>24=>01",
-        //                 "participant_id" => 11,
-        //                 "contest_category" => "Final Question and Answer"
-        //             ]
-        //         ]
-        //     ]
-        // );
+        Score::factory()->create(
+            [
+                'judge_id' => 4,
+                'contest_id' => 1,
+                'criteria_id' => 1,
+                'contest_category' => 'Final Question and Answer',
+                'level' => 'final',
+                'score' => [
+                    [
+                        "rank" => 1,
+                        "level" => "final",
+                        "scores" => [
+                            "content" => "48",
+                            "delivery" => "28",
+                            "overall-impact" => "10",
+                            "stage-presence" => "10"
+                        ],
+                        "criteria" => 1,
+                        "judge_id" => 4,
+                        "contest_id" => 1,
+                        "participant" => [
+                            "id" => 4,
+                            "contest_id" => 1,
+                            "created_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "updated_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "participant" => [
+                                "age" => 21,
+                                "image" => "",
+                                "gender" => "male",
+                                "last_name" => "Jacobi",
+                                "first_name" => "Roscoe",
+                                "participant_no" => 4
+                            ]
+                        ],
+                        "total_score" => 96,
+                        "submitted_at" => "2026-06-04 09=>24=>01",
+                        "participant_id" => 4,
+                        "contest_category" => "Final Question and Answer"
+                    ],
+                    [
+                        "rank" => 2,
+                        "level" => "final",
+                        "scores" => [
+                            "content" => "47",
+                            "delivery" => "27",
+                            "overall-impact" => "9",
+                            "stage-presence" => "9"
+                        ],
+                        "criteria" => 1,
+                        "judge_id" => 4,
+                        "contest_id" => 1,
+                        "participant" => [
+                            "id" => 5,
+                            "contest_id" => 1,
+                            "created_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "updated_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "participant" => [
+                                "age" => 21,
+                                "image" => "",
+                                "gender" => "male",
+                                "last_name" => "Turcotte",
+                                "first_name" => "Grover",
+                                "participant_no" => 4
+                            ]
+                        ],
+                        "total_score" => 92,
+                        "submitted_at" => "2026-06-04 09=>24=>01",
+                        "participant_id" => 5,
+                        "contest_category" => "Final Question and Answer"
+                    ],
+                    [
+                        "rank" => 3,
+                        "level" => "final",
+                        "scores" => [
+                            "content" => "40",
+                            "delivery" => "20",
+                            "overall-impact" => "7",
+                            "stage-presence" => "7"
+                        ],
+                        "criteria" => 1,
+                        "judge_id" => 4,
+                        "contest_id" => 1,
+                        "participant" => [
+                            "id" => 6,
+                            "contest_id" => 1,
+                            "created_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "updated_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "participant" => [
+                                "age" => 21,
+                                "image" => "",
+                                "gender" => "male",
+                                "last_name" => "Bailey",
+                                "first_name" => "Keven",
+                                "participant_no" => 6
+                            ]
+                        ],
+                        "total_score" => 74,
+                        "submitted_at" => "2026-06-04 09=>24=>01",
+                        "participant_id" => 6,
+                        "contest_category" => "Final Question and Answer"
+                    ],
+                    [
+                        "rank" => 2,
+                        "level" => "final",
+                        "scores" => [
+                            "content" => "46",
+                            "delivery" => "26",
+                            "overall-impact" => "8",
+                            "stage-presence" => "8"
+                        ],
+                        "criteria" => 1,
+                        "judge_id" => 4,
+                        "contest_id" => 1,
+                        "participant" => [
+                            "id" => 8,
+                            "contest_id" => 1,
+                            "created_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "updated_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "participant" => [
+                                "age" => 21,
+                                "image" => "",
+                                "gender" => "female",
+                                "last_name" => "Johnson",
+                                "first_name" => "Madaline",
+                                "participant_no" => 2
+                            ]
+                        ],
+                        "total_score" => 88,
+                        "submitted_at" => "2026-06-04 09=>24=>01",
+                        "participant_id" => 8,
+                        "contest_category" => "Final Question and Answer"
+                    ],
+                    [
+                        "rank" => 3,
+                        "level" => "final",
+                        "scores" => [
+                            "content" => "45",
+                            "delivery" => "26",
+                            "overall-impact" => "8",
+                            "stage-presence" => "8"
+                        ],
+                        "criteria" => 1,
+                        "judge_id" => 4,
+                        "contest_id" => 1,
+                        "participant" => [
+                            "id" => 9,
+                            "contest_id" => 1,
+                            "created_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "updated_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "participant" => [
+                                "age" => 21,
+                                "image" => "",
+                                "gender" => "female",
+                                "last_name" => "Tromp",
+                                "first_name" => "Jermaine",
+                                "participant_no" => 3
+                            ]
+                        ],
+                        "total_score" => 87,
+                        "submitted_at" => "2026-06-04 09=>24=>01",
+                        "participant_id" => 9,
+                        "contest_category" => "Final Question and Answer"
+                    ],
+                    [
+                        "rank" => 1,
+                        "level" => "final",
+                        "scores" => [
+                            "content" => "47",
+                            "delivery" => "27",
+                            "overall-impact" => "8",
+                            "stage-presence" => "9"
+                        ],
+                        "criteria" => 1,
+                        "judge_id" => 4,
+                        "contest_id" => 1,
+                        "participant" => [
+                            "id" => 11,
+                            "contest_id" => 1,
+                            "created_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "updated_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "participant" => [
+                                "age" => 21,
+                                "image" => "",
+                                "gender" => "female",
+                                "last_name" => "Mertz",
+                                "first_name" => "Ashly",
+                                "participant_no" => 5
+                            ]
+                        ],
+                        "total_score" => 91,
+                        "submitted_at" => "2026-06-04 09=>24=>01",
+                        "participant_id" => 11,
+                        "contest_category" => "Final Question and Answer"
+                    ]
+                ]
+            ]
+        );
 
-        // Score::factory()->create(
-        //     [
-        //         'judge_id' => 5,
-        //         'contest_id' => 1,
-        //         'criteria_id' => 1,
-        //         'contest_category' => 'Final Question and Answer',
-        //         'level' => 'final',
-        //         'score' => [
-        //             [
-        //                 "rank" => 1,
-        //                 "level" => "final",
-        //                 "scores" => [
-        //                     "content" => "49",
-        //                     "delivery" => "28",
-        //                     "overall-impact" => "9",
-        //                     "stage-presence" => "9"
-        //                 ],
-        //                 "criteria" => 1,
-        //                 "judge_id" => 5,
-        //                 "contest_id" => 1,
-        //                 "participant" => [
-        //                     "id" => 4,
-        //                     "contest_id" => 1,
-        //                     "created_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "updated_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "participant" => [
-        //                         "age" => 21,
-        //                         "image" => "",
-        //                         "gender" => "male",
-        //                         "last_name" => "Jacobi",
-        //                         "first_name" => "Roscoe",
-        //                         "participant_no" => 4
-        //                     ]
-        //                 ],
-        //                 "total_score" => 95,
-        //                 "submitted_at" => "2026-06-04 09=>27=>54",
-        //                 "participant_id" => 4,
-        //                 "contest_category" => "Final Question and Answer"
-        //             ],
-        //             [
-        //                 "rank" => 2,
-        //                 "level" => "final",
-        //                 "scores" => [
-        //                     "content" => "47",
-        //                     "delivery" => "27",
-        //                     "overall-impact" => "9",
-        //                     "stage-presence" => "9"
-        //                 ],
-        //                 "criteria" => 1,
-        //                 "judge_id" => 5,
-        //                 "contest_id" => 1,
-        //                 "participant" => [
-        //                     "id" => 5,
-        //                     "contest_id" => 1,
-        //                     "created_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "updated_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "participant" => [
-        //                         "age" => 21,
-        //                         "image" => "",
-        //                         "gender" => "male",
-        //                         "last_name" => "Turcotte",
-        //                         "first_name" => "Grover",
-        //                         "participant_no" => 4
-        //                     ]
-        //                 ],
-        //                 "total_score" => 92,
-        //                 "submitted_at" => "2026-06-04 09=>27=>54",
-        //                 "participant_id" => 5,
-        //                 "contest_category" => "Final Question and Answer"
-        //             ],
-        //             [
-        //                 "rank" => 3,
-        //                 "level" => "final",
-        //                 "scores" => [
-        //                     "content" => "40",
-        //                     "delivery" => "25",
-        //                     "overall-impact" => "5",
-        //                     "stage-presence" => "6"
-        //                 ],
-        //                 "criteria" => 1,
-        //                 "judge_id" => 5,
-        //                 "contest_id" => 1,
-        //                 "participant" => [
-        //                     "id" => 6,
-        //                     "contest_id" => 1,
-        //                     "created_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "updated_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "participant" => [
-        //                         "age" => 21,
-        //                         "image" => "",
-        //                         "gender" => "male",
-        //                         "last_name" => "Bailey",
-        //                         "first_name" => "Keven",
-        //                         "participant_no" => 6
-        //                     ]
-        //                 ],
-        //                 "total_score" => 76,
-        //                 "submitted_at" => "2026-06-04 09=>27=>54",
-        //                 "participant_id" => 6,
-        //                 "contest_category" => "Final Question and Answer"
-        //             ],
-        //             [
-        //                 "rank" => 1,
-        //                 "level" => "final",
-        //                 "scores" => [
-        //                     "content" => "47",
-        //                     "delivery" => "28",
-        //                     "overall-impact" => "9",
-        //                     "stage-presence" => "9"
-        //                 ],
-        //                 "criteria" => 1,
-        //                 "judge_id" => 5,
-        //                 "contest_id" => 1,
-        //                 "participant" => [
-        //                     "id" => 8,
-        //                     "contest_id" => 1,
-        //                     "created_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "updated_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "participant" => [
-        //                         "age" => 21,
-        //                         "image" => "",
-        //                         "gender" => "female",
-        //                         "last_name" => "Johnson",
-        //                         "first_name" => "Madaline",
-        //                         "participant_no" => 2
-        //                     ]
-        //                 ],
-        //                 "total_score" => 93,
-        //                 "submitted_at" => "2026-06-04 09=>27=>54",
-        //                 "participant_id" => 8,
-        //                 "contest_category" => "Final Question and Answer"
-        //             ],
-        //             [
-        //                 "rank" => 3,
-        //                 "level" => "final",
-        //                 "scores" => [
-        //                     "content" => "43",
-        //                     "delivery" => "26",
-        //                     "overall-impact" => "7",
-        //                     "stage-presence" => "7"
-        //                 ],
-        //                 "criteria" => 1,
-        //                 "judge_id" => 5,
-        //                 "contest_id" => 1,
-        //                 "participant" => [
-        //                     "id" => 9,
-        //                     "contest_id" => 1,
-        //                     "created_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "updated_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "participant" => [
-        //                         "age" => 21,
-        //                         "image" => "",
-        //                         "gender" => "female",
-        //                         "last_name" => "Tromp",
-        //                         "first_name" => "Jermaine",
-        //                         "participant_no" => 3
-        //                     ]
-        //                 ],
-        //                 "total_score" => 83,
-        //                 "submitted_at" => "2026-06-04 09=>27=>54",
-        //                 "participant_id" => 9,
-        //                 "contest_category" => "Final Question and Answer"
-        //             ],
-        //             [
-        //                 "rank" => 2,
-        //                 "level" => "final",
-        //                 "scores" => [
-        //                     "content" => "45",
-        //                     "delivery" => "27",
-        //                     "overall-impact" => "8",
-        //                     "stage-presence" => "9"
-        //                 ],
-        //                 "criteria" => 1,
-        //                 "judge_id" => 5,
-        //                 "contest_id" => 1,
-        //                 "participant" => [
-        //                     "id" => 11,
-        //                     "contest_id" => 1,
-        //                     "created_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "updated_at" => "2026-06-04T01=>07=>07.000000Z",
-        //                     "participant" => [
-        //                         "age" => 21,
-        //                         "image" => "",
-        //                         "gender" => "female",
-        //                         "last_name" => "Mertz",
-        //                         "first_name" => "Ashly",
-        //                         "participant_no" => 5
-        //                     ]
-        //                 ],
-        //                 "total_score" => 89,
-        //                 "submitted_at" => "2026-06-04 09=>27=>54",
-        //                 "participant_id" => 11,
-        //                 "contest_category" => "Final Question and Answer"
-        //             ]
-        //         ]
-        //     ]
-        // );
+        Score::factory()->create(
+            [
+                'judge_id' => 5,
+                'contest_id' => 1,
+                'criteria_id' => 1,
+                'contest_category' => 'Final Question and Answer',
+                'level' => 'final',
+                'score' => [
+                    [
+                        "rank" => 1,
+                        "level" => "final",
+                        "scores" => [
+                            "content" => "49",
+                            "delivery" => "28",
+                            "overall-impact" => "9",
+                            "stage-presence" => "9"
+                        ],
+                        "criteria" => 1,
+                        "judge_id" => 5,
+                        "contest_id" => 1,
+                        "participant" => [
+                            "id" => 4,
+                            "contest_id" => 1,
+                            "created_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "updated_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "participant" => [
+                                "age" => 21,
+                                "image" => "",
+                                "gender" => "male",
+                                "last_name" => "Jacobi",
+                                "first_name" => "Roscoe",
+                                "participant_no" => 4
+                            ]
+                        ],
+                        "total_score" => 95,
+                        "submitted_at" => "2026-06-04 09=>27=>54",
+                        "participant_id" => 4,
+                        "contest_category" => "Final Question and Answer"
+                    ],
+                    [
+                        "rank" => 2,
+                        "level" => "final",
+                        "scores" => [
+                            "content" => "47",
+                            "delivery" => "27",
+                            "overall-impact" => "9",
+                            "stage-presence" => "9"
+                        ],
+                        "criteria" => 1,
+                        "judge_id" => 5,
+                        "contest_id" => 1,
+                        "participant" => [
+                            "id" => 5,
+                            "contest_id" => 1,
+                            "created_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "updated_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "participant" => [
+                                "age" => 21,
+                                "image" => "",
+                                "gender" => "male",
+                                "last_name" => "Turcotte",
+                                "first_name" => "Grover",
+                                "participant_no" => 4
+                            ]
+                        ],
+                        "total_score" => 92,
+                        "submitted_at" => "2026-06-04 09=>27=>54",
+                        "participant_id" => 5,
+                        "contest_category" => "Final Question and Answer"
+                    ],
+                    [
+                        "rank" => 3,
+                        "level" => "final",
+                        "scores" => [
+                            "content" => "40",
+                            "delivery" => "25",
+                            "overall-impact" => "5",
+                            "stage-presence" => "6"
+                        ],
+                        "criteria" => 1,
+                        "judge_id" => 5,
+                        "contest_id" => 1,
+                        "participant" => [
+                            "id" => 6,
+                            "contest_id" => 1,
+                            "created_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "updated_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "participant" => [
+                                "age" => 21,
+                                "image" => "",
+                                "gender" => "male",
+                                "last_name" => "Bailey",
+                                "first_name" => "Keven",
+                                "participant_no" => 6
+                            ]
+                        ],
+                        "total_score" => 76,
+                        "submitted_at" => "2026-06-04 09=>27=>54",
+                        "participant_id" => 6,
+                        "contest_category" => "Final Question and Answer"
+                    ],
+                    [
+                        "rank" => 1,
+                        "level" => "final",
+                        "scores" => [
+                            "content" => "47",
+                            "delivery" => "28",
+                            "overall-impact" => "9",
+                            "stage-presence" => "9"
+                        ],
+                        "criteria" => 1,
+                        "judge_id" => 5,
+                        "contest_id" => 1,
+                        "participant" => [
+                            "id" => 8,
+                            "contest_id" => 1,
+                            "created_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "updated_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "participant" => [
+                                "age" => 21,
+                                "image" => "",
+                                "gender" => "female",
+                                "last_name" => "Johnson",
+                                "first_name" => "Madaline",
+                                "participant_no" => 2
+                            ]
+                        ],
+                        "total_score" => 93,
+                        "submitted_at" => "2026-06-04 09=>27=>54",
+                        "participant_id" => 8,
+                        "contest_category" => "Final Question and Answer"
+                    ],
+                    [
+                        "rank" => 3,
+                        "level" => "final",
+                        "scores" => [
+                            "content" => "43",
+                            "delivery" => "26",
+                            "overall-impact" => "7",
+                            "stage-presence" => "7"
+                        ],
+                        "criteria" => 1,
+                        "judge_id" => 5,
+                        "contest_id" => 1,
+                        "participant" => [
+                            "id" => 9,
+                            "contest_id" => 1,
+                            "created_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "updated_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "participant" => [
+                                "age" => 21,
+                                "image" => "",
+                                "gender" => "female",
+                                "last_name" => "Tromp",
+                                "first_name" => "Jermaine",
+                                "participant_no" => 3
+                            ]
+                        ],
+                        "total_score" => 83,
+                        "submitted_at" => "2026-06-04 09=>27=>54",
+                        "participant_id" => 9,
+                        "contest_category" => "Final Question and Answer"
+                    ],
+                    [
+                        "rank" => 2,
+                        "level" => "final",
+                        "scores" => [
+                            "content" => "45",
+                            "delivery" => "27",
+                            "overall-impact" => "8",
+                            "stage-presence" => "9"
+                        ],
+                        "criteria" => 1,
+                        "judge_id" => 5,
+                        "contest_id" => 1,
+                        "participant" => [
+                            "id" => 11,
+                            "contest_id" => 1,
+                            "created_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "updated_at" => "2026-06-04T01=>07=>07.000000Z",
+                            "participant" => [
+                                "age" => 21,
+                                "image" => "",
+                                "gender" => "female",
+                                "last_name" => "Mertz",
+                                "first_name" => "Ashly",
+                                "participant_no" => 5
+                            ]
+                        ],
+                        "total_score" => 89,
+                        "submitted_at" => "2026-06-04 09=>27=>54",
+                        "participant_id" => 11,
+                        "contest_category" => "Final Question and Answer"
+                    ]
+                ]
+            ]
+        );
     }
 }

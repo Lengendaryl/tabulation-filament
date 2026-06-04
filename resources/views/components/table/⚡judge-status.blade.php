@@ -26,7 +26,7 @@ new class extends Component {
     {
         $groups = JudgesGroup::where('criteria_id', $this->criteria[0]['id'])->get();
         $map = [];
-
+       
         foreach ($groups as $group) {
             foreach ($group->judges as $levelGroup) {
                 $categoryName = $levelGroup['content'] ?? null;
@@ -183,7 +183,7 @@ new class extends Component {
 
         Result::updateOrCreate(
             [
-                'contest_id' => $this->score[0]['contest_id'],
+                'contest_id' => $this->criteria[0]['contest_id'],
                 'criteria_id' => $this->criteria[0]['id'],
                 'contest_category' => $contestCategory,
                 'round' => $level,
@@ -305,7 +305,7 @@ new class extends Component {
 
             Result::updateOrCreate(
                 [
-                    'contest_id' => $this->score[0]['contest_id'],
+                    'contest_id' => $this->criteria[0]['contest_id'],
                     'criteria_id' => $this->criteria[0]['id'],
                     'contest_category' => 'Final Score',
                     'round' => 'prelimFinal',
@@ -406,7 +406,7 @@ new class extends Component {
 
         Result::updateOrCreate(
             [
-                'contest_id' => $this->score[0]['contest_id'],
+                'contest_id' => $this->criteria[0]['contest_id'],
                 'criteria_id' => $this->criteria[0]['id'],
                 'contest_category' => 'Top Finalist',
                 'round' => $level,

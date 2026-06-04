@@ -125,7 +125,7 @@ class Criteria extends Page
 
         // reset tab data to avoid mixing old values
         $this->scores[$tab] = [];
-        logger($record);
+   
         if ($record && !empty($record->score)) {
             foreach ($record->score as $item) {
                 $pId = $item['participant_id'];
