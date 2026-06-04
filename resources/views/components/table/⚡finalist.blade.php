@@ -28,10 +28,12 @@ new class extends Component {
 <div>
     @foreach ($this->result as $res)
         <div class="space-y-4">
-
-            <div>
+            <div class="flex flex-col">
                 <flux:heading size="xl" class="text-center uppercase">
                     TOP {{ $criteria[0]['qualified_participant'] }} FINALIST
+                </flux:heading>
+                <flux:heading level="2" class="text-center">
+                    {{ Str::upper(Str::replace('_', ' ', $criteria[0]['contest']['scoring_type'])) }} SYSTEM
                 </flux:heading>
             </div>
 
