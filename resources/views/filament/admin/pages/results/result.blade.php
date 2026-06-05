@@ -18,6 +18,7 @@
                 ->unique('judge_id')
                 ->values();
             $topParticipants = $criteria[0]['qualified_participant'];
+            $finalRoundType = $criteria[0]['final_scoring_method'];
 
         @endphp
 
@@ -97,7 +98,7 @@
                         <livewire:table.preliminary gender="Male" :criteria="$criteria" :judges="$judges"
                             :score="$score" roundType="final" />
 
-                        <livewire:table.final-score :criteria="$criteria" :judges="$judges"/>
+                        <livewire:table.final-score :criteria="$criteria" :judges="$judges" />
                     </flux:card>
                 </div>
             </div>
@@ -130,7 +131,7 @@
                 <div class="space-y-10" id="final_result">
                     <livewire:result-header :contest="$criteria" />
                     <livewire:table.result heading="FINAL RESULT" :criteria="$criteria" :score="$score"
-                        roundType="prelimFinal" :judges="$judges" tabType="final" />
+                        roundType="{{ $finalRoundType }}" :judges="$judges" tabType="final" />
                 </div>
             </div>
             @foreach (collect($score)->unique('judge.id') as $judgeItem)

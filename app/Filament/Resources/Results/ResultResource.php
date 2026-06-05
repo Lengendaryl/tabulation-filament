@@ -45,8 +45,6 @@ class ResultResource extends Resource
     {
         return [
             'index' => ListResults::route('/'),
-            'create' => CreateResult::route('/create'),
-            'edit' => EditResult::route('/{record}/edit'),
             'view' => ViewResult::route('/{record}/view')
         ];
     }

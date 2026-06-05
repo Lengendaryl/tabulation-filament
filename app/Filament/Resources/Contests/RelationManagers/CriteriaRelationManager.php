@@ -70,7 +70,7 @@ class CriteriaRelationManager extends RelationManager
                                 Select::make('final_scoring_method')
                                     ->options([
                                         'final' => 'Final',
-                                        'finalprelim' => 'Final & Prelim',
+                                        'prelimFinal' => 'Final & Prelim',
                                     ])->live()->required(),
                                 Select::make('preliminary_scoring_method')
                                     ->options([
