@@ -43,10 +43,10 @@ class ContestForm
                                 ]),
                             DateTimePicker::make('date')->native(false)
                                 ->required(),
-                            TextInput::make('venue')
-                                ->required()
-                                ->maxLength(255),
-                        ])->columnSpanFull()
+                        ])->columnSpanFull(),
+                        TextInput::make('venue')
+                            ->required()
+                            ->maxLength(255)->columnSpanFull(),
                     ])->columnSpanFull()
                 ])->columnSpanFull()
             ]);
