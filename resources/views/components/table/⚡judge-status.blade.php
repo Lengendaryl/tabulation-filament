@@ -112,12 +112,13 @@ new class extends Component {
             ->where('level', $level)
             ->get();
 
-        $finalPrelim = Criteria::where('final_scoring_method', 'finalprelim')
+        $finalPrelim = Criteria::where('final_scoring_method', 'prelimFinal')
             ->where('id', $this->criteria[0]['id'])
             ->exists();
         $contestType = Contest::where('id', $this->criteria[0]['contest_id'])->value('contest_type');
 
         if ($contestType == 'individual') {
+
             $results = collect($score)
                 ->flatMap(function ($judgeScore) {
                     return collect($judgeScore->score)->map(function ($item) use ($judgeScore) {
@@ -139,6 +140,7 @@ new class extends Component {
                         'total_rank' => $items->sum('rank'),
                         'total' => $items->sum('total_score') / $judgeCount,
                         'final_rank' => null,
+                        'grand_final_rank' => null,
                         'judges' => $items
                             ->map(function ($i) {
                                 return [
@@ -172,6 +174,7 @@ new class extends Component {
                         for ($j = $start; $j <= $end; $j++) {
                             $item = $sorted[$j];
                             $item['final_rank'] = $rank;
+                            $item['grand_final_rank'] = $rank;
                             $result->push($item);
                         }
 
@@ -344,12 +347,11 @@ new class extends Component {
         $scoringType = Contest::where('id', $this->criteria[0]['contest_id'])->value('scoring_type');
 
         $contestType = Contest::where('id', $this->criteria[0]['contest_id'])->value('contest_type');
-
+        $judgeCount = $this->judgeCount;
         $criteriaCount = $this->criteriaCount;
         if ($contestType == 'individual') {
             $results = collect($score)
                 ->flatMap(function ($judgeScore) {
-                    logger($judgeScore);
                     return collect($judgeScore->result)->map(function ($item) use ($judgeScore) {
                         return [
                             'contest_category' => $judgeScore['contest_category'],
@@ -363,7 +365,7 @@ new class extends Component {
                 })
                 // ✅ Group by participant — one row per person
                 ->groupBy('participant_id')
-                ->map(function ($items) use ($criteriaCount) {
+                ->map(function ($items) use ($criteriaCount, $judgeCount, $scoringType) {
                     $first = $items->first();
 
                     // ✅ Build per-category scores dynamically
@@ -372,7 +374,7 @@ new class extends Component {
                         ->map(
                             fn($cat) => [
                                 'contest_category' => $cat['contest_category'],
-                                'total_score' => $cat['total_score'],
+                                'total_score' => $scoringType == 'rank_based' ? $cat['total_score'] : $cat['total_score'] / $judgeCount,
                                 'total_rank' => $cat['total_rank'],
                                 'final_rank' => $cat['final_rank'],
                             ],
@@ -383,27 +385,78 @@ new class extends Component {
                         'participant' => $first['participant'],
                         'participant_no' => $first['participant']['participant']['participant_no'],
                         'gender' => $first['participant']['participant']['gender'],
-                        'categories' => $categoryScores, // keyed by category name
-                        'grand_total_rank' => $items->sum('total_rank'),
-                        'grand_total' => $items->sum('total_score') / $criteriaCount, // ✅ sum of all category scores
+                        'categories' => $categoryScores,
+                        'grand_total_rank' => $scoringType == 'rank_based' ? $items->sum('total_rank') : $items->sum('final_rank'),
+                        'grand_total' => $scoringType == 'rank_based' ? $items->sum('total_score') / $criteriaCount : $items->sum('total_score') / $judgeCount,
                         'grand_final_rank' => null,
                     ];
                 })
                 // ✅ Rank per gender by grand_total descending
                 ->groupBy('gender')
                 ->map(function ($group) use ($scoringType) {
-                    $sorted = $scoringType == 'rank_based' ? $group->sortBy('grand_total_rank')->values() : $group->sortByDesc('grand_total')->values();
+                    if ($scoringType != 'rank_based') {
+                        $categoryNames = $group->first()['categories']->pluck('contest_category');
+
+                        foreach ($categoryNames as $categoryName) {
+                            // Sort participants by this category's total_score descending
+                            $sorted = $group->sortByDesc(function ($p) use ($categoryName) {
+                                return $p['categories']->firstWhere('contest_category', $categoryName)['total_score'] ?? 0;
+                            })->values();
+
+                            $n = $sorted->count();
+                            $i = 0;
+
+                            while ($i < $n) {
+                                $current = $sorted[$i]['categories']->firstWhere('contest_category', $categoryName)['total_score'];
+                                $start = $i;
+                                $end = $i;
+
+                                while ($end + 1 < $n && $sorted[$end + 1]['categories']->firstWhere('contest_category', $categoryName)['total_score'] == $current) {
+                                    $end++;
+                                }
+
+                                $rank = ($start + 1 + ($end + 1)) / 2;
+
+                                for ($j = $start; $j <= $end; $j++) {
+                                    $participantId = $sorted[$j]['participant']['id'];
+                                    $group = $group->map(function ($p) use ($participantId, $categoryName, $rank) {
+                                        if ($p['participant']['id'] === $participantId) {
+                                            $p['categories'] = $p['categories']->map(function ($cat) use ($categoryName, $rank) {
+                                                if ($cat['contest_category'] === $categoryName) {
+                                                    $cat['final_rank'] = $rank;
+                                                }
+                                                return $cat;
+                                            })->values();
+                                        }
+                                        return $p;
+                                    });
+                                }
+
+                                $i = $end + 1;
+                            }
+                        }
+
+                        // Recompute grand_total_rank as sum of final_ranks per category
+                        $group = $group->map(function ($p) {
+                            $p['grand_total_rank'] = $p['categories']->sum('final_rank');
+                            return $p;
+                        });
+                    }
+
+                    // Now rank by grand_total or grand_total_rank
+                    $sorted = $group->sortBy('grand_total_rank')->values();
+
                     $result = collect();
                     $i = 0;
                     $n = $sorted->count();
 
                     while ($i < $n) {
-                        $current = $scoringType == 'rank_based' ? $sorted[$i]['grand_total_rank'] : $sorted[$i]['grand_total'];
+                        $current = $sorted[$i]['grand_total_rank'];
 
                         $start = $i;
                         $end = $i;
 
-                        while ($end + 1 < $n && ($scoringType == 'rank_based' ? $sorted[$end + 1]['grand_total_rank'] == $current :  $sorted[$end + 1]['grand_total'] == $current)) {
+                        while ($end + 1 < $n && $sorted[$end + 1]['grand_total_rank'] == $current) {
                             $end++;
                         }
 

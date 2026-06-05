@@ -12,6 +12,7 @@ new class extends Component {
     public Collection $score;
     public string $roundType;
     public Collection $judges;
+
     #[On('echo:tabulate,.Tabulate')]
     public function refreshData()
     {
