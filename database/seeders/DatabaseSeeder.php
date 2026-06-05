@@ -31,19 +31,39 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         // User::factory(4)->create();
+        User::factory()
+            ->count(4)
+            ->sequence(
+                [
+                    'no' => 1,
+                    'position' => 'Judge',
+                ],
+                [
+                    'no' => 2,
+                    'position' => 'Judge',
+                ],
+                [
+                    'no' => 3,
+                    'position' => 'Judge',
+                ],
+                [
+                    'no' => null,
+                    'position' => 'Chairman of the Board of Judges',
+                ],
+            )
+            ->create();
 
-        // Event::factory()->create();
+        Event::factory()->create();
 
-        // Contest::factory()->create();
+        Contest::factory()->create();
 
-        // Criteria::factory()->create();
+        Criteria::factory()->create();
 
-        // JudgesGroup::factory()->create();
+        JudgesGroup::factory()->create();
 
-        // Participant::factory()->count(6)->male()->create();
+        Participant::factory()->count(6)->male()->create();
 
-        // Participant::factory()->count(6)->female()->create();
-
+        Participant::factory()->count(6)->female()->create();
 
         Score::factory()->scoreCreate();
     }
