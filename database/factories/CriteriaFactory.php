@@ -18,13 +18,125 @@ class CriteriaFactory extends Factory
     public function definition(): array
     {
         return [
+            //WEIGHTED
+            // 'contest_id' => 1,
+            // 'judges' => [2, 3, 4],
+            // 'qualified_participant' => 3,
+            // 'final_scoring_method' => 'prelimFinal',
+            // 'preliminary_scoring_method' => 'default',
+            // 'criteria' => [
+            //     [
+            //         "data" => [
+            //             "level" => "preliminary",
+            //             "total" => 100,
+            //             "weight" => 25,
+            //             "content" => "Production Number",
+            //             "criteria" => [
+            //                 [
+            //                     "score" => 40,
+            //                     "criterion" => "Mastery of Choreography"
+            //                 ],
+            //                 [
+            //                     "score" => 25,
+            //                     "criterion" => "Delivery of Introduction"
+            //                 ],
+            //                 [
+            //                     "score" => 15,
+            //                     "criterion" => "Audience Impact"
+            //                 ],
+            //                 [
+            //                     "score" => 20,
+            //                     "criterion" => "Overall Impact"
+            //                 ]
+            //             ]
+            //         ],
+            //         "type" => "contest"
+            //     ],
+            //     [
+            //         "data" => [
+            //             "level" => "preliminary",
+            //             "total" => 100,
+            //             "weight" => 40,
+            //             "content" => "Tropical Attire",
+            //             "criteria" => [
+            //                 [
+            //                     "score" => 35,
+            //                     "criterion" => "Costume Creativity"
+            //                 ],
+            //                 [
+            //                     "score" => 25,
+            //                     "criterion" => "Poise and Bearing"
+            //                 ],
+            //                 [
+            //                     "score" => 25,
+            //                     "criterion" => "Beauty and Charisma"
+            //                 ],
+            //                 [
+            //                     "score" => 15,
+            //                     "criterion" => "Stage Presence"
+            //                 ]
+            //             ]
+            //         ],
+            //         "type" => "contest"
+            //     ],
+            //     [
+            //         "data" => [
+            //             "level" => "preliminary",
+            //             "total" => 100,
+            //             "weight" => 35,
+            //             "content" => "Casual Interview",
+            //             "criteria" => [
+            //                 [
+            //                     "score" => 30,
+            //                     "criterion" => "Wit and Content"
+            //                 ],
+            //                 [
+            //                     "score" => 25,
+            //                     "criterion" => "Projection and Delivery"
+            //                 ],
+            //                 [
+            //                     "score" => 25,
+            //                     "criterion" => "Stage Presence"
+            //                 ],
+            //                 [
+            //                     "score" => 20,
+            //                     "criterion" => "Overall Impact"
+            //                 ]
+            //             ]
+            //         ],
+            //         "type" => "contest"
+            //     ],
+            //     [
+            //         "data" => [
+            //             "level" => "final",
+            //             "total" => 100,
+            //             "weight" => null,
+            //             "content" => "Final Round",
+            //             "criteria" => [
+            //                 [
+            //                     "score" => 35,
+            //                     "criterion" => "Beauty and Poise"
+            //                 ],
+            //                 [
+            //                     "score" => 35,
+            //                     "criterion" => "Wit and Intelligence"
+            //                 ],
+            //                 [
+            //                     "score" => 30,
+            //                     "criterion" => "Overall Impact"
+            //                 ]
+            //             ]
+            //         ],
+            //         "type" => "contest"
+            //     ]
+            // ]
+            
+            //NORMAL
             'contest_id' => 1,
             'judges' => [2, 3, 4, 5],
             'qualified_participant' => 3,
             'final_scoring_method' => 'prelimFinal',
             'preliminary_scoring_method' => 'default',
-
-            //POINT BASED
             'criteria' => [
                 [
                     "data" => [

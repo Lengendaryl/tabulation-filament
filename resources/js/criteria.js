@@ -8,14 +8,15 @@ document.addEventListener("alpine:init", () => {
             activeTab: activeTab,
 
             get rankings() {
+                // console.log(this.results, this.participants, this.activeTab);
                 // Only include participants from this gender/group
                 let scoresArray = this.participants.map((id) => {
                     let participantScores =
                         this.results[this.activeTab]?.[id] || {};
-
+                  
                     let total = Object.values(participantScores).reduce(
                         (a, b) => Number(a) + Number(b),
-                        0
+                        0,
                     );
 
                     return { id: id, total: total };
@@ -59,6 +60,6 @@ document.addEventListener("alpine:init", () => {
 
                 return ranks;
             },
-        })
+        }),
     );
 });

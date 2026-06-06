@@ -28,7 +28,7 @@ new class extends Component {
         $weight = collect($this->criteria)->map(function ($criteria) {
             return collect($criteria['criteria'])->filter(fn($block) => $block['data']['level'] !== 'final')->map(
                 fn($block) => [
-                    'weight' => $block['data']['weight'],
+                    'weight' => $block['data']['weight'] ?? 0,
                     'content' => $block['data']['content'],
                     'level' => $block['data']['level'],
                 ],

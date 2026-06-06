@@ -18,94 +18,311 @@ class JudgesGroupFactory extends Factory
     public function definition(): array
     {
         return [
+            //WEIGHTED
+            // 'criteria_id' => 1,
+            // 'judge_id' => [2, 3, 4],
+            // 'judges' => [
+            //     [
+            //         "level" => "preliminary",
+            //         "judges" => [
+            //             [
+            //                 "status" => false,
+            //                 "judge_id" => 2,
+            //                 "request_edit" => false
+            //             ],
+            //             [
+            //                 "status" => false,
+            //                 "judge_id" => 3,
+            //                 "request_edit" => false
+            //             ],
+            //             [
+            //                 "status" => false,
+            //                 "judge_id" => 4,
+            //                 "request_edit" => false
+            //             ]
+            //         ],
+            //         "content" => "Production Number"
+            //     ],
+            //     [
+            //         "level" => "preliminary",
+            //         "judges" => [
+            //             [
+            //                 "status" => false,
+            //                 "judge_id" => 2,
+            //                 "request_edit" => false
+            //             ],
+            //             [
+            //                 "status" => false,
+            //                 "judge_id" => 3,
+            //                 "request_edit" => false
+            //             ],
+            //             [
+            //                 "status" => false,
+            //                 "judge_id" => 4,
+            //                 "request_edit" => false
+            //             ]
+            //         ],
+            //         "content" => "Tropical Attire"
+            //     ],
+            //     [
+            //         "level" => "preliminary",
+            //         "judges" => [
+            //             [
+            //                 "status" => false,
+            //                 "judge_id" => 2,
+            //                 "request_edit" => false
+            //             ],
+            //             [
+            //                 "status" => false,
+            //                 "judge_id" => 3,
+            //                 "request_edit" => false
+            //             ],
+            //             [
+            //                 "status" => false,
+            //                 "judge_id" => 4,
+            //                 "request_edit" => false
+            //             ]
+            //         ],
+            //         "content" => "Casual Interview"
+            //     ],
+            //     [
+            //         "level" => "final",
+            //         "judges" => [
+            //             [
+            //                 "status" => false,
+            //                 "judge_id" => 2,
+            //                 "request_edit" => false
+            //             ],
+            //             [
+            //                 "status" => false,
+            //                 "judge_id" => 3,
+            //                 "request_edit" => false
+            //             ],
+            //             [
+            //                 "status" => false,
+            //                 "judge_id" => 4,
+            //                 "request_edit" => false
+            //             ]
+            //         ],
+            //         "content" => "Final Round"
+            //     ]
+            // ]
+
+            //NORMAL
             'criteria_id' => 1,
-            'judge_id' => [2, 3, 4],
+            'judge_id' => [2, 3, 4, 5],
             'judges' => [
                 [
-                    "level" => "preliminary",
-                    "judges" => [
+                    'level' => 'preliminary',
+                    'content' => 'Production Number',
+                    'judges' => [
                         [
-                            "status" => false,
-                            "judge_id" => 2,
-                            "request_edit" => false
+                            'request_edit' => false,
+                            'status' => true,
+                            'judge_id' => 2
                         ],
                         [
-                            "status" => false,
-                            "judge_id" => 3,
-                            "request_edit" => false
+                            'request_edit' => false,
+                            'status' => true,
+                            'judge_id' => 3
                         ],
                         [
-                            "status" => false,
-                            "judge_id" => 4,
-                            "request_edit" => false
-                        ]
+                            'request_edit' => false,
+                            'status' => true,
+                            'judge_id' => 4
+                        ],
+                        [
+                            'request_edit' => false,
+                            'status' => true,
+                            'judge_id' => 5
+                        ],
                     ],
-                    "content" => "Production Number"
                 ],
                 [
-                    "level" => "preliminary",
-                    "judges" => [
+                    'level' => 'preliminary',
+                    'content' => 'Swimwear Competition',
+                    'judges' => [
                         [
-                            "status" => false,
-                            "judge_id" => 2,
-                            "request_edit" => false
+                            'request_edit' => false,
+                            'status' => true,
+                            'judge_id' => 2
                         ],
                         [
-                            "status" => false,
-                            "judge_id" => 3,
-                            "request_edit" => false
+                            'request_edit' => false,
+                            'status' => true,
+                            'judge_id' => 3
                         ],
                         [
-                            "status" => false,
-                            "judge_id" => 4,
-                            "request_edit" => false
-                        ]
+                            'request_edit' => false,
+                            'status' => true,
+                            'judge_id' => 4
+                        ],
+                        [
+                            'request_edit' => false,
+                            'status' => true,
+                            'judge_id' => 5
+                        ],
                     ],
-                    "content" => "Tropical Attire"
                 ],
                 [
-                    "level" => "preliminary",
-                    "judges" => [
+                    'level' => 'preliminary',
+                    'content' => 'Casual Interview',
+                    'judges' => [
                         [
-                            "status" => false,
-                            "judge_id" => 2,
-                            "request_edit" => false
+                            'request_edit' => false,
+                            'status' => true,
+                            'judge_id' => 2
                         ],
                         [
-                            "status" => false,
-                            "judge_id" => 3,
-                            "request_edit" => false
+                            'request_edit' => false,
+                            'status' => true,
+                            'judge_id' => 3
                         ],
                         [
-                            "status" => false,
-                            "judge_id" => 4,
-                            "request_edit" => false
-                        ]
+                            'request_edit' => false,
+                            'status' => true,
+                            'judge_id' => 4
+                        ],
+                        [
+                            'request_edit' => false,
+                            'status' => true,
+                            'judge_id' => 5
+                        ],
                     ],
-                    "content" => "Casual Interview"
                 ],
                 [
-                    "level" => "final",
-                    "judges" => [
+                    'level' => 'preliminary',
+                    'content' => 'Formal Wear',
+                    'judges' => [
                         [
-                            "status" => false,
-                            "judge_id" => 2,
-                            "request_edit" => false
+                            'request_edit' => false,
+                            'status' => true,
+                            'judge_id' => 2
                         ],
                         [
-                            "status" => false,
-                            "judge_id" => 3,
-                            "request_edit" => false
+                            'request_edit' => false,
+                            'status' => true,
+                            'judge_id' => 3
                         ],
                         [
-                            "status" => false,
-                            "judge_id" => 4,
-                            "request_edit" => false
-                        ]
+                            'request_edit' => false,
+                            'status' => true,
+                            'judge_id' => 4
+                        ],
+                        [
+                            'request_edit' => false,
+                            'status' => true,
+                            'judge_id' => 5
+                        ],
                     ],
-                    "content" => "Final Round"
-                ]
+                ],
+                [
+                    'level' => 'final',
+                    'content' => 'Final Round',
+                    'judges' => [
+                        [
+                            'request_edit' => false,
+                            'status' => true,
+                            'judge_id' => 2
+                        ],
+                        [
+                            'request_edit' => false,
+                            'status' => true,
+                            'judge_id' => 3
+                        ],
+                        [
+                            'request_edit' => false,
+                            'status' => true,
+                            'judge_id' => 4
+                        ],
+                        [
+                            'request_edit' => false,
+                            'status' => true,
+                            'judge_id' => 5
+                        ],
+                    ],
+                ],
+                //RANK BASED
+                // [
+                //     'level' => 'preliminary',
+                //     'content' => 'Sports Wear',
+                //     'judges' => [
+                //         [
+                //             'request_edit' => false,
+                //             'status' => true,
+                //             'judge_id' => 2
+                //         ],
+                //         [
+                //             'request_edit' => false,
+                //             'status' => true,
+                //             'judge_id' => 3
+                //         ],
+                //         [
+                //             'request_edit' => false,
+                //             'status' => true,
+                //             'judge_id' => 4
+                //         ],
+                //         [
+                //             'request_edit' => false,
+                //             'status' => true,
+                //             'judge_id' => 5
+                //         ],
+                //     ],
+                // ],
+                // [
+                //     'level' => 'preliminary',
+                //     'content' => 'Barong/Filipiana Competition',
+                //     'judges' => [
+                //         [
+                //             'request_edit' => false,
+                //             'status' => true,
+                //             'judge_id' => 2
+                //         ],
+                //         [
+                //             'request_edit' => false,
+                //             'status' => true,
+                //             'judge_id' => 3
+                //         ],
+                //         [
+                //             'request_edit' => false,
+                //             'status' => true,
+                //             'judge_id' => 4
+                //         ],
+                //         [
+                //             'request_edit' => false,
+                //             'status' => true,
+                //             'judge_id' => 5
+                //         ],
+                //     ],
+                // ],
+                // [
+                //     'level' => 'final',
+                //     'content' => 'Final Question and Answer',
+                //     'judges' => [
+                //         [
+                //             'request_edit' => false,
+                //             'status' => true,
+                //             'judge_id' => 2
+                //         ],
+                //         [
+                //             'request_edit' => false,
+                //             'status' => true,
+                //             'judge_id' => 3
+                //         ],
+                //         [
+                //             'request_edit' => false,
+                //             'status' => true,
+                //             'judge_id' => 4
+                //         ],
+                //         [
+                //             'request_edit' => false,
+                //             'status' => true,
+                //             'judge_id' => 5
+                //         ],
+                //     ],
+                // ],
             ]
+
         ];
     }
 }
