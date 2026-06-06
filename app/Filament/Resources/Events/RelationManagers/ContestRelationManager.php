@@ -75,7 +75,8 @@ class ContestRelationManager extends RelationManager
                 TextColumn::make('category')->label('Contest category')->searchable(),
                 TextColumn::make('organizer'),
                 TextColumn::make('contest_type'),
-                TextColumn::make('created_at'),
+                TextColumn::make('scoring_type'),
+                TextColumn::make('date'),
             ])
             ->filters([
                 //
