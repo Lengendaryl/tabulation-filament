@@ -19,7 +19,6 @@
                 ->values();
             $topParticipants = $criteria[0]['qualified_participant'];
             $finalRoundType = $criteria[0]['final_scoring_method'];
-
         @endphp
 
         {{-- JUDGES --}}

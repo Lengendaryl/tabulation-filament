@@ -69,8 +69,8 @@ class ViewResult extends ViewRecord
 
                             $judge['name'] = $user?->name;
                             $judge['email'] = $user?->email;
-                            $judge['avatar'] = $user?->avatar;
-
+                            $judge['no'] = $user?->no;
+                            $judge['position'] = $user?->position;
                             return $judge;
                         })
                         ->toArray();
