@@ -8,8 +8,8 @@ new class extends Component {
 };
 ?>
 
-<div class="flex flex-col justify-center items-center  uppercase">
-    <div class="grid grid-cols-2 place-items-center gap-4">
+<div class="flex flex-col justify-center items-center  uppercase mt-15">
+    <div class="grid {{ $judges->count() === 3 ? 'grid-cols-3' : 'grid-cols-2' }} place-items-center gap-4">
         @foreach (collect($judges)->sortBy(fn($judge) => empty($judge['judge_no']) ? PHP_INT_MAX : $judge['judge_no'])->values() as $judge)
             <div class="text-center mt-4">
                 <p class="font-medium  border-b border-black dark:border-white ">{{ $judge['name'] }}
