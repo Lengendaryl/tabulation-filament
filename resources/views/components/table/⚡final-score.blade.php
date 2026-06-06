@@ -20,6 +20,7 @@ new class extends Component {
     public function final()
     {
         return Result::where('contest_category', 'Final Score')
+            ->with('criteria')
             ->where('round', 'prelimFinal')
             ->where('criteria_id', $this->criteria[0]['id'])
             ->get();
@@ -75,7 +76,7 @@ new class extends Component {
 
                                         <div class="flex justify-around uppercase text-xs">
                                             <p>%</p>
-                                            <p>50</p>
+                                            <p>{{ $res['criteria']['preliminary_round_percentage_score'] }}</p>
                                         </div>
                                     </div>
                                 </flux:table.column>
@@ -87,7 +88,7 @@ new class extends Component {
 
                                         <div class="flex justify-around uppercase text-xs">
                                             <p>%</p>
-                                            <p>50</p>
+                                            <p>{{ $res['criteria']['final_round_percentage_score'] }}</p>
                                         </div>
                                     </div>
                                 </flux:table.column>
