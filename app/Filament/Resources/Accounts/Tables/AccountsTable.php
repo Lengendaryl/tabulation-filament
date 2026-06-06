@@ -16,8 +16,10 @@ class AccountsTable
     {
         return $table
             ->columns([
+                TextColumn::make('no')->label('Judge No'),
                 TextColumn::make('name')->searchable(),
                 TextColumn::make('email'),
+                TextColumn::make('position'),
                 TextColumn::make('roles.name')
             ])
             ->filters([
