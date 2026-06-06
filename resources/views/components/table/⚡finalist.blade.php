@@ -22,11 +22,37 @@ new class extends Component {
             ->where('contest_category', 'Top Finalist')
             ->get();
     }
+
+    public function weight()
+    {
+        $weight = collect($this->criteria)->map(function ($criteria) {
+            return collect($criteria['criteria'])->filter(fn($block) => $block['data']['level'] !== 'final')->map(
+                fn($block) => [
+                    'weight' => $block['data']['weight'],
+                    'content' => $block['data']['content'],
+                    'level' => $block['data']['level'],
+                ],
+            );
+        });
+
+        $hasNoWeight = $weight->flatten(1)->every(fn($block) => empty($block['weight']));
+
+        return [
+            'weight' => $weight,
+            'hasNoWeight' => $hasNoWeight,
+        ];
+    }
 };
 ?>
 
 <div>
     @foreach ($this->result as $res)
+        @php
+            $t = $this->weight();
+            $weight = $t['weight'];
+            $hasNoWeight = $t['hasNoWeight'];
+            $groupedResults = collect($res->result)->groupBy('gender');
+        @endphp
         <div class="space-y-4">
             <div class="flex flex-col">
                 <flux:heading size="xl" class="text-center uppercase">
@@ -35,11 +61,13 @@ new class extends Component {
                 <flux:heading level="2" class="text-center">
                     {{ Str::upper(Str::replace('_', ' ', $criteria[0]['contest']['scoring_type'])) }} SYSTEM
                 </flux:heading>
+                @if (!$hasNoWeight)
+                    <flux:heading level="2" class="text-center uppercase">
+                        WEIGHTED ROUND
+                    </flux:heading>
+                @endif
             </div>
 
-            @php
-                $groupedResults = collect($res->result)->groupBy('gender');
-            @endphp
 
             <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
                 @foreach ($groupedResults as $gender => $scores)
@@ -48,6 +76,7 @@ new class extends Component {
                         $sortedRanks = $scores->pluck('grand_final_rank')->sort()->values();
                         // Top 3 cutoff
                         $cutoffRank = $sortedRanks[2] ?? null;
+
                     @endphp
                     <flux:card x:card class="w-full">
                         <flux:table class="font-bold">
@@ -61,20 +90,34 @@ new class extends Component {
                                     <p class="w-full text-center font-bold">NO</p>
                                 </flux:table.column>
                                 @foreach ($scores->first()['categories'] as $score)
+                                    @php
+                                        $categoryWeight = $weight
+                                            ->flatten(1)
+                                            ->firstWhere('content', $score['contest_category']);
+                                        $w = $categoryWeight['weight'] ?? null;
+                                    @endphp
                                     <flux:table.column>
                                         <div class="flex flex-col font-bold w-full">
-                                            <p class="w-full text-center font-bold uppercase text-wrap">
-                                                {{ $score['contest_category'] }}
-                                            </p>
+                                            <div class="flex flex-col items-center">
+                                                <p class="w-full text-center font-bold uppercase text-wrap">
+                                                    {{ $score['contest_category'] }}
+
+                                                </p>
+                                                <p>
+                                                    @if ($w)
+                                                        {{ $w }}%
+                                                    @endif
+                                                </p>
+                                            </div>
                                             <div class="flex justify-between gap-2">
                                                 <span>
                                                     TOTAL
                                                 </span>
                                                 <span class="text-wrap">
-                                                    TOTAL RANK
+                                                    RANK
                                                 </span>
                                                 <span class="text-wrap">
-                                                    FINAL RANK
+                                                    FINAL
                                                 </span>
                                             </div>
                                         </div>
@@ -109,9 +152,18 @@ new class extends Component {
                                             <flux:table.cell>
                                                 <div
                                                     class="flex justify-between items-center text-black dark:text-white">
-                                                    <span>{{ number_format($category['total_score'], 2) }}</span>
-                                                    <span>{{ number_format($category['total_rank'], 2) }}</span>
-                                                    <span>{{ number_format($category['final_rank'], 2) }}</span>
+
+                                                    @if ($w)
+                                                        <span>{{ number_format($category['total_score'], 2) }}</span>
+                                                        <span>{{ number_format($category['final_rank'], 2) }}</span>
+                                                        <span>{{ number_format($category['weighted_rank'], 2) }}</span>
+                                                    @else
+                                                        <span>{{ number_format($category['total_score'], 2) }}</span>
+                                                        <span>{{ number_format($category['total_rank'], 2) }}</span>
+                                                        <span>{{ number_format($category['final_rank'], 2) }}</span>
+                                                    @endif
+
+
                                                 </div>
                                             </flux:table.cell>
                                         @endforeach

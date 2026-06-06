@@ -34,7 +34,6 @@ new class extends Component {
 <div class="space-y-6">
     @foreach ($this->result as $res)
         <div class="space-y-4">
-
             <div>
                 <flux:heading size="xl" class="text-center uppercase">
                     {{ $res->contest_category }}
