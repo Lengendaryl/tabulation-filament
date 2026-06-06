@@ -159,22 +159,5 @@ new class extends Component {
             </div>
         </div>
     @endforeach
-    <div class="flex flex-col justify-center items-center  uppercase">
-        <div class="grid grid-cols-2 place-items-center gap-4">
-            @foreach ($judges as $judge)
-                <div class="text-center mt-4">
-                    <p class="font-medium  border-b border-black dark:border-white ">{{ $judge['name'] }}</p>
-                    <p class="text-xs">JUDGE</p>
-                </div>
-            @endforeach
-        </div>
-        <div class="w-fit text-center mt-4">
-            <p class="font-medium  border-b border-black dark:border-white ">
-                {{ auth()->user()->name }}
-            </p>
-            <p class="text-center text-xs">
-                TABULATOR
-            </p>
-        </div>
-    </div>
+    <livewire:footer :judges="$judges" />
 </div>
