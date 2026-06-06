@@ -212,6 +212,7 @@ new class extends Component {
             $scoreFinal = Result::where('criteria_id', $this->criteria[0]['id'])
                 ->where('round', 'final')
                 ->get();
+            $criteria = $this->criteria;
 
             $judgeCount = $this->judgeCount;
             $resultFinal = collect($scoreFinal)
@@ -226,16 +227,15 @@ new class extends Component {
                 })
                 // ✅ Group by participant — one row per person
                 ->groupBy('participant_id')
-                ->map(function ($items) {
+                ->map(function ($items) use ($criteria) {
                     $first = $items->first();
                     return [
                         'participant' => $first['participant'],
                         'participant_id' => $first['participant_id'],
                         'final_total' => $first['total'],
-                        'final_score' => $first['total'] / 2,
+                        'final_score' => $first['total'] * ($criteria[0]['final_round_percentage_score'] / 100), //FINAL ROUND
                     ];
                 })
-                // ->flatten(1)
                 ->sortBy('participant_no')
                 ->values();
 
@@ -252,7 +252,7 @@ new class extends Component {
                 })
                 // ✅ Group by participant — one row per person
                 ->groupBy('participant_id')
-                ->map(function ($items) {
+                ->map(function ($items) use ($criteria) {
                     $first = $items->first();
 
                     return [
@@ -262,7 +262,7 @@ new class extends Component {
                         'gender' => $first['participant']['participant']['gender'],
                         'grand_final_rank' => null,
                         'preliminary_total' => $first['grand_total'],
-                        'preliminary_score' => $first['grand_total'] / 2,
+                        'preliminary_score' => $first['grand_total'] * ($criteria[0]['preliminary_round_percentage_score'] / 100), //preliminary round
                     ];
                 })
                 ->values()

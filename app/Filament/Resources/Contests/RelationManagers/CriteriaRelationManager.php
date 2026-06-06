@@ -21,6 +21,8 @@ use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Width;
 use Filament\Support\Exceptions\Halt;
@@ -71,13 +73,31 @@ class CriteriaRelationManager extends RelationManager
                                     ->options([
                                         'final' => 'Final',
                                         'prelimFinal' => 'Final & Prelim',
-                                    ])->live()->required(),
+                                    ])
+                                    ->live()
+                                    ->required(),
                                 Select::make('preliminary_scoring_method')
                                     ->options([
                                         'default' => 'Default',
                                         'weighted' => 'Weighted',
-                                    ])->live()->required()
+                                    ])
+                                    ->live()
+                                    ->required()
                             ])->columnSpanFull(),
+                            Grid::make(2)->schema([
+                                TextInput::make('preliminary_round_percentage_score')
+                                    ->numeric()
+                                    ->minValue(0)
+                                    ->maxValue(100)
+                                    ->default(0)
+                                    ->required(),
+                                TextInput::make('final_round_percentage_score')
+                                    ->numeric()
+                                    ->minValue(0)
+                                    ->maxValue(100)
+                                    ->default(0)
+                                    ->required(),
+                            ])->hidden(fn(Get $get): bool => $get('final_scoring_method') === 'final'),
                             Grid::make(1)->schema([
                                 Builder::make('criteria')
                                     ->label('Category contest')
@@ -131,7 +151,6 @@ class CriteriaRelationManager extends RelationManager
                 ])->columnSpanFull()
             ]);
     }
-
     public function table(Table $table): Table
     {
         return $table
@@ -148,6 +167,11 @@ class CriteriaRelationManager extends RelationManager
                 CreateAction::make()
                     ->modalWidth(Width::ScreenTwoExtraLarge)
                     ->mutateDataUsing(function (array $data): array {
+                        if ($data['final_scoring_method'] === 'final') {
+                            $data['preliminary_round_percentage_score'] = 0;
+                            $data['final_round_percentage_score'] = 0;
+                        }
+
                         collect($data['criteria'] ?? [])
                             ->each(function ($block) {
 
@@ -249,7 +273,13 @@ class CriteriaRelationManager extends RelationManager
                     }),
             ])
             ->recordActions([
-                EditAction::make()->modalWidth(Width::ScreenTwoExtraLarge),
+                EditAction::make()->mutateDataUsing(function (array $data): array {
+                    if ($data['final_scoring_method'] === 'final') {
+                        $data['preliminary_round_percentage_score'] = 0;
+                        $data['final_round_percentage_score'] = 0;
+                    }
+                    return $data;
+                })->modalWidth(Width::ScreenTwoExtraLarge),
                 DeleteAction::make(),
             ])
             ->toolbarActions([
