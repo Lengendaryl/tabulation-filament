@@ -115,6 +115,7 @@ new class extends Component {
         $finalPrelim = Criteria::where('final_scoring_method', 'prelimFinal')
             ->where('id', $this->criteria[0]['id'])
             ->exists();
+
         $contestType = Contest::where('id', $this->criteria[0]['contest_id'])->value('contest_type');
 
         if ($contestType == 'individual') {
@@ -281,7 +282,7 @@ new class extends Component {
                 })
                 ->filter(fn($item) => $item['final_total'] > 0 && $item['final_score'] > 0)
                 ->values();
-
+      
             $merged = $merged
                 ->groupBy('gender')
                 ->map(function ($group) {
@@ -349,6 +350,17 @@ new class extends Component {
         $contestType = Contest::where('id', $this->criteria[0]['contest_id'])->value('contest_type');
         $judgeCount = $this->judgeCount;
         $criteriaCount = $this->criteriaCount;
+
+        $weight =  collect($this->criteria)->map(function ($criteria) {
+            return collect($criteria['criteria'])
+                ->filter(fn($block) => $block['data']['level'] !== 'final')
+                ->map(fn($block) => [
+                    'weight'  => $block['data']['weight'],
+                    'content' => $block['data']['content'],
+                    'level'   => $block['data']['level'],
+                ]);
+        });
+        $hasNoWeight = $weight->flatten(1)->every(fn($block) => empty($block['weight']));
         if ($contestType == 'individual') {
             $results = collect($score)
                 ->flatMap(function ($judgeScore) {
@@ -377,6 +389,7 @@ new class extends Component {
                                 'total_score' => $scoringType == 'rank_based' ? $cat['total_score'] : $cat['total_score'] / $judgeCount,
                                 'total_rank' => $cat['total_rank'],
                                 'final_rank' => $cat['final_rank'],
+                                'weighted_rank' => null,
                             ],
                         )
                         ->values();
@@ -386,6 +399,7 @@ new class extends Component {
                         'participant_no' => $first['participant']['participant']['participant_no'],
                         'gender' => $first['participant']['participant']['gender'],
                         'categories' => $categoryScores,
+
                         'grand_total_rank' => $scoringType == 'rank_based' ? $items->sum('total_rank') : $items->sum('final_rank'),
                         'grand_total' => $scoringType == 'rank_based' ? $items->sum('total_score') / $criteriaCount : $items->sum('total_score') / $judgeCount,
                         'grand_final_rank' => null,
@@ -393,9 +407,11 @@ new class extends Component {
                 })
                 // ✅ Rank per gender by grand_total descending
                 ->groupBy('gender')
-                ->map(function ($group) use ($scoringType) {
+                ->map(function ($group) use ($scoringType, $weight, $hasNoWeight) {
+                    $categoryNames = $group->first()['categories']->pluck('contest_category');
+
                     if ($scoringType != 'rank_based') {
-                        $categoryNames = $group->first()['categories']->pluck('contest_category');
+
 
                         foreach ($categoryNames as $categoryName) {
                             // Sort participants by this category's total_score descending
@@ -437,27 +453,61 @@ new class extends Component {
                         }
 
                         // Recompute grand_total_rank as sum of final_ranks per category
-                        $group = $group->map(function ($p) {
-                            $p['grand_total_rank'] = $p['categories']->sum('final_rank');
-                            return $p;
-                        });
+                        // $group = $group->map(function ($p) {
+                        //     $p['grand_total_rank'] = $p['categories']->sum('final_rank');
+                        //     return $p;
+                        // });
                     }
 
-                    // Now rank by grand_total or grand_total_rank
-                    $sorted = $group->sortBy('grand_total_rank')->values();
+                    $group = $group->map(function ($p) use ($weight, $hasNoWeight, $scoringType) {
 
+                        if (!$hasNoWeight) {
+                            $p['categories'] = $p['categories']->map(function ($cat) use ($weight) {
+                                $categoryWeight = $weight->flatten(1)
+                                    ->firstWhere('content', $cat['contest_category']);
+                                $w = $categoryWeight['weight'] / 100; // 25 → 0.25
+                                $cat['weighted_rank'] = $cat['final_rank'] * $w; // ✅ 3 * 0.25 = 0.75
+                                return $cat;
+                            })->values();
+                            $p['grand_total_rank'] = $p['categories']->sum('final_rank');
+                            $p['grand_total'] = $p['categories']->sum('weighted_rank');
+                        }
+
+                        // ✅ only recompute grand_total_rank if NO weight
+                        if ($hasNoWeight) {
+                            $p['grand_total_rank'] = match (true) {
+                                $scoringType == 'rank_based' => $p['categories']->sum('total_rank'),
+                                default                      => $p['categories']->sum('final_rank'),
+                            };
+                        }
+
+
+                        return $p;
+                    });
+
+                    // Now rank by grand_total or grand_total_rank
+                    // $sorted = $group->sortBy('grand_total_rank')->values();
+
+                    $sorted = !$hasNoWeight ?  $sorted = $group->sortBy('grand_total')->values() : $group->sortBy('grand_total_rank')->values();
                     $result = collect();
                     $i = 0;
                     $n = $sorted->count();
 
                     while ($i < $n) {
-                        $current = $sorted[$i]['grand_total_rank'];
+                        // $current = $sorted[$i]['grand_total_rank'];
+                        $current = !$hasNoWeight ? $sorted[$i]['grand_total'] : $sorted[$i]['grand_total_rank'];
 
                         $start = $i;
                         $end = $i;
 
-                        while ($end + 1 < $n && $sorted[$end + 1]['grand_total_rank'] == $current) {
-                            $end++;
+                        if (!$hasNoWeight) {
+                            while ($end + 1 < $n && $sorted[$end + 1]['grand_total'] == $current) {
+                                $end++;
+                            }
+                        } else {
+                            while ($end + 1 < $n && $sorted[$end + 1]['grand_total_rank'] == $current) {
+                                $end++;
+                            }
                         }
 
                         $rank = ($start + 1 + ($end + 1)) / 2;

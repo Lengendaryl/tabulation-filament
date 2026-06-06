@@ -100,7 +100,7 @@ new class extends Component {
                         <p>Category</p>
                     </div>
                     <div class="flex w-full justify-evenly">
-                        @foreach ($results->result['male'] as $res)
+                        @foreach ($results->result['male'] ?? [] as $res)
                             <div class="flex justify-around font-bold">
                                 <div class="text-center">
                                     <p class="text-lg">CANDIDATE
@@ -109,7 +109,7 @@ new class extends Component {
                                 </div>
                             </div>
                         @endforeach
-                        @foreach ($results->result['female'] as $res)
+                        @foreach ($results->result['female'] ?? [] as $res)
                             <div class="flex justify-around font-bold">
                                 <div class="text-center">
                                     <p class="text-lg">CANDIDATE
@@ -129,7 +129,7 @@ new class extends Component {
                     class="flex flex-col w-full justify-evenly border-b border-dashed border-black dark:border-white  p-4">
                     <div class="flex flex-col gap-8 w-full justify-evenly">
                         <div class="flex w-full justify-evenly">
-                            @foreach ($results->result['male'] as $res)
+                            @foreach ($results->result['male'] ?? [] as $res)
                                 <div class="flex justify-around font-bold">
                                     <div class="text-center">
                                         <p class="text-lg">CANDIDATE
@@ -140,7 +140,7 @@ new class extends Component {
                             @endforeach
                         </div>
                         <div class="flex w-full justify-evenly">
-                            @foreach ($results->result['female'] as $res)
+                            @foreach ($results->result['female'] ?? [] as $res)
                                 <div class="flex justify-around font-bold">
                                     <div class="text-center">
                                         <p class="text-lg">CANDIDATE

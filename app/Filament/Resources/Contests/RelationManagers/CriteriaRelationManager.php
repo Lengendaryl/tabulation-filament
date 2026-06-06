@@ -33,6 +33,74 @@ use Illuminate\Support\Facades\Auth;
 class CriteriaRelationManager extends RelationManager
 {
     protected static string $relationship = 'criteria';
+
+    public function criteriaShape(array $data)
+    {
+        if ($data['final_scoring_method'] === 'final') {
+            $data['preliminary_round_percentage_score'] = 0;
+            $data['final_round_percentage_score'] = 0;
+        }
+
+        collect($data['criteria'] ?? [])
+            ->each(function ($block) {
+
+                $total = collect($block['data']['criteria'] ?? [])
+                    ->sum(fn($item) => (float) ($item['score'] ?? 0));
+
+                if ($total > 100) {
+
+                    $content = $block['data']['content'] ?? 'Unknown';
+                    $level = $block['data']['level'] ?? 'Unknown';
+
+                    throw new Halt(
+                        "{$content} ({$level}) total score cannot exceed 100."
+                    );
+                }
+            });
+
+        // 2. Prepare Judges JSON structure
+        // In your form, the Select is named 'judges'
+        $selectedJudgeIds = $data['judges'] ?? [];
+        $judgesJson = collect($selectedJudgeIds)
+            ->map(fn($judgeId) => [
+                'judge_id' => (int) $judgeId,
+                'status' => false,
+                'request_edit' => false,
+            ])
+            ->values()
+            ->all();
+
+
+        // 3. Map the Builder data (Crucial: Keep 'type' and 'criteria' scores)
+        $data['criteria'] = collect($data['criteria'] ?? [])
+            ->map(function ($block) {
+                $total = collect($block['data']['criteria'] ?? [])
+                    ->sum(fn($item) => (float) ($item['score'] ?? 0));
+                return [
+                    'type' => 'contest',
+                    'data' => [
+                        'level' => $block['data']['level'] ?? null,
+                        'content' => $block['data']['content'] ?? null,
+                        'weight' => $block['data']['level'] === 'final' ? null : ($block['data']['weight'] ?? null),
+                        'criteria' => $block['data']['criteria'] ?? [],
+                        'total' => $total,
+
+                    ],
+                ];
+            })
+            ->values()
+            ->all();
+        $data['_meta'] = collect($data['criteria'] ?? [])
+            ->map(fn($block) => [
+                'content' => $block['data']['content'] ?? null,
+                'level' => $block['data']['level'] ?? null,
+                'judges' => $judgesJson
+            ])
+            ->values()
+            ->all();
+
+        return $data;
+    }
     public function form(Schema $schema): Schema
     {
         return $schema
@@ -97,7 +165,7 @@ class CriteriaRelationManager extends RelationManager
                                     ->maxValue(100)
                                     ->default(0)
                                     ->required(),
-                            ])->hidden(fn(Get $get): bool => $get('final_scoring_method') === 'final'),
+                            ])->hidden(fn(Get $get): bool => $get('final_scoring_method') != 'prelimFinal'),
                             Grid::make(1)->schema([
                                 Builder::make('criteria')
                                     ->label('Category contest')
@@ -105,7 +173,7 @@ class CriteriaRelationManager extends RelationManager
                                         Block::make('contest')
                                             ->schema([
                                                 Grid::make(3)
-                                                    ->columns(fn(callable $get) => $get('../../../preliminary_scoring_method') === 'weighted'
+                                                    ->columns(fn(callable $get) => $get('../../../preliminary_scoring_method') === 'weighted' && $get('level') !== 'final'
                                                         ? 3
                                                         : 2)
                                                     ->schema([
@@ -117,7 +185,7 @@ class CriteriaRelationManager extends RelationManager
                                                             ->numeric()
                                                             ->visible(
                                                                 fn(callable $get) =>
-                                                                $get('../../../preliminary_scoring_method') === 'weighted'
+                                                                $get('../../../preliminary_scoring_method') === 'weighted' &&  $get('level') !== 'final'
                                                             )
                                                             ->required(),
                                                         Select::make('level')
@@ -126,6 +194,7 @@ class CriteriaRelationManager extends RelationManager
                                                                 'preliminary' => 'Preliminary',
                                                                 'final' => 'Final',
                                                             ])
+                                                            ->live()
                                                             ->required(),
                                                     ])->columnSpanFull(),
                                                 Repeater::make('criteria')
@@ -151,6 +220,52 @@ class CriteriaRelationManager extends RelationManager
                 ])->columnSpanFull()
             ]);
     }
+
+    public function judgeGroup($record, array $data)
+    {
+        try {
+            JudgesGroup::updateOrCreate(
+                [
+                    'criteria_id' => $record->id,
+                ],
+                [
+                    'judge_id' => $data['judges'],
+                    'judges' => $data['_meta'] ?? [],
+                ]
+            );
+        } catch (\Throwable $e) {
+
+            logger()->error('JudgesGroup Create Failed', [
+                'message' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            throw $e;
+        }
+    }
+    public function totalScore(array $data)
+    {
+        foreach ($data['criteria'] ?? [] as $block) {
+
+            $total = collect($block['data']['criteria'] ?? [])
+                ->sum(fn($item) => (float) ($item['score'] ?? 0));
+
+            if ($total > 100) {
+                $content = $block['data']['content'] ?? 'Unknown';
+                $level = $block['data']['level'] ?? 'Unknown';
+
+                Notification::make()
+                    ->color('danger')
+                    ->title('Validation Error')
+                    ->body("{$content} ({$level}) total must not exceed 100")
+                    ->send();
+                // throw Halt::make();
+            }
+        }
+    }
+
     public function table(Table $table): Table
     {
         return $table
@@ -166,120 +281,15 @@ class CriteriaRelationManager extends RelationManager
             ->headerActions([
                 CreateAction::make()
                     ->modalWidth(Width::ScreenTwoExtraLarge)
-                    ->mutateDataUsing(function (array $data): array {
-                        if ($data['final_scoring_method'] === 'final') {
-                            $data['preliminary_round_percentage_score'] = 0;
-                            $data['final_round_percentage_score'] = 0;
-                        }
-
-                        collect($data['criteria'] ?? [])
-                            ->each(function ($block) {
-
-                                $total = collect($block['data']['criteria'] ?? [])
-                                    ->sum(fn($item) => (float) ($item['score'] ?? 0));
-
-                                if ($total > 100) {
-
-                                    $content = $block['data']['content'] ?? 'Unknown';
-                                    $level = $block['data']['level'] ?? 'Unknown';
-
-                                    throw new Halt(
-                                        "{$content} ({$level}) total score cannot exceed 100."
-                                    );
-                                }
-                            });
-
-                        // 2. Prepare Judges JSON structure
-                        // In your form, the Select is named 'judges'
-                        $selectedJudgeIds = $data['judges'] ?? [];
-                        $judgesJson = collect($selectedJudgeIds)
-                            ->map(fn($judgeId) => [
-                                'judge_id' => (int) $judgeId,
-                                'status' => false,
-                                'request_edit' => false,
-                            ])
-                            ->values()
-                            ->all();
-
-
-                        // 3. Map the Builder data (Crucial: Keep 'type' and 'criteria' scores)
-                        $data['criteria'] = collect($data['criteria'] ?? [])
-                            ->map(function ($block) {
-                                $total = collect($block['data']['criteria'] ?? [])
-                                    ->sum(fn($item) => (float) ($item['score'] ?? 0));
-                                return [
-                                    'type' => 'contest',
-                                    'data' => [
-                                        'level' => $block['data']['level'] ?? null,
-                                        'content' => $block['data']['content'] ?? null,
-                                        'weight' => $block['data']['weight'] ?? null,
-                                        'criteria' => $block['data']['criteria'] ?? [],
-                                        'total' => $total,
-
-                                    ],
-                                ];
-                            })
-                            ->values()
-                            ->all();
-                        $data['_meta'] = collect($data['criteria'] ?? [])
-                            ->map(fn($block) => [
-                                'content' => $block['data']['content'] ?? null,
-                                'level' => $block['data']['level'] ?? null,
-                                'judges' => $judgesJson
-                            ])
-                            ->values()
-                            ->all();
-
-                        return $data;
-                    })
-                    ->before(function (array $data) {
-                        foreach ($data['criteria'] ?? [] as $block) {
-
-                            $total = collect($block['data']['criteria'] ?? [])
-                                ->sum(fn($item) => (float) ($item['score'] ?? 0));
-
-                            if ($total > 100) {
-                                $content = $block['data']['content'] ?? 'Unknown';
-                                $level = $block['data']['level'] ?? 'Unknown';
-
-                                Notification::make()
-                                    ->color('danger')
-                                    ->title('Validation Error')
-                                    ->body("{$content} ({$level}) total must not exceed 100")
-                                    ->send();
-                                // throw Halt::make();
-                            }
-                        }
-                    })
-                    ->after(function ($record, array $data) {
-                        try {
-
-                            JudgesGroup::create([
-                                'criteria_id' => $record->id,
-                                'judges' => $data['_meta'] ?? [],
-                                'judge_id' => $data['judges']
-                            ]);
-                        } catch (\Throwable $e) {
-
-                            logger()->error('JudgesGroup Create Failed', [
-                                'message' => $e->getMessage(),
-                                'line' => $e->getLine(),
-                                'file' => $e->getFile(),
-                                'trace' => $e->getTraceAsString(),
-                            ]);
-
-                            throw $e;
-                        }
-                    }),
+                    ->mutateDataUsing(fn(array $data): array => $this->criteriaShape($data))
+                    ->before(fn(array $data) => $this->totalScore($data))
+                    ->after(fn($record, array $data) => $this->judgeGroup($record, $data)),
             ])
             ->recordActions([
-                EditAction::make()->mutateDataUsing(function (array $data): array {
-                    if ($data['final_scoring_method'] === 'final') {
-                        $data['preliminary_round_percentage_score'] = 0;
-                        $data['final_round_percentage_score'] = 0;
-                    }
-                    return $data;
-                })->modalWidth(Width::ScreenTwoExtraLarge),
+                EditAction::make()->mutateDataUsing(fn(array $data): array => $this->criteriaShape($data))
+                    ->before(fn(array $data) => $this->totalScore($data))
+                    ->after(fn($record, array $data) => $this->judgeGroup($record, $data))
+                    ->modalWidth(Width::ScreenTwoExtraLarge),
                 DeleteAction::make(),
             ])
             ->toolbarActions([
