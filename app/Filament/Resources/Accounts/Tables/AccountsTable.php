@@ -9,6 +9,7 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
+use STS\FilamentImpersonate\Actions\Impersonate;
 
 class AccountsTable
 {
@@ -26,6 +27,7 @@ class AccountsTable
                 Filter::make('email')
             ])
             ->recordActions([
+                Impersonate::make()->label(''),
                 EditAction::make(),
                 DeleteAction::make()
             ])

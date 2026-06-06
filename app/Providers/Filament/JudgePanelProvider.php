@@ -60,7 +60,6 @@ class JudgePanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Judge/Widgets'), for: 'App\Filament\Judge\Widgets')
             ->widgets([
                 AccountWidget::class,
-                FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
