@@ -62,7 +62,7 @@ new class extends Component {
                 @endif
             </div>
             <div
-                class="{{ $contestType === ContestType::Individual->value && 'grid grid-cols-1 xl:grid-cols-2' }} gap-4">
+                class="{{ $contestType === ContestType::Individual->value ? 'grid grid-cols-1 xl:grid-cols-2 gap-4' : '' }} ">
                 @foreach ($groupedResults as $gender => $scores)
                     @php
                         // Sort ranks for this gender group only
