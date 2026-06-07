@@ -6,3 +6,4 @@
 
 import './echo';
 import './criteria';
+import './print'
