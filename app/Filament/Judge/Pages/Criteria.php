@@ -2,6 +2,8 @@
 
 namespace App\Filament\Judge\Pages;
 
+use App\Enums\ContestType;
+use App\Enums\Round;
 use App\Events\JudgeSubmittedEvent;
 use App\Models\Criteria as ModelsCriteria;
 use App\Models\JudgesGroup;
@@ -80,7 +82,7 @@ class Criteria extends Page
         $record = Score::where('judge_id', $this->userId)
             ->where('contest_id', $this->contestId)
             ->where('contest_category', $this->tabLabels[$this->activeTab])
-            ->where('criteria_id', $this->criteriaId )
+            ->where('criteria_id', $this->criteriaId)
             ->first();
 
         if ($record && !empty($record->score)) {
@@ -125,7 +127,7 @@ class Criteria extends Page
 
         // reset tab data to avoid mixing old values
         $this->scores[$tab] = [];
-   
+
         if ($record && !empty($record->score)) {
             foreach ($record->score as $item) {
                 $pId = $item['participant_id'];
@@ -144,11 +146,17 @@ class Criteria extends Page
     {
         $this->ranks = [];
 
-        $groupedParticipants = $this->allCriteria
-            ->first()
-            ->contest
-            ->participants
-            ->groupBy(fn($p) => $p['participant']['gender']);
+        // $groupedParticipants = $this->allCriteria
+        //     ->first()
+        //     ->contest
+        //     ->participants
+        //     ->groupBy(fn($p) => $p['participant']['gender']);
+        $contestType = $this->allCriteria->first()->contest->contest_type;
+
+        // ✅ group by gender only for individual, not for team
+        $groupedParticipants = $contestType === ContestType::Team->value
+            ? collect(['team' => $this->allCriteria->first()->contest->participants]) // ✅ single group
+            : $this->allCriteria->first()->contest->participants->groupBy(fn($p) => $p['participant']['gender']);
 
         foreach ($groupedParticipants as $gender => $participants) {
 
@@ -225,7 +233,7 @@ class Criteria extends Page
             $activeGroup = collect($this->allCriteria->first()->criteria)
                 ->first(fn($g) => Str::slug($g['data']['content']) === $category);
 
-            $level = $activeGroup['data']['level'] ?? 'preliminary';
+            $level = $activeGroup['data']['level'] ?? Round::Preliminary->value;
             foreach ($participantsScores as $participantId => $criteria) {
 
                 // Find the specific participant match from our relationship collection

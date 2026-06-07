@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\ContestType;
+use App\Enums\Round;
 use App\Models\Result;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Computed;
@@ -62,16 +64,23 @@ new class extends Component {
 
         $category = $isFinalPrelim ? 'Final Score' : $this->result[0]['contest_category'] ?? '';
 
-        return $this->result->where('contest_category', $category)->map(function ($item) use ($isFinalPrelim) {
+        $contestType = $this->result[0]['contest']['contest_type'];
+
+        return $this->result->where('contest_category', $category)->map(function ($item) use ($contestType) {
             $item->result = collect($item->result)
                 ->groupBy('gender')
-                ->map(function ($group) use ($isFinalPrelim) {
-                    return $group->sortByDesc('grand_final_rank')->take(3)->values();
+                ->map(function ($group) use ($contestType) {
+                    return $contestType === ContestType::Individual->value ? $group->sortByDesc('grand_final_rank')->take(3)->values() : $group->sortBy('grand_final_rank')->take(3)->values();
                 })
                 ->all();
-
             return $item;
         });
+    }
+
+    #[Computed]
+    public function teamResult()
+    {
+        return $this->result;
     }
 };
 ?>
@@ -83,7 +92,11 @@ new class extends Component {
             {{ $heading }}
         </h2>
     </div>
+    @php
+        $contestType = $this->result[0]['contest']['contest_type'] ?? null;
+        $t = $contestType === ContestType::Individual->value ? Round::Final->value : Round::Preliminary->value;
 
+    @endphp
     @if ($subHeading)
         <div>
             <h3 class="text-center text-xl">TOP {{ $subHeading }} FINALIST</h3>
@@ -154,11 +167,14 @@ new class extends Component {
                 </div>
             @endforeach
         </div>
-    @elseif ($tabType === 'final')
+    @elseif ($tabType === $t)
         <div class="flex flex-col justify-center w-full">
+
             @foreach ($this->finalResult as $results)
                 @php
+
                     $category = $results['contest']['category'];
+
                     $labels = [
                         1 =>
                             $results['contest']['category'] .
@@ -171,42 +187,72 @@ new class extends Component {
                     ];
                     $maleByRank = collect($results->result['male'] ?? [])->values();
                     $femaleByRank = collect($results->result['female'] ?? [])->values();
-
-                    $total = max($maleByRank->count(), $femaleByRank->count());
+                    $teamByRank = collect($results->result['team'] ?? [])->values();
+                    $total =
+                        $contestType === ContestType::Team->value
+                            ? $teamByRank->count()
+                            : max($maleByRank->count(), $femaleByRank->count());
                 @endphp
+                @if ($contestType === ContestType::Individual->value)
+                    @for ($i = 0; $i < $total; $i++)
+                        @php
+                            $rank = $total - $i; // since sorted descending, index 0=lowest rank
+                            $label = $labels[$rank] ?? 'Rank ' . $rank;
+                            $male = $maleByRank[$i] ?? null;
+                            $female = $femaleByRank[$i] ?? null;
+                            $team = $teamByRank[$i] ?? null;
+                        @endphp
+                        <div
+                            class="flex flex-col w-full justify-evenly border-b border-dashed border-black dark:border-white p-4">
+                            <div class="text-center mb-2">
+                                <p class="font-bold">{{ $label }}</p>
+                            </div>
+                            <div class="flex w-full justify-evenly">
+                                <div class="text-center">
+                                    @if ($male)
+                                        <p class="text-lg font-bold">CANDIDATE NO.
+                                            {{ $male['participant']['participant']['participant_no'] }}
+                                        </p>
+                                        <p>Male</p>
+                                    @endif
+                                </div>
+                                <div class="text-center">
+                                    @if ($female)
+                                        <p class="text-lg font-bold">CANDIDATE NO.
+                                            {{ $female['participant']['participant']['participant_no'] }}
+                                        </p>
+                                        <p>Female</p>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @endfor
+                @else
+                    @for ($i = $total - 1; $i >= 0; $i--)
+                        @php
+                            $rank = $i + 1;
+                            $label = $labels[$rank] ?? 'Rank ' . $rank;
+                            $team = $teamByRank[$i] ?? null;
+                        @endphp
+                        <div
+                            class="flex flex-col w-full justify-evenly border-b border-dashed border-black dark:border-white p-4">
+                            <div class="text-center mb-2">
+                                <p class="font-bold">{{ $label }}</p>
+                            </div>
+                            <div class="flex w-full justify-evenly">
+                                <div class="text-center">
+                                    @if ($team)
+                                        <p class="text-lg font-bold">TEAM CANDIDATE NO.
+                                            {{ $team['participant']['participant']['team_participant_no'] }}
+                                        </p>
+                                        <p>Male</p>
+                                    @endif
+                                </div>
+                            </div>
 
-                @for ($i = 0; $i < $total; $i++)
-                    @php
-                        $rank = $total - $i; // since sorted descending, index 0=lowest rank
-                        $label = $labels[$rank] ?? 'Rank ' . $rank;
-                        $male = $maleByRank[$i] ?? null;
-                        $female = $femaleByRank[$i] ?? null;
-                    @endphp
-                    <div
-                        class="flex flex-col w-full justify-evenly border-b border-dashed border-black dark:border-white p-4">
-                        <div class="text-center mb-2">
-                            <p class="font-bold">{{ $label }}</p>
                         </div>
-                        <div class="flex w-full justify-evenly">
-                            <div class="text-center">
-                                @if ($male)
-                                    <p class="text-lg font-bold">CANDIDATE NO.
-                                        {{ $male['participant']['participant']['participant_no'] }}
-                                    </p>
-                                    <p>Male</p>
-                                @endif
-                            </div>
-                            <div class="text-center">
-                                @if ($female)
-                                    <p class="text-lg font-bold">CANDIDATE NO.
-                                        {{ $female['participant']['participant']['participant_no'] }}
-                                    </p>
-                                    <p>Female</p>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                @endfor
+                    @endfor
+                @endif
             @endforeach
         </div>
     @endif

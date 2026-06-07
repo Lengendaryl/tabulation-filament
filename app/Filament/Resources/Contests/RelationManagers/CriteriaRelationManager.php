@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Contests\RelationManagers;
 
-
+use App\Enums\Round;
 use App\Models\Criteria;
 use App\Models\JudgesGroup;
 use App\Models\User;
@@ -36,7 +36,7 @@ class CriteriaRelationManager extends RelationManager
 
     public function criteriaShape(array $data)
     {
-        if ($data['final_scoring_method'] === 'final') {
+        if ($data['final_scoring_method'] === Round::Final->value) {
             $data['preliminary_round_percentage_score'] = 0;
             $data['final_round_percentage_score'] = 0;
         }
@@ -81,7 +81,7 @@ class CriteriaRelationManager extends RelationManager
                     'data' => [
                         'level' => $block['data']['level'] ?? null,
                         'content' => $block['data']['content'] ?? null,
-                        'weight' => $block['data']['level'] === 'final' ? null : ($block['data']['weight'] ?? null),
+                        'weight' => $block['data']['level'] === Round::Final->value ? null : ($block['data']['weight'] ?? null),
                         'criteria' => $block['data']['criteria'] ?? [],
                         'total' => $total,
 
@@ -191,7 +191,7 @@ class CriteriaRelationManager extends RelationManager
                                                         Select::make('level')
                                                             ->label('Contes Round')
                                                             ->options([
-                                                                'preliminary' => 'Preliminary',
+                                                               'preliminary' => 'Preliminary',
                                                                 'final' => 'Final',
                                                             ])
                                                             ->live()
