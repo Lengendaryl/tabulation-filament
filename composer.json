@@ -13,6 +13,7 @@
         "filament/filament": "~5.0",
         "geo-sot/filament-env-editor": "^2.0",
         "laravel/framework": "^13.0",
+        "laravel/reverb": "^1.0",
         "laravel/tinker": "^3.0",
         "livewire/flux": "^2.14",
         "pusher/pusher-php-server": "^7.2",
