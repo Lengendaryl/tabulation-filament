@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('contest_category');
             $table->enum('level',['preliminary','final']);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -6,9 +6,16 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreAction;
+use Filament\Actions\RestoreBulkAction;
+use Filament\Forms\Components\Builder;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use STS\FilamentImpersonate\Actions\Impersonate;
 
 class AccountsTable
@@ -24,16 +31,21 @@ class AccountsTable
                 TextColumn::make('roles.name')
             ])
             ->filters([
-                Filter::make('email')
+                Filter::make('email'),
+                TrashedFilter::make(),
             ])
             ->recordActions([
                 Impersonate::make()->label(''),
                 EditAction::make(),
-                DeleteAction::make()
+                DeleteAction::make(),
+                ForceDeleteAction::make(),
+                RestoreAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
+                    RestoreBulkAction::make(),
+                    ForceDeleteBulkAction::make(),
                 ]),
             ]);
     }

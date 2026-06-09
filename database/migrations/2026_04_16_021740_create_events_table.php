@@ -21,6 +21,7 @@ return new class extends Migration
             $table->text('address');
             $table->text('poster')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

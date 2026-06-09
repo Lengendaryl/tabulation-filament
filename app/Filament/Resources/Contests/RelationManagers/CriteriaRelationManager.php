@@ -11,6 +11,10 @@ use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreAction;
+use Filament\Actions\RestoreBulkAction;
 use Filament\Forms\Components\Builder;
 use Filament\Forms\Components\Builder\Block;
 use Filament\Forms\Components\Repeater;
@@ -27,6 +31,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Enums\Width;
 use Filament\Support\Exceptions\Halt;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 
@@ -191,7 +196,7 @@ class CriteriaRelationManager extends RelationManager
                                                         Select::make('level')
                                                             ->label('Contes Round')
                                                             ->options([
-                                                               'preliminary' => 'Preliminary',
+                                                                'preliminary' => 'Preliminary',
                                                                 'final' => 'Final',
                                                             ])
                                                             ->live()
@@ -276,7 +281,7 @@ class CriteriaRelationManager extends RelationManager
                 TextColumn::make('qualified_participant')->label('Qualified Participants'),
                 TextColumn::make('final_scoring_method')->label('Final Scoring Method'),
             ])->filters([
-                //
+                TrashedFilter::make(),
             ])
             ->headerActions([
                 CreateAction::make()
@@ -291,10 +296,14 @@ class CriteriaRelationManager extends RelationManager
                     ->after(fn($record, array $data) => $this->judgeGroup($record, $data))
                     ->modalWidth(Width::ScreenTwoExtraLarge),
                 DeleteAction::make(),
+                ForceDeleteAction::make(),
+                RestoreAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
+                    RestoreBulkAction::make(),
+                    ForceDeleteBulkAction::make(),
                 ]),
             ]);
     }

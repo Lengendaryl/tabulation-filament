@@ -26,6 +26,7 @@ return new class extends Migration
             $table->integer('preliminary_round_percentage_score')->nullable();
             $table->integer('final_round_percentage_score')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

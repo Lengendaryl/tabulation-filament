@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('contest_category');
             $table->enum('round', ['preliminary', 'final', 'prelimFinal']);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
