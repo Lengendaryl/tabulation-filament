@@ -15,6 +15,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class AccountResource extends Resource
 {
@@ -41,7 +42,10 @@ class AccountResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->where('id', '!=', auth()->id());
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ])
+            ->where('id', '!=', auth()->id()); // ✅ both in one method
     }
 
     public static function getPages(): array

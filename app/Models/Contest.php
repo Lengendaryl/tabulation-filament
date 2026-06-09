@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable(['name', 'category', 'description', 'organizer', 'scoring_type', 'contest_type', 'date', 'venue', 'poster'])]
 class Contest extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
     public function event()
     {
         return $this->belongsTo(Event::class);

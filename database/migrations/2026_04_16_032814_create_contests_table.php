@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('venue');
             $table->string('poster')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
