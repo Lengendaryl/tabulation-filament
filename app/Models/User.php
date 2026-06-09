@@ -21,12 +21,8 @@ use Spatie\Permission\Models\Role;
 class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasRoles, LogsActivity;
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()
-            ->logAll();
-    }
+    use HasFactory, Notifiable, HasRoles;
+
     protected static function booted(): void
     {
         static::created(function (User $user) {
