@@ -17,7 +17,7 @@ class EventsTable
         return $table
             ->columns([
                 TextColumn::make('name'),
-                TextColumn::make('date'),
+                TextColumn::make('date')->date(),
                 TextColumn::make('organizer'),
                 TextColumn::make('venue'),
                 TextColumn::make('address'),
