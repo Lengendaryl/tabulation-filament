@@ -193,12 +193,8 @@
                                  <flux:heading size="xl" class="text-center uppercase">
                                      {{ $categoryItem['contest_category'] }}
                                  </flux:heading>
-                                 @php
-                                     logger($contestType);
-                                     logger(ContestType::Individual->value);
-                                 @endphp
                                  <div
-                                     class="{{ $contestType === ContestType::Individual->value ? 'grid grid-cols-1 xl:grid-cols-2 gap-4' :'' }}">
+                                     class="{{ $contestType === ContestType::Individual->value ? 'grid grid-cols-1 xl:grid-cols-2 gap-4' : '' }}">
 
                                      @if ($contestType == ContestType::Individual->value)
                                          <flux:card class="w-full">
@@ -423,12 +419,13 @@
                              </flux:card>
                          @endforeach
                          <div class="flex flex-col justify-center items-center uppercase gap-4">
-                             <div>
+                             <div class="text-center">
                                  <p class="font-medium  border-b border-black dark:border-white ">
                                      {{ $judgeItem['judge']['name'] }}
                                  </p>
                                  <p class="text-center text-xs">
-                                     JUDGE
+                                     {{ $judgeItem['judge']['position'] ?? 'JUDGE' }}
+                                     {{ $judgeItem['judge']['no'] ?? '' }}
                                  </p>
                              </div>
 
