@@ -61,6 +61,8 @@ class DatabaseSeeder extends Seeder
 
         JudgesGroup::factory()->create();
 
+        // Participant::factory()->count(6)->team()->create();
+
         Participant::factory()->count(6)->male()->create();
 
         Participant::factory()->count(6)->female()->create();

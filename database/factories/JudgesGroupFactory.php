@@ -242,87 +242,111 @@ class JudgesGroupFactory extends Factory
                         ],
                     ],
                 ],
-                //RANK BASED
-                // [
-                //     'level' => 'preliminary',
-                //     'content' => 'Sports Wear',
-                //     'judges' => [
-                //         [
-                //             'request_edit' => false,
-                //             'status' => true,
-                //             'judge_id' => 2
-                //         ],
-                //         [
-                //             'request_edit' => false,
-                //             'status' => true,
-                //             'judge_id' => 3
-                //         ],
-                //         [
-                //             'request_edit' => false,
-                //             'status' => true,
-                //             'judge_id' => 4
-                //         ],
-                //         [
-                //             'request_edit' => false,
-                //             'status' => true,
-                //             'judge_id' => 5
-                //         ],
-                //     ],
-                // ],
-                // [
-                //     'level' => 'preliminary',
-                //     'content' => 'Barong/Filipiana Competition',
-                //     'judges' => [
-                //         [
-                //             'request_edit' => false,
-                //             'status' => true,
-                //             'judge_id' => 2
-                //         ],
-                //         [
-                //             'request_edit' => false,
-                //             'status' => true,
-                //             'judge_id' => 3
-                //         ],
-                //         [
-                //             'request_edit' => false,
-                //             'status' => true,
-                //             'judge_id' => 4
-                //         ],
-                //         [
-                //             'request_edit' => false,
-                //             'status' => true,
-                //             'judge_id' => 5
-                //         ],
-                //     ],
-                // ],
-                // [
-                //     'level' => 'final',
-                //     'content' => 'Final Question and Answer',
-                //     'judges' => [
-                //         [
-                //             'request_edit' => false,
-                //             'status' => true,
-                //             'judge_id' => 2
-                //         ],
-                //         [
-                //             'request_edit' => false,
-                //             'status' => true,
-                //             'judge_id' => 3
-                //         ],
-                //         [
-                //             'request_edit' => false,
-                //             'status' => true,
-                //             'judge_id' => 4
-                //         ],
-                //         [
-                //             'request_edit' => false,
-                //             'status' => true,
-                //             'judge_id' => 5
-                //         ],
-                //     ],
-                // ],
             ]
-
+            //RANK BASED
+            // [
+            //     'level' => 'preliminary',
+            //     'content' => 'Sports Wear',
+            //     'judges' => [
+            //         [
+            //             'request_edit' => false,
+            //             'status' => true,
+            //             'judge_id' => 2
+            //         ],
+            //         [
+            //             'request_edit' => false,
+            //             'status' => true,
+            //             'judge_id' => 3
+            //         ],
+            //         [
+            //             'request_edit' => false,
+            //             'status' => true,
+            //             'judge_id' => 4
+            //         ],
+            //         [
+            //             'request_edit' => false,
+            //             'status' => true,
+            //             'judge_id' => 5
+            //         ],
+            //     ],
+            // ],
+            // [
+            //     'level' => 'preliminary',
+            //     'content' => 'Barong/Filipiana Competition',
+            //     'judges' => [
+            //         [
+            //             'request_edit' => false,
+            //             'status' => true,
+            //             'judge_id' => 2
+            //         ],
+            //         [
+            //             'request_edit' => false,
+            //             'status' => true,
+            //             'judge_id' => 3
+            //         ],
+            //         [
+            //             'request_edit' => false,
+            //             'status' => true,
+            //             'judge_id' => 4
+            //         ],
+            //         [
+            //             'request_edit' => false,
+            //             'status' => true,
+            //             'judge_id' => 5
+            //         ],
+            //     ],
+            // ],
+            // [
+            //     'level' => 'final',
+            //     'content' => 'Final Question and Answer',
+            //     'judges' => [
+            //         [
+            //             'request_edit' => false,
+            //             'status' => true,
+            //             'judge_id' => 2
+            //         ],
+            //         [
+            //             'request_edit' => false,
+            //             'status' => true,
+            //             'judge_id' => 3
+            //         ],
+            //         [
+            //             'request_edit' => false,
+            //             'status' => true,
+            //             'judge_id' => 4
+            //         ],
+            //         [
+            //             'request_edit' => false,
+            //             'status' => true,
+            //             'judge_id' => 5
+            //         ],
+            //     ],
+            // ],
+            // 'criteria_id' => 1,
+            // 'judge_id' => [2, 3, 4, 5],
+            // 'judges' => [
+            //     [
+            //         "level" => "preliminary",
+            //         "judges" => [
+            //             [
+            //                 "status" => false,
+            //                 "judge_id" => 2,
+            //                 "request_edit" => false
+            //             ],
+            //             [
+            //                 "status" => false,
+            //                 "judge_id" => 3,
+            //                 "request_edit" => false
+            //             ],
+            //             [
+            //                 "status" => false,
+            //                 "judge_id" => 4,
+            //                 "request_edit" => false
+            //             ]
+            //         ],
+            //         "content" => "STREET DANCE"
+            //     ]
+            // ]
         ];
     }
 }
