@@ -16,4 +16,12 @@ class EditAccount extends EditRecord
             DeleteAction::make(),
         ];
     }
+
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        if ($data['position'] === 'Chairman of the Board of Judges') {
+            $data['no'] = null;
+        }
+        return $data;
+    }
 }

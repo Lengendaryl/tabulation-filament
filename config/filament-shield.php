@@ -1,6 +1,14 @@
 <?php
 
 declare(strict_types=1);
+
+use AlizHarb\ActivityLog\Resources\ActivityLogs\ActivityLogResource;
+use App\Filament\Judge\Pages\Criteria;
+use App\Filament\Resources\Accounts\AccountResource;
+use App\Filament\Resources\Contests\ContestResource;
+use App\Filament\Resources\Events\EventResource;
+use App\Filament\Resources\Results\ResultResource;
+use App\Filament\Resources\Roles\RoleResource as RolesRoleResource;
 use BezhanSalleh\FilamentShield\Resources\Roles\RoleResource;
 use Filament\Pages\Dashboard;
 use Filament\Widgets\AccountWidget;
@@ -126,8 +134,18 @@ return [
         'merge' => true,
         'generate' => true,
         'methods' => [
-            'viewAny', 'view', 'create', 'update', 'delete', 'deleteAny', 'restore',
-            'forceDelete', 'forceDeleteAny', 'restoreAny', 'replicate', 'reorder',
+            'viewAny',
+            'view',
+            // 'create',
+            // 'update',
+            // 'delete',
+            // 'deleteAny',
+            // 'restore',
+            // 'forceDelete',
+            // 'forceDeleteAny',
+            // 'restoreAny',
+            // 'replicate',
+            // 'reorder',
         ],
         'single_parameter_methods' => [
             'viewAny',
@@ -178,7 +196,12 @@ return [
             ],
         ],
         'exclude' => [
-            //
+            AccountResource::class,
+            EventResource::class,
+            RolesRoleResource::class,
+            RoleResource::class,
+            ActivityLogResource::class,
+            ResultResource::class
         ],
     ],
 

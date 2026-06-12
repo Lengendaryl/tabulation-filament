@@ -26,7 +26,6 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
-use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Width;
 use Filament\Support\Exceptions\Halt;
@@ -120,20 +119,43 @@ class CriteriaRelationManager extends RelationManager
                                 ])
                                 ->default('contest')
                                 ->live(),
+
                             Select::make('judges')
                                 ->multiple()
+                                ->searchable()
+                                ->native(false)
                                 ->options(function (callable $get) {
-
-                                    return match ($get('judges_source')) {
-
+                                    $judges = match ($get('judges_source')) {
                                         'contest' => User::whereHas(
                                             'contests',
-                                            fn($q) =>
-                                            $q->where('contest_id', $this->ownerRecord->id)
-                                        )->pluck('name', 'id'),
-
-                                        default => User::where('id', '!=', Auth::id())->pluck('name', 'id'),
+                                            fn($q) => $q->where('contest_id', $this->ownerRecord->id)
+                                        )->get(),
+                                        default => User::where('id', '!=', Auth::id())->get(),
                                     };
+
+                                    return $judges
+                                        ->groupBy(fn($judge) => $judge->category ?? 'No Category')
+                                        ->map(fn($group) => $group->pluck('name', 'id'))
+                                        ->toArray();
+                                })
+                                ->getSearchResultsUsing(function (string $search, callable $get) {
+                                    $judges = match ($get('judges_source')) {
+                                        'contest' => User::whereHas(
+                                            'contests',
+                                            fn($q) => $q->where('contest_id', $this->ownerRecord->id)
+                                        ),
+                                        default => User::where('id', '!=', Auth::id()),
+                                    };
+
+                                    return $judges
+                                        ->where(function ($query) use ($search) {
+                                            $query->where('name', 'like', "%{$search}%")
+                                                ->orWhere('category', 'like', "%{$search}%"); // ✅ search by category
+                                        })
+                                        ->get()
+                                        ->groupBy(fn($judge) => $judge->category ?? 'No Category') // ✅ keep grouping
+                                        ->map(fn($group) => $group->pluck('name', 'id'))
+                                        ->toArray();
                                 })
                                 ->live()
                                 ->required(),
