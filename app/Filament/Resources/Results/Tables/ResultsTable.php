@@ -26,7 +26,8 @@ class ResultsTable
                     ->formatStateUsing(fn(string $state): string => Str::title(str_replace('_', ' ', $state))),
                 TextColumn::make('contest.contest_type')
                     ->label('Type')
-                    ->formatStateUsing(fn($state): string => Str::title($state))
+                    ->formatStateUsing(fn($state): string => Str::title($state)),
+                TextColumn::make('contest.date')->date()
             ])
             ->filters([
                 TrashedFilter::make(),
