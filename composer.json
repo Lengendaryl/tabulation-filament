@@ -17,10 +17,7 @@
         "laravel/tinker": "^3.0",
         "livewire/flux": "^2.14",
         "pusher/pusher-php-server": "^7.2",
-        "spatie/browsershot": "^5.3",
-        "spatie/laravel-pdf": "^2.9",
-        "stechstudio/filament-impersonate": "^5.5",
-        "torgodly/html2media": "^2.1"
+        "stechstudio/filament-impersonate": "^5.5"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
