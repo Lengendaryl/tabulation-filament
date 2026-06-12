@@ -159,7 +159,7 @@
                          x-show="activeTab === '{{ $judgeItem['judge']['name'] }}'" x-cloak>
 
                          <flux:button x-on:click="printDiv('{{ $judgeItem }}')" icon="printer" variant="primary"
-                             color="violet"  class="no-print">
+                             color="violet" class="no-print">
                              Print
                          </flux:button>
 
@@ -193,9 +193,12 @@
                                  <flux:heading size="xl" class="text-center uppercase">
                                      {{ $categoryItem['contest_category'] }}
                                  </flux:heading>
-
+                                 @php
+                                     logger($contestType);
+                                     logger(ContestType::Individual->value);
+                                 @endphp
                                  <div
-                                     class="{{ $contestType === ContestType::Individual->value && 'grid grid-cols-1 xl:grid-cols-2 gap-4' }} ">
+                                     class="{{ $contestType === ContestType::Individual->value ? 'grid grid-cols-1 xl:grid-cols-2 gap-4' :'' }}">
 
                                      @if ($contestType == ContestType::Individual->value)
                                          <flux:card class="w-full">
@@ -377,8 +380,7 @@
                                                                  ->sort()
                                                                  ->values();
 
-                                                             $cutoffRank =
-                                                                 $sortedRanks[$qualifiedCount - 1] ?? null;
+                                                             $cutoffRank = $sortedRanks[$qualifiedCount - 1] ?? null;
 
                                                              $isHighlighted =
                                                                  $cutoffRank !== null && $rankValue <= $cutoffRank;
