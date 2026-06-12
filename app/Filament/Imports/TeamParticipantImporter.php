@@ -16,10 +16,10 @@ class TeamParticipantImporter extends Importer
     {
         return [
             ImportColumn::make('team_participant_no')->requiredMapping()->fillRecordUsing(fn() => null),
-            ImportColumn::make('image')->requiredMapping()->fillRecordUsing(fn() => null),
+            ImportColumn::make('image')->fillRecordUsing(fn() => null),
             ImportColumn::make('team_name')->requiredMapping()->fillRecordUsing(fn() => null),
-            ImportColumn::make('team_captain')->requiredMapping()->fillRecordUsing(fn() => null),
-            ImportColumn::make('team_description')->requiredMapping()->fillRecordUsing(fn() => null),
+            ImportColumn::make('team_captain')->fillRecordUsing(fn() => null),
+            ImportColumn::make('team_description')->fillRecordUsing(fn() => null),
         ];
     }
 
@@ -34,7 +34,7 @@ class TeamParticipantImporter extends Importer
             'image'          => $this->data['image'] ?? null,
             'team_name'      => $this->data['team_name'] ?? null,
             'team_captain'     => $this->data['team_captain'] ?? null,
-            'team_description'     => $this->data['team_captain'] ?? null,
+            'team_description'     => $this->data['team_description'] ?? null,
 
         ];
 
