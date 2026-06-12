@@ -28,7 +28,7 @@ class AccountForm
                 TextInput::make('name')->required(),
                 TextInput::make('email')->unique()->required(),
                 TextInput::make('password')->minLength(8)->password()->dehydrated(fn(?string $state): bool => filled($state))->required(fn(string $operation): bool => $operation === 'create'),
-                Select::make('roles')->relationship('roles', 'name')->multiple()->preload()->searchable()->required(),
+                Select::make('roles')->relationship('roles', 'name',  modifyQueryUsing: fn($query) => $query->where('name', '!=', 'super_admin'))->preload()->searchable()->required(),
 
                 Select::make('category')
                     ->label('Category')
@@ -56,6 +56,4 @@ class AccountForm
                     ->createOptionUsing(fn(array $data) => $data['category'])
             ]);
     }
-
-   
 }
