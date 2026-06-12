@@ -3,7 +3,6 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -12,12 +11,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Spatie\Activitylog\LogOptions;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\Permission\Models\Role;
 
-#[Fillable(['name', 'email', 'password', 'no', 'position'])]
+#[Fillable(['name', 'category', 'email', 'password', 'no', 'position'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements FilamentUser
 {
@@ -67,6 +64,16 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return true;
+        if ($panel->getId() === 'admin') {
+            // ✅ only super_admin can access admin panel
+            return $this->hasRole('super_admin');
+        }
+
+        if ($panel->getId() === 'judge') {
+            // ✅ only non super_admin can access judge panel
+            return !$this->hasRole('super_admin');
+        }
+
+        return false;
     }
 }
