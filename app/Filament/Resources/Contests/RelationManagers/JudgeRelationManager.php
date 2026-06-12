@@ -48,8 +48,7 @@ class JudgeRelationManager extends RelationManager
                     ->password()
                     ->dehydrated(fn(?string $state): bool => filled($state))->required(fn(string $operation): bool => $operation === 'create'),
                 Select::make('roles')
-                    ->relationship('roles', 'name')
-                    ->multiple()
+                    ->relationship('roles', 'name', modifyQueryUsing: fn($query) => $query->where('name', '!=', 'super_admin'))
                     ->preload()
                     ->searchable()
                     ->required(),
