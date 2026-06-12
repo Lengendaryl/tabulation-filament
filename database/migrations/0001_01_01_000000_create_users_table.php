@@ -14,6 +14,9 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->integer('no')->nullable();
+            $table->string('category')->nullable();
+            $table->enum('position', ['Judge', 'Chairman of the Board of Judges'])->nullable();
             $table->string('name');
             $table->string('email')->unique();
             $table->foreignIdFor(Contest::class)->nullable();
@@ -21,6 +24,7 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

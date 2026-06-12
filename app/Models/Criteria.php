@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable([
     'criteria',
@@ -18,7 +19,7 @@ use Illuminate\Database\Eloquent\Model;
 ])]
 class Criteria extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
 
     protected $casts = [
@@ -49,5 +50,9 @@ class Criteria extends Model
     public function results()
     {
         return $this->hasMany(Result::class);
+    }
+    public function events()
+    {
+        return $this->belongsTo(Event::class, 'event_id');
     }
 }

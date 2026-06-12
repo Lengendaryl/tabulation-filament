@@ -5,12 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
-
-#[Fillable(['judge_id','contest_id', 'criteria_id', 'score', 'contest_category', 'level'])]
+#[Fillable(['judge_id', 'contest_id', 'criteria_id', 'score', 'contest_category', 'level'])]
 class Score extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity, SoftDeletes;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll();
+    }
     protected $casts = [
         'score' => 'array',
     ];

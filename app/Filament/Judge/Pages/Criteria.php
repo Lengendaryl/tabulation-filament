@@ -2,9 +2,12 @@
 
 namespace App\Filament\Judge\Pages;
 
+use App\Enums\ContestType;
+use App\Enums\Round;
 use App\Events\JudgeSubmittedEvent;
 use App\Models\Criteria as ModelsCriteria;
 use App\Models\JudgesGroup;
+use App\Models\Result;
 use App\Models\Score;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
@@ -23,33 +26,51 @@ class Criteria extends Page
     public array $scores = [];
     private $ranks = [];
     public ?int $criteriaId = null;
+    public ?int $contestId  = null;
     public array $tabLabels = [];
     private string $level;
     private string $contestCategory;
     private bool $status;
     public int $userId;
+    public array $grandFinalParticipants = [];
 
     #[On('echo-private:judge.{userId},.JudgeSubmittedEvent')]
     public function granted()
     {
         Notification::make()
             ->title('Request Granted')
-            ->success()
+            ->color('success')
             ->body('You can now edit the score.')
             ->send();
     }
     public function mount()
     {
         // Fetch your data here
-        $criteriaId = $this->criteriaId = request('criteria');
-        $this->allCriteria = ModelsCriteria::where('id', $criteriaId)->with(['contest.participants'])->get();
+        $this->criteriaId = request('criteria');
+
+        $this->allCriteria = ModelsCriteria::where('id', $this->criteriaId)->with(['contest.participants'])->get();
         $this->userId = Auth::id();
 
         if ($this->allCriteria->isEmpty()) return;
 
+        $this->contestId =  $this->allCriteria->first()->contest_id;
+
+        $grandFinalResult = Result::where('contest_id', $this->contestId)->where('criteria_id', $this->criteriaId)
+            ->where('contest_category', 'Top Finalist')
+            ->first();
+
+        if ($grandFinalResult) {
+            $this->grandFinalParticipants = collect($grandFinalResult->result)
+                ->groupBy('gender')
+                ->flatMap(fn($group) => $group->sortBy('grand_final_rank')->take(3))
+                ->pluck('participant.id')
+                ->toArray();
+        }
+
+
         foreach ($this->allCriteria->first()->criteria as $item) {
             $content = $item['data']['content'];
-            $this->tabLabels[Str::slug($content)] = $content; // ✅ preserve original
+            $this->tabLabels[Str::slug($content)] = $content;
         }
 
         $firstContent = $this->allCriteria->first()->criteria[0]['data']['content'];
@@ -59,9 +80,9 @@ class Criteria extends Page
         $this->loadScoresByTab($this->activeTab);
 
         $record = Score::where('judge_id', $this->userId)
-            ->where('contest_id', $this->allCriteria->first()->contest_id)
+            ->where('contest_id', $this->contestId)
             ->where('contest_category', $this->tabLabels[$this->activeTab])
-            ->where('criteria_id', $criteriaId)
+            ->where('criteria_id', $this->criteriaId)
             ->first();
 
         if ($record && !empty($record->score)) {
@@ -97,9 +118,11 @@ class Criteria extends Page
         if (!empty($this->scores[$tab])) {
             return;
         }
+
         $record = Score::where('judge_id', $this->userId)
-            ->where('contest_id', $this->allCriteria->first()->contest_id)
-            ->where('contest_category', $this->tabLabels[$this->activeTab])
+            ->where('contest_id', $this->contestId)
+            ->where('criteria_id', $this->criteriaId)
+            ->where('contest_category', $this->tabLabels[$tab])
             ->first();
 
         // reset tab data to avoid mixing old values
@@ -123,11 +146,17 @@ class Criteria extends Page
     {
         $this->ranks = [];
 
-        $groupedParticipants = $this->allCriteria
-            ->first()
-            ->contest
-            ->participants
-            ->groupBy(fn($p) => $p['participant']['gender']);
+        // $groupedParticipants = $this->allCriteria
+        //     ->first()
+        //     ->contest
+        //     ->participants
+        //     ->groupBy(fn($p) => $p['participant']['gender']);
+        $contestType = $this->allCriteria->first()->contest->contest_type;
+
+        // ✅ group by gender only for individual, not for team
+        $groupedParticipants = $contestType === ContestType::Team->value
+            ? collect(['team' => $this->allCriteria->first()->contest->participants]) // ✅ single group
+            : $this->allCriteria->first()->contest->participants->groupBy(fn($p) => $p['participant']['gender']);
 
         foreach ($groupedParticipants as $gender => $participants) {
 
@@ -201,7 +230,10 @@ class Criteria extends Page
             $contestParticipants = $this->allCriteria->first()->contest->participants;
 
             $score = collect();
+            $activeGroup = collect($this->allCriteria->first()->criteria)
+                ->first(fn($g) => Str::slug($g['data']['content']) === $category);
 
+            $level = $activeGroup['data']['level'] ?? Round::Preliminary->value;
             foreach ($participantsScores as $participantId => $criteria) {
 
                 // Find the specific participant match from our relationship collection
@@ -212,9 +244,9 @@ class Criteria extends Page
 
                 $score->push([
                     'contest_category' => $originalCategory,
-                    'participant_id' => (int) $participantId, // Keeping the ID fallback tracking is usually good practice!
-                    'participant' => $participantData,  // 💾 Storing the entire participant data object here
-                    'level' => $this->allCriteria->first()->criteria[0]['data']['level'],
+                    'participant_id' => (int) $participantId,
+                    'participant' => $participantData,
+                    'level' => $level,
                     'judge_id' => $this->userId,
                     'contest_id' => $this->allCriteria->first()->contest_id,
                     'criteria' => $this->criteriaId,
@@ -232,6 +264,7 @@ class Criteria extends Page
                     'contest_id' => $this->allCriteria->first()->contest_id,
                     'criteria_id' => $this->criteriaId,
                     'contest_category' => $originalCategory,
+                    'level' => $level,
                 ],
                 [
                     'score' => $score->toArray(),
@@ -279,13 +312,13 @@ class Criteria extends Page
 
             Notification::make()
                 ->title('Scores Submitted Successfully')
-                ->success()
+                ->color('success')
                 ->body("$originalCategory scores have been recorded.")
                 ->send();
         } catch (\Exception $e) {
             Notification::make()
                 ->title('Submission Failed')
-                ->danger()
+                ->color('danger')
                 ->body('An error occurred: ' . $e->getMessage())
                 ->send();
         }
@@ -333,7 +366,7 @@ class Criteria extends Page
 
         Notification::make()
             ->title('Edit Request Sent')
-            ->success()
+            ->color('success')
             ->body('Your request to edit the scores has been sent to the administrator.')
             ->send();
     }

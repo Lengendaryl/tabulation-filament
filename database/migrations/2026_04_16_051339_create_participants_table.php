@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignIdFor(Contest::class)->constrained()->cascadeOnDelete();
             $table->json('participant');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

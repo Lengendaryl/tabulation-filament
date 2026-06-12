@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use AlizHarb\ActivityLog\ActivityLogPlugin;
 use App\Filament\Pages\Auth\Login;
 use App\Filament\Resources\Roles\RoleResource;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
@@ -12,10 +13,13 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Notifications\Livewire\Notifications;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Enums\Alignment;
+use Filament\Support\Enums\VerticalAlignment;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -25,6 +29,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Filament\Support\Enums\Width;
+use GeoSot\FilamentEnvEditor\FilamentEnvEditorPlugin;
 use Illuminate\Support\Facades\Blade;
 
 class AdminPanelProvider extends PanelProvider
@@ -34,6 +39,10 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
+            ->bootUsing(function () {
+                Notifications::alignment(Alignment::Center);
+                Notifications::verticalAlignment(VerticalAlignment::Center);
+            })
             ->path('admin')
             ->maxContentWidth(Width::Full)
             ->viteTheme(['resources/css/filament/admin/theme.css', 'resources/css/app.css'])
@@ -45,6 +54,7 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->registration()
             ->plugins([
+                FilamentEnvEditorPlugin::make(),
                 FilamentShieldPlugin::make()
                     ->gridColumns([
                         'default' => 1,
@@ -60,7 +70,7 @@ class AdminPanelProvider extends PanelProvider
                     ->resourceCheckboxListColumns([
                         'default' => 1,
                         'sm' => 2,
-                    ]),
+                    ])->navigationGroup('System'),
                 AuthDesignerPlugin::make()
                     ->defaults(
                         fn($config) => $config
@@ -68,7 +78,11 @@ class AdminPanelProvider extends PanelProvider
                             ->mediaPosition(MediaPosition::Left)
                             ->mediaSize('50%')
                     )->login()
-                    ->registration()
+                    ->registration(),
+                ActivityLogPlugin::make()
+                    ->label('Log')
+                    ->pluralLabel('Logs')
+                    ->navigationGroup('System'),
 
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
@@ -78,10 +92,7 @@ class AdminPanelProvider extends PanelProvider
                 Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
-            ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
-            ])
+            ->widgets([])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

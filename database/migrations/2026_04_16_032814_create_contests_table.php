@@ -20,11 +20,11 @@ return new class extends Migration
             $table->string('organizer');
             $table->string('scoring_type');
             $table->string('contest_type');
-            $table->string('gender_category');
             $table->date('date');
             $table->string('venue');
             $table->string('poster')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -18,83 +18,335 @@ class CriteriaFactory extends Factory
     public function definition(): array
     {
         return [
+            //WEIGHTED
+            // 'contest_id' => 1,
+            // 'judges' => [2, 3, 4],
+            // 'qualified_participant' => 3,
+            // 'final_scoring_method' => 'prelimFinal',
+            // 'preliminary_scoring_method' => 'default',
+            // 'criteria' => [
+            //     [
+            //         "data" => [
+            //             "level" => "preliminary",
+            //             "total" => 100,
+            //             "weight" => 25,
+            //             "content" => "Production Number",
+            //             "criteria" => [
+            //                 [
+            //                     "score" => 40,
+            //                     "criterion" => "Mastery of Choreography"
+            //                 ],
+            //                 [
+            //                     "score" => 25,
+            //                     "criterion" => "Delivery of Introduction"
+            //                 ],
+            //                 [
+            //                     "score" => 15,
+            //                     "criterion" => "Audience Impact"
+            //                 ],
+            //                 [
+            //                     "score" => 20,
+            //                     "criterion" => "Overall Impact"
+            //                 ]
+            //             ]
+            //         ],
+            //         "type" => "contest"
+            //     ],
+            //     [
+            //         "data" => [
+            //             "level" => "preliminary",
+            //             "total" => 100,
+            //             "weight" => 40,
+            //             "content" => "Tropical Attire",
+            //             "criteria" => [
+            //                 [
+            //                     "score" => 35,
+            //                     "criterion" => "Costume Creativity"
+            //                 ],
+            //                 [
+            //                     "score" => 25,
+            //                     "criterion" => "Poise and Bearing"
+            //                 ],
+            //                 [
+            //                     "score" => 25,
+            //                     "criterion" => "Beauty and Charisma"
+            //                 ],
+            //                 [
+            //                     "score" => 15,
+            //                     "criterion" => "Stage Presence"
+            //                 ]
+            //             ]
+            //         ],
+            //         "type" => "contest"
+            //     ],
+            //     [
+            //         "data" => [
+            //             "level" => "preliminary",
+            //             "total" => 100,
+            //             "weight" => 35,
+            //             "content" => "Casual Interview",
+            //             "criteria" => [
+            //                 [
+            //                     "score" => 30,
+            //                     "criterion" => "Wit and Content"
+            //                 ],
+            //                 [
+            //                     "score" => 25,
+            //                     "criterion" => "Projection and Delivery"
+            //                 ],
+            //                 [
+            //                     "score" => 25,
+            //                     "criterion" => "Stage Presence"
+            //                 ],
+            //                 [
+            //                     "score" => 20,
+            //                     "criterion" => "Overall Impact"
+            //                 ]
+            //             ]
+            //         ],
+            //         "type" => "contest"
+            //     ],
+            //     [
+            //         "data" => [
+            //             "level" => "final",
+            //             "total" => 100,
+            //             "weight" => null,
+            //             "content" => "Final Round",
+            //             "criteria" => [
+            //                 [
+            //                     "score" => 35,
+            //                     "criterion" => "Beauty and Poise"
+            //                 ],
+            //                 [
+            //                     "score" => 35,
+            //                     "criterion" => "Wit and Intelligence"
+            //                 ],
+            //                 [
+            //                     "score" => 30,
+            //                     "criterion" => "Overall Impact"
+            //                 ]
+            //             ]
+            //         ],
+            //         "type" => "contest"
+            //     ]
+            // ]
+
+            // NORMAL
             'contest_id' => 1,
             'judges' => [2, 3, 4, 5],
             'qualified_participant' => 3,
-            'final_scoring_method' => 'finalprelim',
+            'final_scoring_method' => 'prelimFinal',
             'preliminary_scoring_method' => 'default',
+            'preliminary_round_percentage_score' => 50,
+            'final_round_percentage_score' => 50,
             'criteria' => [
                 [
-                    "type" => "contest",
                     "data" => [
                         "level" => "preliminary",
                         "total" => 100,
                         "content" => "Production Number",
                         "criteria" => [
-                            ["criterion" => "Showmanship", "score" => 40],
-                            ["criterion" => "Projection", "score" => 20],
-                            ["criterion" => "Mastery and Coordination", "score" => 30],
-                            ["criterion" => "Overall Impact", "score" => 10],
+                            [
+                                "score" => 40,
+                                "criterion" => "Confidence and Beauty"
+                            ],
+                            [
+                                "score" => 50,
+                                "criterion" => "Mastery and Delivery of the Introduction"
+                            ],
+                            [
+                                "score" => 10,
+                                "criterion" => "Audience Impact"
+                            ]
                         ]
                     ],
+                    "type" => "contest"
                 ],
                 [
-                    "type" => "contest",
                     "data" => [
                         "level" => "preliminary",
                         "total" => 100,
-                        "content" => "Sports Wear",
+                        "content" => "Swimwear Competition",
                         "criteria" => [
-                            ["criterion" => "Confidence & Stage Presence", "score" => 30],
-                            ["criterion" => "Body & Fitness", "score" => 30],
-                            ["criterion" => "Personality", "score" => 30],
-                            ["criterion" => "Overall Look", "score" => 10],
+                            [
+                                "score" => 30,
+                                "criterion" => "Poise and Bearing"
+                            ],
+                            [
+                                "score" => 30,
+                                "criterion" => "Beauty"
+                            ],
+                            [
+                                "score" => 30,
+                                "criterion" => "Execution"
+                            ],
+                            [
+                                "score" => 10,
+                                "criterion" => "Audience Impact"
+                            ]
                         ]
                     ],
+                    "type" => "contest"
                 ],
                 [
-                    "type" => "contest",
                     "data" => [
                         "level" => "preliminary",
                         "total" => 100,
-                        "content" => "Barong/Filipiana Competition",
+                        "content" => "Casual Interview",
                         "criteria" => [
-                            ["criterion" => "Elegance", "score" => 40],
-                            ["criterion" => "Poise and Bearing", "score" => 40],
-                            ["criterion" => "Overall Impact", "score" =>20],
+                            [
+                                "score" => 40,
+                                "criterion" => "Sincerity & Grace Under Pressure"
+                            ],
+                            [
+                                "score" => 50,
+                                "criterion" => "Content"
+                            ],
+                            [
+                                "score" => 10,
+                                "criterion" => "Audience Impact"
+                            ]
                         ]
                     ],
+                    "type" => "contest"
                 ],
-                // [
-                //     "type" => "contest",
-                //     "data" => [
-                //         "level" => "preliminary",
-                //         "total" => 100,
-                //         "content" => "Formal Wear",
-                //         "criteria" => [
-                //             ["criterion" => "Elegance", "score" => 30],
-                //             ["criterion" => "Beauty", "score" => 30],
-                //             ["criterion" => "Poise and Bearing", "score" => 30],
-                //             ["criterion" => "Audience Impact", "score" => 10],
-                //         ]
-                //     ],
-                // ],
                 [
-                    "type" => "contest",
+                    "data" => [
+                        "level" => "preliminary",
+                        "total" => null,
+                        "content" => "Formal Wear",
+                        "criteria" => [
+                            [
+                                "score" => 30,
+                                "criterion" => "Elegance"
+                            ],
+                            [
+                                "score" => 30,
+                                "criterion" => "Beauty"
+                            ],
+                            [
+                                "score" => 30,
+                                "criterion" => "Poise and Bearing"
+                            ],
+                            [
+                                "score" => 10,
+                                "criterion" => "Audience Impact"
+                            ]
+                        ]
+                    ],
+                    "type" => "contest"
+                ],
+                [
                     "data" => [
                         "level" => "final",
                         "total" => 100,
                         "content" => "Final Round",
                         "criteria" => [
-                            ["criterion" => "Grace Under Pressure", "score" => 40],
-                            ["criterion" => "Content", "score" => 50],
-                            ["criterion" => "Audience Impact", "score" => 10],
+                            [
+                                "score" => 40,
+                                "criterion" => "Grace Under Pressure"
+                            ],
+                            [
+                                "score" => 50,
+                                "criterion" => "Content"
+                            ],
+                            [
+                                "score" => 10,
+                                "criterion" => "Audience Impact"
+                            ]
                         ]
                     ],
-                ],
-
-
+                    "type" => "contest"
+                ]
             ]
+
+            // RANK BASED
+            // 'criteria' => [
+            //     [
+            //         "type" => "contest",
+            //         "data" => [
+            //             "level" => "preliminary",
+            //             "total" => 100,
+            //             "content" => "Production Number",
+            //             "criteria" => [
+            //                 ["criterion" => "Showmanship", "score" => 40],
+            //                 ["criterion" => "Projection", "score" => 20],
+            //                 ["criterion" => "Mastery and Coordination", "score" => 30],
+            //                 ["criterion" => "Overall Impact", "score" => 10],
+            //             ]
+            //         ],
+            //     ],
+            //     [
+            //         "type" => "contest",
+            //         "data" => [
+            //             "level" => "preliminary",
+            //             "total" => 100,
+            //             "content" => "Sports Wear",
+            //             "criteria" => [
+            //                 ["criterion" => "Confidence & Stage Presence", "score" => 30],
+            //                 ["criterion" => "Body & Fitness", "score" => 30],
+            //                 ["criterion" => "Personality", "score" => 30],
+            //                 ["criterion" => "Overall Look", "score" => 10],
+            //             ]
+            //         ],
+            //     ],
+            //     [
+            //         "type" => "contest",
+            //         "data" => [
+            //             "level" => "preliminary",
+            //             "total" => 100,
+            //             "content" => "Barong/Filipiana Competition",
+            //             "criteria" => [
+            //                 ["criterion" => "Elegance", "score" => 40],
+            //                 ["criterion" => "Poise and Bearing", "score" => 40],
+            //                 ["criterion" => "Overall Impact", "score" => 20],
+            //             ]
+            //         ],
+            //     ],
+            //     [
+            //         "type" => "contest",
+            //         "data" => [
+            //             "level" => "final",
+            //             "total" => 100,
+            //             "content" => "Final Question and Answer",
+            //             "criteria" => [
+            //                 ["criterion" => "Content", "score" => 50],
+            //                 ["criterion" => "Delivery", "score" => 30],
+            //                 ["criterion" => "Stage Presence", "score" => 10],
+            //                 ["criterion" => "Overall Impact", "score" => 10],
+            //             ]
+            //         ],
+            //     ],
+            // ]
+
+
+
+            // 'contest_id' => 1,
+            // 'judges' => [2, 3, 4],
+            // 'qualified_participant' => 1,
+            // 'final_scoring_method' => 'final',
+            // 'preliminary_scoring_method' => 'default',
+            // 'criteria' => [
+            //     [
+            //         "data" => [
+            //             "level" => "preliminary",
+            //             "total" => 100,
+            //             "weight" => null,
+            //             "content" => "STREET DANCE",
+            //             "criteria" => [
+            //                 [
+            //                     "score" => 50,
+            //                     "criterion" => "PERFORMANCE"
+            //                 ],
+            //                 [
+            //                     "score" => 50,
+            //                     "criterion" => "SKILL"
+            //                 ]
+            //             ]
+            //         ],
+            //         "type" => "contest"
+            //     ]
+            // ]
         ];
     }
 }

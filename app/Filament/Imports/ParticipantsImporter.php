@@ -32,6 +32,12 @@ class ParticipantsImporter extends Importer
                 ->fillRecordUsing(fn() => null),
 
             ImportColumn::make('gender')
+                ->requiredMapping()
+                ->castStateUsing(function (?string $state): ?string {
+                    return $state ? strtolower(trim($state)) : null;
+                })
+                ->examples(['male', 'female'])
+                ->rules(['required', 'in:male,female'])
                 ->fillRecordUsing(fn() => null),
 
             ImportColumn::make('description')

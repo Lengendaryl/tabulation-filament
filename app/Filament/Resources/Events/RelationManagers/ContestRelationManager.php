@@ -5,7 +5,12 @@ namespace App\Filament\Resources\Events\RelationManagers;
 use App\Filament\Resources\Contests\ContestResource;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreAction;
+use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
@@ -17,6 +22,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
 class ContestRelationManager extends RelationManager
@@ -43,24 +49,16 @@ class ContestRelationManager extends RelationManager
                                 ->required()
                                 ->maxLength(255)
                         ])->columnSpanFull(),
-                        Grid::make(3)->schema([
+                        Grid::make(2)->schema([
                             Select::make('scoring_type')->label('Type of Scoring')
                                 ->options([
-                                    'point_based_single' => 'Point Based Single',
-                                    'point_based_multiple' => 'Point Based Multiple',
-                                    'rank_based_single' => 'Rank Based Single',
-                                    'rank_based_multiple' => 'Rank Based Multiple'
+                                    'point_based' => 'Point Based',
+                                    'rank_based' => 'Rank Based',
                                 ])->required(),
                             Select::make('contest_type')->label('Type of Contest')
                                 ->options([
                                     'individual' => 'Individual',
                                     'team' => 'Team',
-                                ])->required(),
-                            Select::make('gender_category')
-                                ->options([
-                                    'male' => 'Male',
-                                    'female' => 'Female',
-                                    'male&female' => 'Male & Female'
                                 ])->required(),
                         ])->columnSpanFull(),
                         Grid::make(2)->schema([
@@ -82,11 +80,12 @@ class ContestRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('category')->label('Contest category')->searchable(),
                 TextColumn::make('organizer'),
-                TextColumn::make('contest_type'),
-                TextColumn::make('created_at'),
+                TextColumn::make('contest_type')->formatStateUsing(fn($state) => str($state)->title()),
+                TextColumn::make('scoring_type')->formatStateUsing(fn($state) => str($state)->replace('_', ' ')->title()),
+                TextColumn::make('date')->date(),
             ])
             ->filters([
-                //
+                TrashedFilter::make(),
             ])
             ->headerActions([
                 CreateAction::make(),
@@ -99,10 +98,15 @@ class ContestRelationManager extends RelationManager
                             'record' => $record->id,
                         ])
                     ),
+                DeleteAction::make(),
+                ForceDeleteAction::make(),
+                RestoreAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
+                    RestoreBulkAction::make(),
+                    ForceDeleteBulkAction::make(),
                 ]),
             ]);
     }

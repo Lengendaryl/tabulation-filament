@@ -1,42 +1,68 @@
 <?php
 
+use App\Enums\ContestType;
+use App\Enums\Round;
 use App\Models\Result;
 use Livewire\Component;
 use Illuminate\Support\Collection;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 
 new class extends Component {
     public string $gender;
     public Collection $criteria;
     public Collection $score;
-    public Collection $result;
     public string $roundType;
+    public Collection $judges;
 
-    public function mount()
+    #[On('echo:tabulate,.Tabulate')]
+    public function refreshData()
     {
-        $this->result = Result::where('contest_id', $this->score[0]['contest_id'])
+        unset($this->result);
+    }
+
+    #[Computed]
+    public function result()
+    {
+        return Result::where('contest_id', $this->criteria[0]['contest_id'])
             ->where('criteria_id', $this->criteria[0]['id'])
             ->where('round', $this->roundType)
             ->whereNotIn('contest_category', ['Top Finalist'])
+            ->with('contest')
             ->get();
     }
 };
 ?>
 
 <div class="space-y-6">
-    @foreach ($result as $res)
-        <div class="space-y-4">
+    @foreach ($this->result as $res)
+        @php
+            $groupedResults = collect($res->result)->groupBy('gender')->sortBy(
+                fn($group, $gender) => match (strtolower($gender)) {
+                    'male' => 0,
+                    'female' => 1,
+                    default => 2,
+                },
+            );
+            $contestType = $res->contest->contest_type;
 
+            $scoringType = $res->contest->scoring_type;
+        @endphp
+        <div class="space-y-4">
             <div>
+
                 <flux:heading size="xl" class="text-center uppercase">
                     {{ $res->contest_category }}
                 </flux:heading>
+
+                @if ($contestType == ContestType::Team->value)
+                    <flux:heading leve="2" class="uppercase text-center">
+                        {{ Str::upper(Str::replace('_', ' ', $scoringType)) }} SYSTEM
+                    </flux:heading>
+                @endif
             </div>
-
-            @php
-                $groupedResults = collect($res->result)->groupBy('gender');
-            @endphp
-
-            <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+            <div
+                class="{{ $contestType === ContestType::Individual->value ? 'grid grid-cols-1 xl:grid-cols-2 gap-4' : '' }} ">
                 @foreach ($groupedResults as $gender => $scores)
                     @php
                         // Sort ranks for this gender group only
@@ -87,13 +113,14 @@ new class extends Component {
                                         $isHighlighted = $cutoffRank !== null && $rankValue <= $cutoffRank;
 
                                         $rowBg = $isHighlighted
-                                            ? 'bg-gradient-to-r from-violet-600/50 via-violet-600 to-transparent ring-2 ring-inset ring-violet-600'
+                                            ? 'bg-violet-600/10 ring-1 ring-inset ring-violet-500 text-white'
                                             : '';
+                                        // $contestType=$res
                                     @endphp
                                     <flux:table.row class="{{ $rowBg }}">
                                         <flux:table.cell>
                                             <p class="text-black dark:text-white text-center">
-                                                {{ $score['participant']['participant']['participant_no'] }}
+                                                {{ $contestType === ContestType::Team->value ? $score['participant']['participant']['team_participant_no'] : $score['participant']['participant']['participant_no'] }}
                                             </p>
                                         </flux:table.cell>
                                         @foreach ($score['judges'] as $judge)
@@ -131,6 +158,11 @@ new class extends Component {
                     </flux:card>
                 @endforeach
             </div>
+
         </div>
     @endforeach
+
+    @if ($roundType === Round::Preliminary->value)
+        <livewire:footer :judges="$judges" />
+    @endif
 </div>

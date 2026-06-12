@@ -19,7 +19,7 @@ class EventForm
                 Grid::make(2)->schema([
                     Section::make('Create Event')->schema([
                         Grid::make(2)->schema([
-                            FileUpload::make('poster')->directory('events')->required()->columnSpanFull(),
+                            FileUpload::make('poster')->image()->directory('events')->disk('public')->columnSpanFull(),
                             TextInput::make('name')->required()->columnSpanFull(),
                             Textarea::make('description')->required()->columnSpanFull(),
                             DatePicker::make('date')->native(false)->placeholder(now()->format('F j, Y'))->required()->columnSpanFull(),

@@ -17,7 +17,7 @@ class ContestForm
         return $schema
             ->components([
                 Grid::make(1)->schema([
-                    FileUpload::make('poster')->directory('contest'),
+                    FileUpload::make('poster')->image()->directory('contest')->disk('public'),
                     Grid::make(3)->schema([
                         Grid::make(2)->schema([
                             TextInput::make('category')->label('Contest Category')
@@ -31,24 +31,16 @@ class ContestForm
                             Textarea::make('description')
                                 ->maxLength(255)
                         ])->columnSpanFull(),
-                        Grid::make(3)->schema([
+                        Grid::make(2)->schema([
                             Select::make('scoring_type')->label('Type of Scoring')
                                 ->options([
-                                    'point_based_single' => 'Point Based Single',
-                                    'point_based_multiple' => 'Point Based Multiple',
-                                    'rank_based_single' => 'Rank Based Single',
-                                    'rank_based_multiple' => 'Rank Based Multiple'
+                                    'point_based' => 'Point Based',
+                                    'rank_based' => 'Rank Based',
                                 ])->required(),
                             Select::make('contest_type')->label('Type of Contest')
                                 ->options([
                                     'individual' => 'Individual',
                                     'team' => 'Team',
-                                ])->required(),
-                            Select::make('gender_category')
-                                ->options([
-                                    'male' => 'Male',
-                                    'female' => 'Female',
-                                    'male&female' => 'Male & Female'
                                 ])->required(),
                         ])->columnSpanFull(),
                         Grid::make(2)->schema([

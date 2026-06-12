@@ -2,15 +2,19 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Judge\Resources\Contests\Pages\ListContests;
 use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
 use Caresome\FilamentAuthDesigner\Enums\MediaPosition;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Notifications\Livewire\Notifications;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\Support\Enums\Alignment;
+use Filament\Support\Enums\VerticalAlignment;
 use Filament\Support\Enums\Width;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
@@ -28,6 +32,10 @@ class JudgePanelProvider extends PanelProvider
     {
         return $panel
             ->id('judge')
+            ->bootUsing(function () {
+                Notifications::alignment(Alignment::Center);
+                Notifications::verticalAlignment(VerticalAlignment::Center);
+            })
             ->topNavigation()
             ->path('')
             ->login()
@@ -47,14 +55,9 @@ class JudgePanelProvider extends PanelProvider
             )
             ->discoverResources(in: app_path('Filament/Judge/Resources'), for: 'App\Filament\Judge\Resources')
             ->discoverPages(in: app_path('Filament/Judge/Pages'), for: 'App\Filament\Judge\Pages')
-            ->pages([
-                Dashboard::class,
-            ])
+            ->pages([])
             ->discoverWidgets(in: app_path('Filament/Judge/Widgets'), for: 'App\Filament\Judge\Widgets')
-            ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
-            ])
+            ->widgets([])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

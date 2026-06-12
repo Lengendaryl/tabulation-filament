@@ -4,3 +4,18 @@
 @source '../../../../resources/views/filament/**/*';
 
 @source '../../../../vendor/diogogpinto/filament-auth-ui-enhancer/resources/**/*.blade.php';
+
+/* @theme {
+    --color-main-primary: rgb(226, 232, 240);
+    --color-main-black: rgb(40, 43, 47);
+}
+
+.fi-body {
+    @apply bg-main-primary text-main-black;
+}
+
+.dark {
+    --color-accent: var(--color-white);
+    --color-accent-content: var(--color-white);
+    --color-accent-foreground: var(--color-neutral-800);
+} */

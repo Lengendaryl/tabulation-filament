@@ -33,28 +33,20 @@ class ContestForm
                                 ->maxLength(255),
                             Select::make('scoring_type')->label('Type of Scoring')
                                 ->options([
-                                    'point_based_single' => 'Point Based Single',
-                                    'point_based_mutliple' => 'Point Based Mutliple',
-                                    'rank_based_single' => 'Rank Based Single',
-                                    'rank_based_mutliple' => 'Rank Based Mutliple'
+                                    'point_based' => 'Point Based',
+                                    'rank_based' => 'Rank Based',
                                 ]),
                             Select::make('contest_type')->label('Type of Contest')
                                 ->options([
                                     'individual' => 'Individual',
                                     'team' => 'Team',
                                 ]),
-                            Select::make('gender_category')
-                                ->options([
-                                    'male' => 'Male',
-                                    'female' => 'Female',
-                                    'male&female' => 'Male & Female'
-                                ]),
                             DateTimePicker::make('date')->native(false)
                                 ->required(),
-                            TextInput::make('venue')
-                                ->required()
-                                ->maxLength(255),
-                        ])->columnSpanFull()
+                        ])->columnSpanFull(),
+                        TextInput::make('venue')
+                            ->required()
+                            ->maxLength(255)->columnSpanFull(),
                     ])->columnSpanFull()
                 ])->columnSpanFull()
             ]);
