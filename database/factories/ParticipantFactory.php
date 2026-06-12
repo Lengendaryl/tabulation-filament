@@ -14,6 +14,7 @@ class ParticipantFactory extends Factory
     protected static int $participantNo = 1;
     protected static int $femaleNo = 1;
     protected static int $maleNo = 1;
+    protected static int $teamNo = 1;
 
     /**
      * Define the model's default state.
@@ -28,10 +29,30 @@ class ParticipantFactory extends Factory
                 "first_name" => $this->faker->firstName(),
                 "last_name" => $this->faker->lastName(),
                 "gender" => $this->faker->randomElement(['male', 'female']),
-                // Automatically increments: 1, 2, 3, 4... up to 12 safely
                 "participant_no" => self::$participantNo++,
             ]
+            // 'participant' => [
+            //     "image" => "",
+            //     "team_name" => $this->faker->company,
+            //     'team_captain' => $this->faker->name,
+            //     'team_description' => $this->faker->paragraphs,
+            //     "team_participant_no" => 0
+            // ]
         ];
+    }
+
+
+    public function team(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'participant' => array_merge($attributes['participant'], [
+                "image" => "",
+                "team_name" => $this->faker->company,
+                'team_captain' => $this->faker->name,
+                'team_description' => $this->faker->paragraphs,
+                "team_participant_no" => self::$teamNo++
+            ]),
+        ]);
     }
 
     public function male(): static
