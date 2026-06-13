@@ -41,12 +41,13 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => '/storage',
+            // 'url' => '/storage',
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/') . '/storage',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,
         ],
-// rtrim(env('APP_URL', 'http://localhost'), '/').'/storage'
+        // rtrim(env('APP_URL', 'http://localhost'), '/').'/storage'
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
