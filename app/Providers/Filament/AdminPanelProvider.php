@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use AchyutN\FilamentLogViewer\FilamentLogViewer;
 use AlizHarb\ActivityLog\ActivityLogPlugin;
 use App\Filament\Pages\Auth\Login;
 use App\Filament\Resources\Roles\RoleResource;
@@ -54,6 +55,7 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->registration()
             ->plugins([
+                FilamentLogViewer::make()->navigationLabel('System Logs')->navigationGroup('System'),
                 FilamentEnvEditorPlugin::make(),
                 FilamentShieldPlugin::make()
                     ->gridColumns([
@@ -81,7 +83,7 @@ class AdminPanelProvider extends PanelProvider
                     ->registration(),
                 ActivityLogPlugin::make()
                     ->label('Log')
-                    ->pluralLabel('Logs')
+                    ->pluralLabel('Tabulation Logs')
                     ->navigationGroup('System'),
 
             ])
