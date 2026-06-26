@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Contests;
 
-
+use App\Filament\Resources\Contest\RelationManagers\JudgeRelationManager;
 use App\Filament\Resources\Contests\Pages\CreateContest;
 use App\Filament\Resources\Contests\Pages\EditContest;
 use App\Filament\Resources\Contests\Pages\ListContests;
@@ -10,7 +10,6 @@ use App\Filament\Resources\Contests\RelationManagers\CriteriaRelationManager;
 use App\Filament\Resources\Contests\RelationManagers\ParticipantsRelationManager;
 use App\Filament\Resources\Contests\Schemas\ContestForm;
 use App\Filament\Resources\Contests\Tables\ContestsTable;
-use App\Filament\Resources\Criterias\RelationManagers\JudgeRelationManager;
 use App\Models\Contest;
 use BackedEnum;
 use Filament\Resources\Resource;
