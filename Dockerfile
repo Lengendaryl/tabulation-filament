@@ -50,6 +50,14 @@ COPY . .
 ENV COMPOSER_MEMORY_LIMIT=-1
 RUN composer install --no-interaction --no-dev --optimize-autoloader --no-scripts
 
+ARG VITE_PUSHER_APP_KEY
+ARG VITE_PUSHER_APP_CLUSTER
+ARG VITE_PUSHER_PORT
+
+ENV VITE_PUSHER_APP_KEY=${VITE_PUSHER_APP_KEY}
+ENV VITE_PUSHER_APP_CLUSTER=${VITE_PUSHER_APP_CLUSTER}
+ENV VITE_PUSHER_PORT=${VITE_PUSHER_PORT}
+
 # 5. Build React Assets
 RUN npm install && npm run build && rm -rf node_modules
 
