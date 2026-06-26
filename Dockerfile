@@ -3,9 +3,12 @@ FROM php:8.4-fpm
 # 1. Install System Deps + Nginx + Supervisor + Node.js
 RUN apt-get update && apt-get install -y \
     libpng-dev \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
+    libicu-dev \
     zip \
     unzip \
     git \
@@ -19,8 +22,9 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # 2. Install PHP extensions + OpCache
-RUN docker-php-ext-configure intl \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip intl opcache
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install -j$(nproc) pdo_mysql mbstring exif pcntl bcmath gd zip intl opcache
 
 # Configure OpCache for Production-like speed on Render
 RUN { \
