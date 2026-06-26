@@ -58,17 +58,18 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public
 
 # 7. Nginx Config
-COPY docker/nginx.conf /etc/nginx/sites-available/default
+COPY ./nginx.conf /etc/nginx/sites-available/default
 RUN rm -f /etc/nginx/sites-enabled/default \
     && ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
 # 8. PHP-FPM Config (run as www-data, listen on TCP so nginx can reach it)
-COPY docker/www.conf /usr/local/etc/php-fpm.d/www.conf
+COPY ./www.conf /usr/local/etc/php-fpm.d/www.conf
 
 # 9. Supervisor Config (runs nginx + php-fpm together)
-COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 EXPOSE 80
 
 # 10. Start Command
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+
