@@ -39,7 +39,7 @@ class JudgePanelProvider extends PanelProvider
             ->topNavigation()
             ->path('')
             ->login()
-            ->spa()
+            ->spa(hasPrefetching: true)
             ->maxContentWidth(Width::Full)
             ->plugins([
                 AuthDesignerPlugin::make()

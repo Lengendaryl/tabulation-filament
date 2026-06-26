@@ -33,7 +33,7 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
-            ->spa()
+            ->spa(hasPrefetching: true)
             ->bootUsing(function () {
                 Notifications::alignment(Alignment::Center);
                 Notifications::verticalAlignment(VerticalAlignment::Center);
