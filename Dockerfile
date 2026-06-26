@@ -68,8 +68,10 @@ COPY www.conf /usr/local/etc/php-fpm.d/www.conf
 # 9. Supervisor Config (runs nginx + php-fpm together)
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
 EXPOSE 80
 
-# 10. Start Command
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+CMD ["/usr/local/bin/entrypoint.sh"]
 
