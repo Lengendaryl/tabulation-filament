@@ -217,6 +217,7 @@ class Criteria extends Page
     public function submit()
     {
         try {
+
             $category = $this->activeTab;
             $originalCategory = $this->tabLabels[$category] ?? Str::headline($category);
 
@@ -309,6 +310,8 @@ class Criteria extends Page
                 $this->userId,
                 $originalCategory,
             ))->toOthers();
+            
+            $this->dispatch('clear-draft', category: $category);
 
             Notification::make()
                 ->title('Scores Submitted Successfully')
