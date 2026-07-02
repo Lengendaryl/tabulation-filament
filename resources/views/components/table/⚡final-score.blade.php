@@ -54,7 +54,8 @@ new class extends Component {
                         // Sort ranks for this gender group only
                         $sortedRanks = $scores->pluck('grand_final_rank')->sort()->values();
                         // Top 3 cutoff
-                        $cutoffRank = $sortedRanks[2] ?? null;
+                        $qualifiedParticipant = $criteria[0]['qualified_participant'] ?? 3;
+                        $cutoffRank = $sortedRanks[$qualifiedParticipant - 1] ?? null;
                     @endphp
                     <flux:card x:card class="w-full">
                         <flux:table class="font-bold">
