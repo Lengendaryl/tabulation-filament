@@ -32,8 +32,8 @@ return [
         'show_model_path' => true,
         'cluster' => null,
         'tabs' => [
-            'pages' => true,
-            'widgets' => true,
+            'pages' => false,
+            'widgets' => false,
             'resources' => true,
             'custom_permissions' => false,
         ],

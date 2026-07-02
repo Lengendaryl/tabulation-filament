@@ -22,7 +22,7 @@ class AccountsTable
     {
         return $table
             ->columns([
-                TextColumn::make('no')->label('Judge No'),
+                TextColumn::make('no')->label('Judge No')->default('N/A'),
                 TextColumn::make('name')->searchable(),
                 TextColumn::make('email'),
                 TextColumn::make('position'),

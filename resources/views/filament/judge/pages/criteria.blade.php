@@ -31,7 +31,8 @@
                 $activeIsFinalLevel = $activeGroup['data']['level'] === Round::Final->value;
                 $finalIds = $this->grandFinalParticipants;
                 $contestType = $allCriteria->first()->contest['contest_type'];
-
+                $genderCategory = $allCriteria->first()->contest['gender_category'];
+                $qualifiedParticipant = $allCriteria->first()['qualified_participant'] ?? 3;
                 if ($contestType == ContestType::Team->value) {
                     $groupedParticipants = $allCriteria
                         ->first()
@@ -40,6 +41,16 @@
                         })
                         ->sortBy(fn($p) => $p['participant']['team_participant_no'])
                         ->values();
+                } elseif ($genderCategory === 'mixed') {
+                    $groupedParticipants = collect([
+                        'mixed' => $allCriteria
+                            ->first()
+                            ->contest->participants->when($isFinalLevel, function ($collection) use ($finalIds) {
+                                return $collection->filter(fn($p) => in_array($p->id, $finalIds));
+                            })
+                            ->sortBy(fn($p) => $p['participant']['participant_no'])
+                            ->values(),
+                    ]);
                 } else {
                     $groupedParticipants = $allCriteria
                         ->first()
@@ -86,7 +97,8 @@
                         <div x-data="rankingSystem(
                             $wire.entangle('scores'),
                             @js($groupedParticipants->pluck('id')->values()),
-                            '{{ $activeTab }}'
+                            '{{ $activeTab }}',
+                            {{ $qualifiedParticipant }}
                         )">
                             <flux:table>
                                 <flux:table.columns>
@@ -116,7 +128,7 @@
                                                         () => {
                                                             let r = rankings['{{ $participant['id'] }}'];
                                                             return r !== undefined && r !== '-' && r >=
-                                                                1 && r <= 3.5;
+                                                                1 && r <= ({{ $qualifiedParticipant }} + 0.5);
                                                         })
                                                     ()
                                             }">
@@ -160,7 +172,8 @@
                         </div>
                     </flux:card>
                 @else
-                    <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                    <div
+                        class="{{ $genderCategory === 'male&female' ? 'grid grid-cols-1 xl:grid-cols-2 gap-4' : '' }}">
                         @foreach ($groupedParticipants as $gender => $participants)
                             <flux:card class="overflow-hidden relative uppercase w-full">
                                 <div
@@ -186,7 +199,8 @@
                                 <div x-data="rankingSystem(
                                     $wire.entangle('scores'),
                                     @js($participants->pluck('id')->values()),
-                                    '{{ $activeTab }}'
+                                    '{{ $activeTab }}',
+                                    {{ $qualifiedParticipant }}
                                 )">
                                     <flux:table>
                                         <flux:table.columns>
@@ -216,7 +230,7 @@
                                                                 () => {
                                                                     let r = rankings['{{ $participant['id'] }}'];
                                                                     return r !== undefined && r !== '-' && r >=
-                                                                        1 && r <= 3.5;
+                                                                        1 && r <= ({{ $qualifiedParticipant }} + 0.5);
                                                                 })
                                                             ()
                                                     }">
