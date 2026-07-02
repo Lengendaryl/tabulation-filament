@@ -36,7 +36,7 @@ new class extends Component {
 
 <div class="space-y-6">
     @foreach ($this->result as $res)
-        @php
+        {{-- @php
             $groupedResults = collect($res->result)->groupBy('gender')->sortBy(
                 fn($group, $gender) => match (strtolower($gender)) {
                     'male' => 0,
@@ -47,6 +47,30 @@ new class extends Component {
             $contestType = $res->contest->contest_type;
 
             $scoringType = $res->contest->scoring_type;
+            $genderCategory = $res->contest->gender_category;
+        @endphp --}}
+
+        @php
+            $contestType = $res->contest->contest_type;
+            $scoringType = $res->contest->scoring_type;
+            $genderCategory = $res->contest->gender_category;
+
+            if ($genderCategory === 'mixed') {
+                // Merge male + female into one flat list, sorted by final rank
+                $groupedResults = collect([
+                    'ALL' => collect($res->result)
+                        ->sortBy(fn($s) => $s['participant']['participant']['participant_no'])
+                        ->values(),
+                ]);
+            } else {
+                $groupedResults = collect($res->result)->groupBy('gender')->sortBy(
+                    fn($group, $gender) => match (strtolower($gender)) {
+                        'male' => 0,
+                        'female' => 1,
+                        default => 2,
+                    },
+                );
+            }
         @endphp
         <div class="space-y-4">
             <div>
@@ -56,18 +80,18 @@ new class extends Component {
                 </flux:heading>
 
                 @if ($contestType == ContestType::Team->value)
-                    <flux:heading leve="2" class="uppercase text-center">
+                    <flux:heading level="2" class="uppercase text-center">
                         {{ Str::upper(Str::replace('_', ' ', $scoringType)) }} SYSTEM
                     </flux:heading>
                 @endif
             </div>
             <div
-                class="{{ $contestType === ContestType::Individual->value ? 'grid grid-cols-1 xl:grid-cols-2 gap-4' : '' }} ">
+                class="{{ $contestType === ContestType::Individual->value && $genderCategory == 'male&female' ? 'grid grid-cols-1 xl:grid-cols-2 gap-4' : '' }} ">
                 @foreach ($groupedResults as $gender => $scores)
                     @php
                         $qualified_participant = $criteria[0]['qualified_participant'] ?? 3;
                         $sortedRanks = $scores->pluck('final_rank')->sort()->values();
-                        $cutoffRank = $sortedRanks[$qualified_participant - 1] ?? null;
+                        $cutoffRank = $sortedRanks[$qualified_participant] ?? null;
                     @endphp
                     <flux:card x:card class="w-full">
                         <flux:table class="font-bold">

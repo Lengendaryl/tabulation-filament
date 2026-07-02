@@ -48,11 +48,28 @@ new class extends Component {
 
 <div>
     @foreach ($this->result as $res)
-        @php
+        {{-- @php
             $t = $this->weight();
             $weight = $t['weight'];
             $hasNoWeight = $t['hasNoWeight'];
             $groupedResults = collect($res->result)->groupBy('gender');
+            $genderCategory = $res->contest->gender_category;
+        @endphp --}}
+        @php
+            $t = $this->weight();
+            $weight = $t['weight'];
+            $hasNoWeight = $t['hasNoWeight'];
+            $genderCategory = $res->contest->gender_category;
+
+            if ($genderCategory === 'mixed') {
+                $groupedResults = collect([
+                    'ALL' => collect($res->result)
+                        ->sortBy(fn($s) => $s['participant']['participant']['participant_no'])
+                        ->values(),
+                ]);
+            } else {
+                $groupedResults = collect($res->result)->groupBy('gender');
+            }
         @endphp
         <div class="space-y-4">
             <div class="flex flex-col">
@@ -70,7 +87,7 @@ new class extends Component {
             </div>
 
 
-            <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+            <div class="{{ $genderCategory === 'male&female' ? 'grid grid-cols-1 xl:grid-cols-2 gap-4' : '' }}">
                 @foreach ($groupedResults as $gender => $scores)
                     @php
                         // Sort ranks for this gender group only

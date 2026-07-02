@@ -173,6 +173,9 @@
                                      'data.content',
                                      $categoryItem['contest_category'],
                                  );
+                                 $genderCategory =
+                                     $categoryItem['contest']['gender_category'] ??
+                                     ($criteria[0]['contest']['gender_category'] ?? null);
 
                                  $dynamicDynamicCriteria = collect(data_get($criteriaBlock, 'data.criteria', []))
                                      ->pluck('criterion')
@@ -185,6 +188,9 @@
                                  $femaleParticipants = $scores
                                      ->filter(fn($p) => data_get($p, 'participant.participant.gender') === 'female')
                                      ->sortBy(fn($p) => data_get($p, 'participant.participant.participant_no'));
+                                 $mixedParticipants = $scores->sortBy(
+                                     fn($p) => data_get($p, 'participant.participant.participant_no'),
+                                 );
                                  $teamParticipants = $scores->sortBy(
                                      fn($p) => data_get($p, 'participant.participant.team_participant_no'),
                                  );
@@ -194,9 +200,79 @@
                                      {{ $categoryItem['contest_category'] }}
                                  </flux:heading>
                                  <div
-                                     class="{{ $contestType === ContestType::Individual->value ? 'grid grid-cols-1 xl:grid-cols-2 gap-4' : '' }}">
+                                     class="{{ $contestType === ContestType::Individual->value && $genderCategory !== 'mixed' ? 'grid grid-cols-1 xl:grid-cols-2 gap-4' : '' }}">
 
-                                     @if ($contestType == ContestType::Individual->value)
+                                     @if ($contestType == ContestType::Individual->value && $genderCategory === 'mixed')
+                                         <flux:card class="w-full">
+                                             <div class="border-b border-zinc-800/10 dark:border-white/20">
+                                                 <p class="mb-2 font-semibold text-xl">
+                                                     CANDIDATES
+                                                 </p>
+                                             </div>
+                                             <flux:table class="font-bold">
+                                                 <flux:table.columns>
+                                                     <flux:table.column>
+                                                         <div class="text-center w-full">Participant</div>
+                                                     </flux:table.column>
+                                                     @foreach ($dynamicDynamicCriteria as $criterion)
+                                                         <flux:table.column>
+                                                             <div class="text-center w-full">{{ $criterion }}</div>
+                                                         </flux:table.column>
+                                                     @endforeach
+                                                     <flux:table.column>
+                                                         <div class="text-center w-full">Total</div>
+                                                     </flux:table.column>
+                                                     <flux:table.column>
+                                                         <div class="text-center w-full">Rank</div>
+                                                     </flux:table.column>
+                                                 </flux:table.columns>
+                                                 <flux:table.rows>
+                                                     @foreach ($mixedParticipants as $participant)
+                                                         @php
+                                                             $rankValue = (float) $participant['rank'];
+                                                             $qualifiedCount =
+                                                                 (int) $criteria[0]['qualified_participant'];
+
+                                                             $sortedRanks = collect($mixedParticipants)
+                                                                 ->pluck('rank')
+                                                                 ->map(fn($r) => (float) $r)
+                                                                 ->sort()
+                                                                 ->values();
+                                                             $cutoffRank = $sortedRanks[$qualifiedCount] ?? null;
+                                                             $isHighlighted =
+                                                                 $cutoffRank !== null && $rankValue <= $cutoffRank;
+                                                             $rowBg = $isHighlighted
+                                                                 ? 'bg-violet-600/10 ring-1 ring-inset ring-violet-500 text-white'
+                                                                 : '';
+                                                         @endphp
+                                                         <flux:table.row class="{{ $rowBg }} text-center">
+                                                             <flux:table.cell>
+                                                                 <p class="text-black dark:text-white">
+                                                                     {{ data_get($participant, 'participant.participant.participant_no') }}
+                                                                 </p>
+                                                             </flux:table.cell>
+                                                             @foreach ($dynamicDynamicCriteria as $criterion)
+                                                                 @php $key = Str::slug($criterion); @endphp
+                                                                 <flux:table.cell>
+                                                                     <p class="text-black dark:text-white">
+                                                                         {{ $participant['scores'][$key] ?? 0 }}
+                                                                     </p>
+                                                                 </flux:table.cell>
+                                                             @endforeach
+                                                             <flux:table.cell>
+                                                                 <p class="text-black dark:text-white">
+                                                                     {{ $participant['total_score'] }}</p>
+                                                             </flux:table.cell>
+                                                             <flux:table.cell>
+                                                                 <p class="text-black dark:text-white">
+                                                                     {{ $participant['rank'] }}</p>
+                                                             </flux:table.cell>
+                                                         </flux:table.row>
+                                                     @endforeach
+                                                 </flux:table.rows>
+                                             </flux:table>
+                                         </flux:card>
+                                     @elseif ($contestType == ContestType::Individual->value)
                                          <flux:card class="w-full">
                                              <div class="border-b border-zinc-800/10 dark:border-white/20">
                                                  <p class="mb-2 font-semibold text-xl">
@@ -376,7 +452,7 @@
                                                                  ->sort()
                                                                  ->values();
 
-                                                             $cutoffRank = $sortedRanks[$qualifiedCount - 1] ?? null;
+                                                             $cutoffRank = $sortedRanks[$qualifiedCount] ?? null;
 
                                                              $isHighlighted =
                                                                  $cutoffRank !== null && $rankValue <= $cutoffRank;
