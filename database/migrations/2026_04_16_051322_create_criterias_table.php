@@ -21,8 +21,6 @@ return new class extends Migration
 
             $table->integer('qualified_participant')->nullable();
 
-            $table->enum('gender_category', ['male', 'female', 'male&female', 'mixed','team'])->default('team');
-
             $table->string('final_scoring_method')->nullable();
             $table->string('preliminary_scoring_method')->nullable();
             $table->integer('preliminary_round_percentage_score')->nullable();
