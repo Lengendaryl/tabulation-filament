@@ -36,7 +36,7 @@ new class extends Component {
 
 <div class="space-y-6">
     @foreach ($this->result as $res)
-        @php
+        {{-- @php
             $groupedResults = collect($res->result)->groupBy('gender')->sortBy(
                 fn($group, $gender) => match (strtolower($gender)) {
                     'male' => 0,
@@ -48,6 +48,29 @@ new class extends Component {
 
             $scoringType = $res->contest->scoring_type;
             $genderCategory = $res->contest->gender_category;
+        @endphp --}}
+
+        @php
+            $contestType = $res->contest->contest_type;
+            $scoringType = $res->contest->scoring_type;
+            $genderCategory = $res->contest->gender_category;
+
+            if ($genderCategory === 'mixed') {
+                // Merge male + female into one flat list, sorted by final rank
+                $groupedResults = collect([
+                    'ALL' => collect($res->result)
+                        ->sortBy(fn($s) => $s['participant']['participant']['participant_no'])
+                        ->values(),
+                ]);
+            } else {
+                $groupedResults = collect($res->result)->groupBy('gender')->sortBy(
+                    fn($group, $gender) => match (strtolower($gender)) {
+                        'male' => 0,
+                        'female' => 1,
+                        default => 2,
+                    },
+                );
+            }
         @endphp
         <div class="space-y-4">
             <div>

@@ -40,6 +40,16 @@
                         })
                         ->sortBy(fn($p) => $p['participant']['team_participant_no'])
                         ->values();
+                } elseif ($genderCategory === 'mixed') {
+                    $groupedParticipants = collect([
+                        'mixed' => $allCriteria
+                            ->first()
+                            ->contest->participants->when($isFinalLevel, function ($collection) use ($finalIds) {
+                                return $collection->filter(fn($p) => in_array($p->id, $finalIds));
+                            })
+                            ->sortBy(fn($p) => $p['participant']['participant_no'])
+                            ->values(),
+                    ]);
                 } else {
                     $groupedParticipants = $allCriteria
                         ->first()
@@ -160,7 +170,8 @@
                         </div>
                     </flux:card>
                 @else
-                    <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                    <div
+                        class="{{ $genderCategory === 'male&female' ? 'grid grid-cols-1 xl:grid-cols-2 gap-4' : '' }}">
                         @foreach ($groupedParticipants as $gender => $participants)
                             <flux:card class="overflow-hidden relative uppercase w-full">
                                 <div

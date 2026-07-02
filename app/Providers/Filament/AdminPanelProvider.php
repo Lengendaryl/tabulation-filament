@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use AchyutN\FilamentLogViewer\FilamentLogViewer;
 use AlizHarb\ActivityLog\ActivityLogPlugin;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use BinaryBuilds\CommandRunner\CommandRunnerPlugin;
 use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
 use Caresome\FilamentAuthDesigner\Enums\MediaPosition;
 use Filament\Http\Middleware\Authenticate;
@@ -24,7 +25,9 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Filament\Support\Enums\Width;
+use GeoSot\FilamentEnvEditor\FilamentEnvEditorPlugin;
 use Illuminate\Support\Facades\Blade;
+use MWGuerra\WebTerminal\WebTerminalPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -79,7 +82,7 @@ class AdminPanelProvider extends PanelProvider
                     ->label('Log')
                     ->pluralLabel('Tabulation Logs')
                     ->navigationGroup('System'),
-
+                FilamentEnvEditorPlugin::make(),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')

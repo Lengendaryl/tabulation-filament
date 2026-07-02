@@ -38,7 +38,7 @@ new class extends Component {
                 </flux:heading>
             </div>
 
-            @php
+            {{-- @php
                 $groupedResults = collect($res->result)->groupBy('gender')->sortBy(
                     fn($group, $gender) => match (strtolower($gender)) {
                         'male' => 0,
@@ -47,6 +47,25 @@ new class extends Component {
                     },
                 );
                 $genderCategory = $res->contest->gender_category;
+            @endphp --}}
+            @php
+                $genderCategory = $res->contest->gender_category;
+
+                if ($genderCategory === 'mixed') {
+                    $groupedResults = collect([
+                        'ALL' => collect($res->result)
+                            ->sortBy(fn($s) => $s['participant']['participant']['participant_no'])
+                            ->values(),
+                    ]);
+                } else {
+                    $groupedResults = collect($res->result)->groupBy('gender')->sortBy(
+                        fn($group, $gender) => match (strtolower($gender)) {
+                            'male' => 0,
+                            'female' => 1,
+                            default => 2,
+                        },
+                    );
+                }
             @endphp
 
             <div class="{{ $genderCategory === 'male&female' ? 'grid grid-cols-1 xl:grid-cols-2 gap-4' : '' }}">
