@@ -70,10 +70,22 @@ class ParticipantsRelationManager extends RelationManager
                     ]),
                     Grid::make(2)->schema([
                         TextInput::make('participant.age')->numeric(),
-                        Select::make('participant.gender')->options([
-                            'male' => 'Male',
-                            'female' => 'Female',
-                        ])->required()
+                        // Select::make('participant.gender')->options([
+                        //     'male' => 'Male',
+                        //     'female' => 'Female',
+                        // ])->required()
+                        Select::make('participant.gender')
+                            ->options(function () {
+                                return match ($this->ownerRecord->gender_category) {
+                                    'male' => ['male' => 'Male'],
+                                    'female' => ['female' => 'Female'],
+                                    default => [
+                                        'male' => 'Male',
+                                        'female' => 'Female',
+                                    ],
+                                };
+                            })
+                            ->required()
                     ]),
                     Textarea::make('participant.description'),
 
