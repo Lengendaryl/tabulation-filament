@@ -65,10 +65,9 @@ new class extends Component {
                 class="{{ $contestType === ContestType::Individual->value ? 'grid grid-cols-1 xl:grid-cols-2 gap-4' : '' }} ">
                 @foreach ($groupedResults as $gender => $scores)
                     @php
-                        // Sort ranks for this gender group only
+                        $qualified_participant = $criteria[0]['qualified_participant'] ?? 3;
                         $sortedRanks = $scores->pluck('final_rank')->sort()->values();
-                        // Top 3 cutoff
-                        $cutoffRank = $sortedRanks[2] ?? null;
+                        $cutoffRank = $sortedRanks[$qualified_participant - 1] ?? null;
                     @endphp
                     <flux:card x:card class="w-full">
                         <flux:table class="font-bold">

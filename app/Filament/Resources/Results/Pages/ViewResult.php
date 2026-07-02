@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Results\Pages;
 
-use App\Events\JudgeSubmittedEvent;
 use App\Filament\Resources\Results\ResultResource;
 use App\Models\Criteria;
 use App\Models\JudgesGroup;
