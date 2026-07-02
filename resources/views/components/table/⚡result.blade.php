@@ -47,10 +47,11 @@ new class extends Component {
     public function topResult()
     {
         return $this->result->where('contest_category', 'Top Finalist')->map(function ($item) {
+            $qualified_participant = $this->result[0]['criteria']['qualified_participant'] ?? 3;
             $item->result = collect($item->result)
                 ->groupBy('gender')
-                ->map(function ($group) {
-                    return $group->sortBy('grand_final_rank')->take(3)->values();
+                ->map(function ($group) use ($qualified_participant) {
+                    return $group->sortBy('grand_final_rank')->take($qualified_participant)->values();
                 })
                 ->all();
             return $item;
@@ -67,10 +68,11 @@ new class extends Component {
         $contestType = $this->result[0]['contest']['contest_type'];
 
         return $this->result->where('contest_category', $category)->map(function ($item) use ($contestType) {
+            $qualified_participant = $this->result[0]['criteria']['qualified_participant'] ?? 3;
             $item->result = collect($item->result)
                 ->groupBy('gender')
-                ->map(function ($group) use ($contestType) {
-                    return $contestType === ContestType::Individual->value ? $group->sortByDesc('grand_final_rank')->take(3)->values() : $group->sortBy('grand_final_rank')->take(3)->values();
+                ->map(function ($group) use ($contestType, $qualified_participant) {
+                    return $contestType === ContestType::Individual->value ? $group->sortByDesc('grand_final_rank')->take($qualified_participant)->values() : $group->sortBy('grand_final_rank')->take($qualified_participant)->values();
                 })
                 ->all();
             return $item;
@@ -184,6 +186,9 @@ new class extends Component {
                         4 => $category . ' Fourth Runner Up',
                         5 => $category . ' Fifth Runner Up',
                         6 => $category . ' Sixth Runner Up',
+                        7 => $category . ' Seventh Runner Up',
+                        8 => $category . ' Eighth Runner Up',
+                        9 => $category . ' Ninth Runner Up',
                     ];
                     $maleByRank = collect($results->result['male'] ?? [])->values();
                     $femaleByRank = collect($results->result['female'] ?? [])->values();

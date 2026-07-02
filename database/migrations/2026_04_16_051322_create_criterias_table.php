@@ -20,9 +20,9 @@ return new class extends Migration
             $table->foreignIdFor(Contest::class)->constrained()->cascadeOnDelete();
 
             $table->integer('qualified_participant')->nullable();
+
             $table->string('final_scoring_method')->nullable();
             $table->string('preliminary_scoring_method')->nullable();
-
             $table->integer('preliminary_round_percentage_score')->nullable();
             $table->integer('final_round_percentage_score')->nullable();
             $table->timestamps();
