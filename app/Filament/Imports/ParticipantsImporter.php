@@ -2,7 +2,9 @@
 
 namespace App\Filament\Imports;
 
+use App\Models\Contest;
 use App\Models\Participant;
+use Filament\Actions\Imports\Exceptions\RowImportFailedException;
 use Filament\Actions\Imports\ImportColumn;
 use Filament\Actions\Imports\Importer;
 use Filament\Actions\Imports\Models\Import;
@@ -11,7 +13,7 @@ use Illuminate\Support\Number;
 class ParticipantsImporter extends Importer
 {
     protected static ?string $model = Participant::class;
-
+    protected ?Contest $contest = null;
     public static function getColumns(): array
     {
         return [
@@ -47,9 +49,28 @@ class ParticipantsImporter extends Importer
                 ->fillRecordUsing(fn() => null),
         ];
     }
+    protected function getContest(): ?Contest
+    {
+        $contestId = $this->options['contest_id'] ?? null;
 
+        if (! $contestId) {
+            return null;
+        }
+
+        return $this->contest ??= Contest::find($contestId);
+    }
     public function resolveRecord(): Participant
     {
+        $gender = $this->data['gender'] ?? null;
+        $genderCategory = $this->getContest()?->gender_category;
+
+        if ($genderCategory === 'male' && $gender !== 'male') {
+            throw new RowImportFailedException('This contest only accepts male participants.');
+        }
+
+        if ($genderCategory === 'female' && $gender !== 'female') {
+            throw new RowImportFailedException('This contest only accepts female participants.');
+        }
         $record = new Participant();
 
         $record->contest_id = $this->options['contest_id'] ?? null;
