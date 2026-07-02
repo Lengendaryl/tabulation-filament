@@ -31,7 +31,7 @@
                 $activeIsFinalLevel = $activeGroup['data']['level'] === Round::Final->value;
                 $finalIds = $this->grandFinalParticipants;
                 $contestType = $allCriteria->first()->contest['contest_type'];
-
+                $genderCategory = $allCriteria->first()->contest['gender_category'];
                 if ($contestType == ContestType::Team->value) {
                     $groupedParticipants = $allCriteria
                         ->first()

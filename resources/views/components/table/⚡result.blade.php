@@ -206,13 +206,16 @@ new class extends Component {
                             $male = $maleByRank[$i] ?? null;
                             $female = $femaleByRank[$i] ?? null;
                             $team = $teamByRank[$i] ?? null;
+                            $genderCategory = $results->contest->gender_category;
+                            logger($genderCategory);
                         @endphp
                         <div
                             class="flex flex-col w-full justify-evenly border-b border-dashed border-black dark:border-white p-4">
                             <div class="text-center mb-2">
                                 <p class="font-bold">{{ $label }}</p>
                             </div>
-                            <div class="flex w-full justify-evenly">
+                            <div
+                                class="{{ $genderCategory === 'male&female' ? 'grid grid-cols-1 md:grid-cols-2 gap-4' : '' }}">
                                 <div class="text-center">
                                     @if ($male)
                                         <p class="text-lg font-bold">CANDIDATE NO.

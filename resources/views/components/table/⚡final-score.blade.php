@@ -46,9 +46,10 @@ new class extends Component {
                         default => 2,
                     },
                 );
+                $genderCategory = $res->contest->gender_category;
             @endphp
 
-            <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+            <div class="{{ $genderCategory === 'male&female' ? 'grid grid-cols-1 xl:grid-cols-2 gap-4' : '' }}">
                 @foreach ($groupedResults as $gender => $scores)
                     @php
                         // Sort ranks for this gender group only

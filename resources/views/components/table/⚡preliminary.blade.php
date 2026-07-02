@@ -47,6 +47,7 @@ new class extends Component {
             $contestType = $res->contest->contest_type;
 
             $scoringType = $res->contest->scoring_type;
+            $genderCategory = $res->contest->gender_category;
         @endphp
         <div class="space-y-4">
             <div>
@@ -56,13 +57,13 @@ new class extends Component {
                 </flux:heading>
 
                 @if ($contestType == ContestType::Team->value)
-                    <flux:heading leve="2" class="uppercase text-center">
+                    <flux:heading level="2" class="uppercase text-center">
                         {{ Str::upper(Str::replace('_', ' ', $scoringType)) }} SYSTEM
                     </flux:heading>
                 @endif
             </div>
             <div
-                class="{{ $contestType === ContestType::Individual->value ? 'grid grid-cols-1 xl:grid-cols-2 gap-4' : '' }} ">
+                class="{{ $contestType === ContestType::Individual->value && $genderCategory == 'male&female' ? 'grid grid-cols-1 xl:grid-cols-2 gap-4' : '' }} ">
                 @foreach ($groupedResults as $gender => $scores)
                     @php
                         $qualified_participant = $criteria[0]['qualified_participant'] ?? 3;
