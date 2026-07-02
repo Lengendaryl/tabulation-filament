@@ -91,7 +91,7 @@ new class extends Component {
                     @php
                         $qualified_participant = $criteria[0]['qualified_participant'] ?? 3;
                         $sortedRanks = $scores->pluck('final_rank')->sort()->values();
-                        $cutoffRank = $sortedRanks[$qualified_participant - 1] ?? null;
+                        $cutoffRank = $sortedRanks[$qualified_participant] ?? null;
                     @endphp
                     <flux:card x:card class="w-full">
                         <flux:table class="font-bold">
