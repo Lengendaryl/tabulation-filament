@@ -14,7 +14,18 @@
         @endforeach
     </x-filament::tabs>
 
-    <form class="space-y-4" wire:submit.prevent="submit" x-data="{ isShowing: false }">
+    <form class="space-y-4" wire:submit.prevent="submit" x-data="{ isShowing: false }"
+        x-on:clear-draft.window="
+    Object.keys(localStorage).forEach(key => {
+        if (
+            key.startsWith(
+                `judge-draft-{{ $this->criteriaId }}-${$event.detail.category}-`
+            )
+        ) {
+            localStorage.removeItem(key);
+        }
+    });
+">
         <flux:card class="flex items-center justify-center">
             <p class="font-bold text-3xl uppercase">{{ $tabLabels[$activeTab] ?? str($activeTab)->replace('-', ' ') }}
             </p>
@@ -150,7 +161,19 @@
                                                             results['{{ $participant['id'] }}']['{{ $slug }}'] = Number($event.target.value)"
                                                         wire:model="scores.{{ $activeTab }}.{{ $participant['id'] }}.{{ $slug }}"
                                                         :disabled="$isLocked" placeholder="{{ $item['score'] }}%"
-                                                        class="font-bold" />
+                                                        class="font-bold" x-init="let key = 'judge-draft-{{ $this->criteriaId }}-{{ $activeTab }}-{{ $participant['id'] }}-{{ $slug }}';
+
+                                                        if (localStorage.getItem(key)) {
+                                                            $el.value = localStorage.getItem(key);
+                                                            $wire.set(
+                                                                'scores.{{ $activeTab }}.{{ $participant['id'] }}.{{ $slug }}',
+                                                                localStorage.getItem(key)
+                                                            );
+                                                        }
+
+                                                        $el.addEventListener('input', () => {
+                                                            localStorage.setItem(key, $el.value);
+                                                        });" />
                                                 </flux:table.cell>
                                             @endforeach
                                             <flux:table.cell variant="strong">
@@ -252,8 +275,20 @@
                                                             results['{{ $participant['id'] }}']['{{ $slug }}'] = Number($event.target.value)"
                                                                 wire:model="scores.{{ $activeTab }}.{{ $participant['id'] }}.{{ $slug }}"
                                                                 :disabled="$isLocked"
-                                                                placeholder="{{ $item['score'] }}%"
-                                                                class="font-bold" />
+                                                                placeholder="{{ $item['score'] }}%" class="font-bold"
+                                                                x-init="let key = 'judge-draft-{{ $this->criteriaId }}-{{ $activeTab }}-{{ $participant['id'] }}-{{ $slug }}';
+
+                                                                if (localStorage.getItem(key)) {
+                                                                    $el.value = localStorage.getItem(key);
+                                                                    $wire.set(
+                                                                        'scores.{{ $activeTab }}.{{ $participant['id'] }}.{{ $slug }}',
+                                                                        localStorage.getItem(key)
+                                                                    );
+                                                                }
+
+                                                                $el.addEventListener('input', () => {
+                                                                    localStorage.setItem(key, $el.value);
+                                                                });" />
                                                         </flux:table.cell>
                                                     @endforeach
                                                     <flux:table.cell variant="strong">
