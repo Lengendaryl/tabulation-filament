@@ -32,6 +32,8 @@
                 $finalIds = $this->grandFinalParticipants;
                 $contestType = $allCriteria->first()->contest['contest_type'];
                 $genderCategory = $allCriteria->first()->contest['gender_category'];
+                $qualifiedParticipant = $allCriteria->first()['qualified_participant'] ?? 3;
+                logger($qualifiedParticipant);
                 if ($contestType == ContestType::Team->value) {
                     $groupedParticipants = $allCriteria
                         ->first()
@@ -96,7 +98,8 @@
                         <div x-data="rankingSystem(
                             $wire.entangle('scores'),
                             @js($groupedParticipants->pluck('id')->values()),
-                            '{{ $activeTab }}'
+                            '{{ $activeTab }}',
+                            {{ $qualifiedParticipant }}
                         )">
                             <flux:table>
                                 <flux:table.columns>
@@ -126,7 +129,7 @@
                                                         () => {
                                                             let r = rankings['{{ $participant['id'] }}'];
                                                             return r !== undefined && r !== '-' && r >=
-                                                                1 && r <= 3.5;
+                                                                1 && r <= ({{ $qualifiedParticipant }} + 0.5);
                                                         })
                                                     ()
                                             }">
@@ -197,7 +200,8 @@
                                 <div x-data="rankingSystem(
                                     $wire.entangle('scores'),
                                     @js($participants->pluck('id')->values()),
-                                    '{{ $activeTab }}'
+                                    '{{ $activeTab }}',
+                                    {{ $qualifiedParticipant }}
                                 )">
                                     <flux:table>
                                         <flux:table.columns>
@@ -227,7 +231,7 @@
                                                                 () => {
                                                                     let r = rankings['{{ $participant['id'] }}'];
                                                                     return r !== undefined && r !== '-' && r >=
-                                                                        1 && r <= 3.5;
+                                                                        1 && r <= ({{ $qualifiedParticipant }} + 0.5);
                                                                 })
                                                             ()
                                                     }">
