@@ -33,7 +33,6 @@
                 $contestType = $allCriteria->first()->contest['contest_type'];
                 $genderCategory = $allCriteria->first()->contest['gender_category'];
                 $qualifiedParticipant = $allCriteria->first()['qualified_participant'] ?? 3;
-                logger($qualifiedParticipant);
                 if ($contestType == ContestType::Team->value) {
                     $groupedParticipants = $allCriteria
                         ->first()
