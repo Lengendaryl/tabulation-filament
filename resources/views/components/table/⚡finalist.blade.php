@@ -48,13 +48,6 @@ new class extends Component {
 
 <div>
     @foreach ($this->result as $res)
-        {{-- @php
-            $t = $this->weight();
-            $weight = $t['weight'];
-            $hasNoWeight = $t['hasNoWeight'];
-            $groupedResults = collect($res->result)->groupBy('gender');
-            $genderCategory = $res->contest->gender_category;
-        @endphp --}}
         @php
             $t = $this->weight();
             $weight = $t['weight'];
