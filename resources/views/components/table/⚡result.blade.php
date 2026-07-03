@@ -128,7 +128,7 @@ new class extends Component {
 ?>
 
 
-<div class="font-serif space-y-10">
+<div class="font-serif space-y-10 mt-10">
     <div class=" border-t border-b p-2 border-black dark:border-white ">
         <h2 class="text-2xl font-bold text-center">
             {{ $heading }}

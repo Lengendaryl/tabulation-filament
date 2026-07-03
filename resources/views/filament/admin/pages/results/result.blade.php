@@ -87,8 +87,8 @@
                  </flux:button>
                  <div class="space-y-10" id="preliminary">
                      <livewire:result-header :contest="$criteria" />
-                     <h2 class="text-center text-3xl font-bold">CONSOLIDATED RESULT</h2>
-                     <flux:card class="space-y-6">
+                     <h2 class="text-center text-3xl font-bold mt-10">CONSOLIDATED RESULT</h2>
+                     <flux:card class="space-y-6 mt-10">
                          <livewire:table.finalist gender="Male" :criteria="$criteria" :score="$score"
                              roundType="{{ Round::Preliminary->value }}" />
 
@@ -104,8 +104,8 @@
                  </flux:button>
                  <div class="space-y-10" id="final">
                      <livewire:result-header :contest="$criteria" />
-                     <h2 class="text-center text-3xl font-bold">CONSOLIDATED RESULT</h2>
-                     <flux:card class="space-y-6">
+                     <h2 class="text-center text-3xl font-bold mt-10">CONSOLIDATED RESULT</h2>
+                     <flux:card class="space-y-6 mt-10">
                          <livewire:table.preliminary gender="Male" :criteria="$criteria" :judges="$judges"
                              :score="$score" roundType="{{ Round::Final->value }}" />
                          <livewire:table.final-score :criteria="$criteria" :judges="$judges" />
@@ -155,16 +155,17 @@
                      $uniqueCategories = $judgeEntries->unique('contest_category');
                  @endphp
                  @if ($judgeItem)
-                     <div id="{{ $judgeItem }}" class="space-y-10"
-                         x-show="activeTab === '{{ $judgeItem['judge']['name'] }}'" x-cloak>
+                     <div id="judge-{{ $judgeItem['judge']['id'] ?? Str::slug($judgeItem['judge']['name']) }}"
+                         class="space-y-10" x-show="activeTab === '{{ $judgeItem['judge']['name'] }}'" x-cloak>
 
-                         <flux:button x-on:click="printDiv('{{ $judgeItem }}')" icon="printer" variant="primary"
-                             color="violet" class="no-print">
+                         <flux:button
+                             x-on:click="printDiv('judge-{{ $judgeItem['judge']['id'] ?? Str::slug($judgeItem['judge']['name']) }}')"
+                             icon="printer" variant="primary" color="violet" class="no-print">
                              Print
                          </flux:button>
 
                          <livewire:result-header :contest="$criteria" />
-                         <p class="text-center uppercase font-bold text-3xl">
+                         <p class="text-center uppercase font-bold text-3xl mt-8">
                              {{ $judgeItem['judge']['name'] }}
                          </p>
                          @foreach ($uniqueCategories as $categoryItem)
@@ -195,7 +196,7 @@
                                      fn($p) => data_get($p, 'participant.participant.team_participant_no'),
                                  );
                              @endphp
-                             <flux:card class="space-y-8 uppercase ">
+                             <flux:card class="space-y-8 uppercase mt-10">
                                  <flux:heading size="xl" class="text-center uppercase">
                                      {{ $categoryItem['contest_category'] }}
                                  </flux:heading>
@@ -494,7 +495,7 @@
                                  </div>
                              </flux:card>
                          @endforeach
-                         <div class="flex flex-col justify-center items-center uppercase gap-4">
+                         <div class="flex flex-col justify-center items-center uppercase gap-4 mt-10">
                              <div class="text-center">
                                  <p class="font-medium  border-b border-black dark:border-white ">
                                      {{ $judgeItem['judge']['name'] }}
