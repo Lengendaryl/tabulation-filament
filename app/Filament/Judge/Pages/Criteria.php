@@ -58,15 +58,25 @@ class Criteria extends Page
         $grandFinalResult = Result::where('contest_id', $this->contestId)->where('criteria_id', $this->criteriaId)
             ->where('contest_category', 'Top Finalist')
             ->first();
-
+            
         if ($grandFinalResult) {
-            $this->grandFinalParticipants = collect($grandFinalResult->result)
+            $genderCategory = $this->allCriteria->first()->contest->gender_category;
+            $qualifiedParticipant = $this->allCriteria->first()->qualified_participant ?? 3;
+
+            $resultCollection = collect($grandFinalResult->result);
+
+            $this->grandFinalParticipants = $genderCategory === 'male&female'
+                ? $resultCollection
                 ->groupBy('gender')
-                ->flatMap(fn($group) => $group->sortBy('grand_final_rank')->take(3))
+                ->flatMap(fn($group) => $group->sortBy('grand_final_rank')->take($qualifiedParticipant))
+                ->pluck('participant.id')
+                ->toArray()
+                : $resultCollection
+                ->sortBy('grand_final_rank')
+                ->take($qualifiedParticipant)
                 ->pluck('participant.id')
                 ->toArray();
         }
-
 
         foreach ($this->allCriteria->first()->criteria as $item) {
             $content = $item['data']['content'];
@@ -310,7 +320,7 @@ class Criteria extends Page
                 $this->userId,
                 $originalCategory,
             ))->toOthers();
-            
+
             $this->dispatch('clear-draft', category: $category);
 
             Notification::make()
