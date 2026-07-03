@@ -43,6 +43,6 @@ class CriteriaRelationManager extends RelationManager
                     DissociateBulkAction::make(),
                     DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])->defaultSort('created_at', 'desc');
     }
 }
