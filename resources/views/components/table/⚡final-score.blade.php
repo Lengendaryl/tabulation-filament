@@ -37,17 +37,6 @@ new class extends Component {
                     {{ $res->contest_category }}
                 </flux:heading>
             </div>
-
-            {{-- @php
-                $groupedResults = collect($res->result)->groupBy('gender')->sortBy(
-                    fn($group, $gender) => match (strtolower($gender)) {
-                        'male' => 0,
-                        'female' => 1,
-                        default => 2,
-                    },
-                );
-                $genderCategory = $res->contest->gender_category;
-            @endphp --}}
             @php
                 $genderCategory = $res->contest->gender_category;
 

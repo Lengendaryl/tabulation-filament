@@ -36,11 +36,6 @@ new class extends Component {
     #[Computed]
     public function majorAward()
     {
-        // return $this->result->whereNotIn('contest_category', ['Top Finalist'])->map(function ($item) {
-        //     $item->result = collect($item->result)->where('final_rank', 1)->values()->groupBy('gender')->all();
-
-        //     return $item;
-        // });
         return $this->result->whereNotIn('contest_category', ['Top Finalist'])->map(function ($item) {
             $rankOne = collect($item->result)->where('final_rank', 1)->values();
 
@@ -53,16 +48,6 @@ new class extends Component {
     #[Computed]
     public function topResult()
     {
-        // return $this->result->where('contest_category', 'Top Finalist')->map(function ($item) {
-        //     $qualified_participant = $this->result[0]['criteria']['qualified_participant'] ?? 3;
-        //     $item->result = collect($item->result)
-        //         ->groupBy('gender')
-        //         ->map(function ($group) use ($qualified_participant) {
-        //             return $group->sortBy('grand_final_rank')->take($qualified_participant)->values();
-        //         })
-        //         ->all();
-        //     return $item;
-        // });
         return $this->result->where('contest_category', 'Top Finalist')->map(function ($item) {
             $qualified_participant = $this->result[0]['criteria']['qualified_participant'] ?? 3;
 
@@ -99,25 +84,6 @@ new class extends Component {
             return $item;
         });
     }
-    // public function finalResult()
-    // {
-    //     $isFinalPrelim = $this->criteria[0]['final_scoring_method'] == 'prelimFinal';
-
-    //     $category = $isFinalPrelim ? 'Final Score' : $this->result[0]['contest_category'] ?? '';
-
-    //     $contestType = $this->result[0]['contest']['contest_type'];
-
-    //     return $this->result->where('contest_category', $category)->map(function ($item) use ($contestType) {
-    //         $qualified_participant = $this->result[0]['criteria']['qualified_participant'] ?? 3;
-    //         $item->result = collect($item->result)
-    //             ->groupBy('gender')
-    //             ->map(function ($group) use ($contestType, $qualified_participant) {
-    //                 return $contestType === ContestType::Individual->value ? $group->sortByDesc('grand_final_rank')->take($qualified_participant)->values() : $group->sortBy('grand_final_rank')->take($qualified_participant)->values();
-    //             })
-    //             ->all();
-    //         return $item;
-    //     });
-    // }
 
     #[Computed]
     public function teamResult()

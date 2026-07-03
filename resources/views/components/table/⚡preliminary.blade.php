@@ -36,20 +36,6 @@ new class extends Component {
 
 <div class="space-y-6">
     @foreach ($this->result as $res)
-        {{-- @php
-            $groupedResults = collect($res->result)->groupBy('gender')->sortBy(
-                fn($group, $gender) => match (strtolower($gender)) {
-                    'male' => 0,
-                    'female' => 1,
-                    default => 2,
-                },
-            );
-            $contestType = $res->contest->contest_type;
-
-            $scoringType = $res->contest->scoring_type;
-            $genderCategory = $res->contest->gender_category;
-        @endphp --}}
-
         @php
             $contestType = $res->contest->contest_type;
             $scoringType = $res->contest->scoring_type;
