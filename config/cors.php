@@ -19,7 +19,12 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => [
+        'https://bisu-judging-tabulation.onrender.com',
+        'http://192.168.1.132:81', // Your local testing IP/port
+        'http://localhost',
+        'http://192.168.1.2:81'
+    ],
 
     'allowed_origins_patterns' => [],
 
@@ -27,8 +32,8 @@ return [
 
     'exposed_headers' => [],
 
-    'max_age' => 0,
+    'max_age' => 86400,
 
-    'supports_credentials' => false,
+    'supports_credentials' => true,
 
 ];
