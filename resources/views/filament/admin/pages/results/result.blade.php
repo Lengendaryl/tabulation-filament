@@ -206,7 +206,7 @@
                                      @if ($contestType == ContestType::Individual->value && $genderCategory === 'mixed')
                                          <flux:card class="w-full">
                                              <div class="border-b border-zinc-800/10 dark:border-white/20">
-                                                 <p class="mb-2 font-semibold text-xl">
+                                                 <p class="mb-2 font-semibold text-xl text-center">
                                                      CANDIDATES
                                                  </p>
                                              </div>
@@ -217,7 +217,7 @@
                                                      </flux:table.column>
                                                      @foreach ($dynamicDynamicCriteria as $criterion)
                                                          <flux:table.column>
-                                                             <div class="text-center w-full">{{ $criterion }}</div>
+                                                             <div class="text-center w-full text-wrap">{{ $criterion }}</div>
                                                          </flux:table.column>
                                                      @endforeach
                                                      <flux:table.column>
@@ -287,7 +287,7 @@
                                                      </flux:table.column>
                                                      @foreach ($dynamicDynamicCriteria as $criterion)
                                                          <flux:table.column>
-                                                             <div class="text-center w-full">{{ $criterion }}
+                                                             <div class="text-center w-full text-wrap">{{ $criterion }}
                                                              </div>
                                                          </flux:table.column>
                                                      @endforeach
@@ -358,7 +358,7 @@
                                                      </flux:table.column>
                                                      @foreach ($dynamicDynamicCriteria as $criterion)
                                                          <flux:table.column>
-                                                             <div class="text-center w-full">{{ $criterion }}
+                                                             <div class="text-center w-full text-wrap">{{ $criterion }}
                                                              </div>
                                                          </flux:table.column>
                                                      @endforeach
@@ -429,7 +429,7 @@
                                                      </flux:table.column>
                                                      @foreach ($dynamicDynamicCriteria as $criterion)
                                                          <flux:table.column>
-                                                             <div class="text-center w-full">{{ $criterion }}
+                                                             <div class="text-center w-full text-wrap">{{ $criterion }}
                                                              </div>
                                                          </flux:table.column>
                                                      @endforeach
