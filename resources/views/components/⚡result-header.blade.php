@@ -29,7 +29,7 @@ new class extends Component {
 
     <div class="flex justify-center items-center w-full">
         <div class="flex flex-col items-center justify-center gap-1">
-            <img class="h-36 w-32" src="{{ Storage::url($contest[0]['contest']['poster']) }}" alt="">
+            <img class="h-36 w-32" src="{{ Storage::url($contest[0]['contest']['event']['poster']) }}" alt="">
             <div class="flex flex-col items-center">
                 <p class="font-bold text-lg">
                     {{ $contest[0]['contest']['event']['name'] }}
