@@ -58,7 +58,7 @@ class Criteria extends Page
         $grandFinalResult = Result::where('contest_id', $this->contestId)->where('criteria_id', $this->criteriaId)
             ->where('contest_category', 'Top Finalist')
             ->first();
-            
+
         if ($grandFinalResult) {
             $genderCategory = $this->allCriteria->first()->contest->gender_category;
             $qualifiedParticipant = $this->allCriteria->first()->qualified_participant ?? 3;
@@ -316,12 +316,12 @@ class Criteria extends Page
                 }
             };
 
+            $this->dispatch('clear-draft', category: $category);
+
             broadcast(new JudgeSubmittedEvent(
                 $this->userId,
                 $originalCategory,
             ))->toOthers();
-
-            $this->dispatch('clear-draft', category: $category);
 
             Notification::make()
                 ->title('Scores Submitted Successfully')
