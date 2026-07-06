@@ -29,14 +29,14 @@ new class extends Component {
 
     <div class="flex justify-center items-center w-full">
         <div class="flex flex-col items-center justify-center gap-1">
-            <img class="h-36 w-32" src="{{ Storage::url($contest[0]['contest']['event']['poster']) }}" alt="">
+            <img class="h-36 w-32" src="{{ Storage::url($contest[0]['contest']['poster']) }}" alt="">
             <p class="font-medium">
-                {{ $contest[0]['contest']['event']['name'] }}
+                {{ $contest[0]['contest']['category'] }}
             </p>
-            <div class="flex gap-1 text-xs">
-                <p>{{ date_format(date_create($contest[0]['contest']['event']['date']), 'F j, Y') }}</p>
+            <div class="flex gap-1 text-sm">
+                <p>{{ date_format(date_create($contest[0]['contest']['date']), 'F j, Y') }}</p>
                 <p>|</p>
-                <p>{{ $contest[0]['contest']['event']['venue'] }}</p>
+                <p>{{ $contest[0]['contest']['venue'] }}</p>
             </div>
         </div>
     </div>
