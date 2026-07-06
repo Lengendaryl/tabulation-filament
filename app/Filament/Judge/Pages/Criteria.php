@@ -125,6 +125,11 @@ class Criteria extends Page
     }
     private function loadScoresByTab(string $tab)
     {
+
+        if ($tab === 'Participants' || !isset($this->tabLabels[$tab])) {
+            return;
+        }
+
         if (!empty($this->scores[$tab])) {
             return;
         }
