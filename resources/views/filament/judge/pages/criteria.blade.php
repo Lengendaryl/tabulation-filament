@@ -166,7 +166,7 @@
                                                         wire:model="scores.{{ $activeTab }}.{{ $participant['id'] }}.{{ $slug }}"
                                                         :disabled="$isLocked" placeholder="{{ $item['score'] }}%"
                                                         class="font-bold" x-init="let key = 'judge-draft-{{ $this->criteriaId }}-{{ $activeTab }}-{{ $participant['id'] }}-{{ $slug }}';
-
+                                                        
                                                         if (localStorage.getItem(key)) {
                                                             $el.value = localStorage.getItem(key);
                                                             $wire.set(
@@ -174,7 +174,7 @@
                                                                 localStorage.getItem(key)
                                                             );
                                                         }
-
+                                                        
                                                         $el.addEventListener('input', () => {
                                                             localStorage.setItem(key, $el.value);
                                                         });" />
@@ -281,7 +281,7 @@
                                                                 :disabled="$isLocked"
                                                                 placeholder="{{ $item['score'] }}%" class="font-bold"
                                                                 x-init="let key = 'judge-draft-{{ $this->criteriaId }}-{{ $activeTab }}-{{ $participant['id'] }}-{{ $slug }}';
-
+                                                                
                                                                 if (localStorage.getItem(key)) {
                                                                     $el.value = localStorage.getItem(key);
                                                                     $wire.set(
@@ -289,7 +289,7 @@
                                                                         localStorage.getItem(key)
                                                                     );
                                                                 }
-
+                                                                
                                                                 $el.addEventListener('input', () => {
                                                                     localStorage.setItem(key, $el.value);
                                                                 });" />
@@ -386,8 +386,9 @@
                                             : $participant['participant']['participant_no'] }}
                                     </p>
                                     <p class="font-semibold text-center normal-case">
-                                        {{ $participant['participant']['first_name'] }}
-                                        {{ $participant['participant']['last_name'] }}
+                                        {{ $contestType == ContestType::Team->value
+                                            ? $participant['participant']['team_name']
+                                            : $participant['participant']['first_name'] . ' ' . $participant['participant']['last_name'] }}
                                     </p>
                                     @if ($contestType != ContestType::Team->value && $genderCategory === 'mixed')
                                         <p class="text-xs text-zinc-500">
