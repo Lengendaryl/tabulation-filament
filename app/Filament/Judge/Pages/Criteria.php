@@ -60,13 +60,23 @@ class Criteria extends Page
             ->first();
 
         if ($grandFinalResult) {
-            $this->grandFinalParticipants = collect($grandFinalResult->result)
+            $genderCategory = $this->allCriteria->first()->contest->gender_category;
+            $qualifiedParticipant = $this->allCriteria->first()->qualified_participant ?? 3;
+
+            $resultCollection = collect($grandFinalResult->result);
+
+            $this->grandFinalParticipants = $genderCategory === 'male&female'
+                ? $resultCollection
                 ->groupBy('gender')
-                ->flatMap(fn($group) => $group->sortBy('grand_final_rank')->take(3))
+                ->flatMap(fn($group) => $group->sortBy('grand_final_rank')->take($qualifiedParticipant))
+                ->pluck('participant.id')
+                ->toArray()
+                : $resultCollection
+                ->sortBy('grand_final_rank')
+                ->take($qualifiedParticipant)
                 ->pluck('participant.id')
                 ->toArray();
         }
-
 
         foreach ($this->allCriteria->first()->criteria as $item) {
             $content = $item['data']['content'];
@@ -115,6 +125,11 @@ class Criteria extends Page
     }
     private function loadScoresByTab(string $tab)
     {
+
+        if ($tab === 'Participants' || !isset($this->tabLabels[$tab])) {
+            return;
+        }
+
         if (!empty($this->scores[$tab])) {
             return;
         }
@@ -306,12 +321,12 @@ class Criteria extends Page
                 }
             };
 
+            $this->dispatch('clear-draft', category: $category);
+
             broadcast(new JudgeSubmittedEvent(
                 $this->userId,
                 $originalCategory,
             ))->toOthers();
-            
-            $this->dispatch('clear-draft', category: $category);
 
             Notification::make()
                 ->title('Scores Submitted Successfully')

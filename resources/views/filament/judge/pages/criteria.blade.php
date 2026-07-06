@@ -2,6 +2,10 @@
 @use('App\Enums\Round')
 <x-filament-panels::page>
     <x-filament::tabs>
+        <x-filament::tabs.item class="uppercase text-wrap" :active="$activeTab === 'Participants'"
+            wire:click="$set('activeTab', 'Participants')">
+            Participants
+        </x-filament::tabs.item>
         @foreach ($allCriteria->first()->criteria as $item)
             @php
                 $tabId = Str::slug($item['data']['content']);
@@ -39,7 +43,7 @@
                 $activeGroup = collect($allCriteria->first()->criteria)->first(
                     fn($g) => Str::slug($g['data']['content']) === $activeTab,
                 );
-                $activeIsFinalLevel = $activeGroup['data']['level'] === Round::Final->value;
+                $activeIsFinalLevel = ($activeGroup['data']['level'] ?? null) === Round::Final->value;
                 $finalIds = $this->grandFinalParticipants;
                 $contestType = $allCriteria->first()->contest['contest_type'];
                 $genderCategory = $allCriteria->first()->contest['gender_category'];
@@ -162,7 +166,7 @@
                                                         wire:model="scores.{{ $activeTab }}.{{ $participant['id'] }}.{{ $slug }}"
                                                         :disabled="$isLocked" placeholder="{{ $item['score'] }}%"
                                                         class="font-bold" x-init="let key = 'judge-draft-{{ $this->criteriaId }}-{{ $activeTab }}-{{ $participant['id'] }}-{{ $slug }}';
-
+                                                        
                                                         if (localStorage.getItem(key)) {
                                                             $el.value = localStorage.getItem(key);
                                                             $wire.set(
@@ -170,7 +174,7 @@
                                                                 localStorage.getItem(key)
                                                             );
                                                         }
-
+                                                        
                                                         $el.addEventListener('input', () => {
                                                             localStorage.setItem(key, $el.value);
                                                         });" />
@@ -277,7 +281,7 @@
                                                                 :disabled="$isLocked"
                                                                 placeholder="{{ $item['score'] }}%" class="font-bold"
                                                                 x-init="let key = 'judge-draft-{{ $this->criteriaId }}-{{ $activeTab }}-{{ $participant['id'] }}-{{ $slug }}';
-
+                                                                
                                                                 if (localStorage.getItem(key)) {
                                                                     $el.value = localStorage.getItem(key);
                                                                     $wire.set(
@@ -285,7 +289,7 @@
                                                                         localStorage.getItem(key)
                                                                     );
                                                                 }
-
+                                                                
                                                                 $el.addEventListener('input', () => {
                                                                     localStorage.setItem(key, $el.value);
                                                                 });" />
@@ -315,7 +319,92 @@
             @endif
         @endforeach
 
-        @if (!$activeIsFinalLevel || !empty($finalIds))
+
+        @if ($activeTab === 'Participants')
+            @php
+                $contestType = $allCriteria->first()->contest['contest_type'];
+                $genderCategory = $allCriteria->first()->contest['gender_category'];
+                // logger($allCriteria);
+                if ($contestType == ContestType::Team->value) {
+                    $rosterGroups = collect([
+                        'team' => $allCriteria
+                            ->first()
+                            ->contest->participants->sortBy(fn($p) => $p['participant']['team_participant_no'])
+                            ->values(),
+                    ]);
+                } elseif ($genderCategory === 'mixed') {
+                    $rosterGroups = collect([
+                        'mixed' => $allCriteria
+                            ->first()
+                            ->contest->participants->sortBy(fn($p) => $p['participant']['participant_no'])
+                            ->values(),
+                    ]);
+                } else {
+                    // male&female or single-gender (male / female)
+                    $rosterGroups = $allCriteria
+                        ->first()
+                        ->contest->participants->sortBy(fn($p) => $p['participant']['participant_no'])
+                        ->groupBy(fn($p) => $p['participant']['gender'])
+                        ->sortBy(
+                            fn($group, $gender) => match (strtolower($gender)) {
+                                'male' => 0,
+                                'female' => 1,
+                                default => 2,
+                            },
+                        );
+                }
+
+            @endphp
+
+            <div class="{{ $genderCategory === 'male&female' ? 'grid grid-cols-1 xl:grid-cols-2 gap-4' : '' }}">
+                @foreach ($rosterGroups as $groupKey => $groupParticipants)
+                    <flux:card class="overflow-hidden relative uppercase w-full">
+                        <div
+                            class="p-4 border-b border-zinc-800/10 dark:border-white/20 flex justify-between items-center">
+                            <p class="text-lg font-bold">
+                                {{ $contestType == ContestType::Team->value ? 'All' : ($groupKey === 'mixed' ? 'All' : $groupKey) }}
+                                Participants
+                            </p>
+                        </div>
+                        <div class="p-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                            @foreach ($groupParticipants as $participant)
+                                <flux:card class="flex flex-col items-center justify-center gap-1 p-4">
+                                    <div
+                                        class="w-full aspect-3/4 overflow-hidden rounded-lg bg-zinc-200 dark:bg-zinc-800">
+                                        @if ($participant['participant']['image'])
+                                            <img src="{{ Storage::url($participant['participant']['image']) }}"
+                                                alt="" class="w-full h-full object-cover">
+                                        @else
+                                            <div class="w-full h-full flex items-center justify-center">
+                                                <flux:icon.user class="size-12 text-zinc-400" />
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <p class="font-bold text-2xl">
+                                        {{ $contestType == ContestType::Team->value
+                                            ? $participant['participant']['team_participant_no']
+                                            : $participant['participant']['participant_no'] }}
+                                    </p>
+                                    <p class="font-semibold text-center normal-case">
+                                        {{ $contestType == ContestType::Team->value
+                                            ? $participant['participant']['team_name']
+                                            : $participant['participant']['first_name'] . ' ' . $participant['participant']['last_name'] }}
+                                    </p>
+                                    @if ($contestType != ContestType::Team->value && $genderCategory === 'mixed')
+                                        <p class="text-xs text-zinc-500">
+                                            {{ $participant['participant']['gender'] }}
+                                        </p>
+                                    @endif
+                                </flux:card>
+                            @endforeach
+                        </div>
+                    </flux:card>
+                @endforeach
+            </div>
+
+        @endif
+
+        @if ($activeTab !== 'Participants' && (!$activeIsFinalLevel || !empty($finalIds)))
             <div class="flex items-center justify-end gap-2">
                 <flux:button variant="primary" type="submit"
                     class="{{ $isLocked ? 'opacity-50 pointer-events-none cursor-not-allowed' : '' }}"

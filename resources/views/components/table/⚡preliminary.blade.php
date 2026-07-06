@@ -36,20 +36,6 @@ new class extends Component {
 
 <div class="space-y-6">
     @foreach ($this->result as $res)
-        {{-- @php
-            $groupedResults = collect($res->result)->groupBy('gender')->sortBy(
-                fn($group, $gender) => match (strtolower($gender)) {
-                    'male' => 0,
-                    'female' => 1,
-                    default => 2,
-                },
-            );
-            $contestType = $res->contest->contest_type;
-
-            $scoringType = $res->contest->scoring_type;
-            $genderCategory = $res->contest->gender_category;
-        @endphp --}}
-
         @php
             $contestType = $res->contest->contest_type;
             $scoringType = $res->contest->scoring_type;
@@ -91,7 +77,7 @@ new class extends Component {
                     @php
                         $qualified_participant = $criteria[0]['qualified_participant'] ?? 3;
                         $sortedRanks = $scores->pluck('final_rank')->sort()->values();
-                        $cutoffRank = $sortedRanks[$qualified_participant] ?? null;
+                        $cutoffRank = $sortedRanks[$qualified_participant - 1] ?? null;
                     @endphp
                     <flux:card x:card class="w-full">
                         <flux:table class="font-bold">

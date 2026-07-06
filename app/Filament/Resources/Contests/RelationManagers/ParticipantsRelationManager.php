@@ -169,6 +169,6 @@ class ParticipantsRelationManager extends RelationManager
                     RestoreBulkAction::make(),
                     ForceDeleteBulkAction::make(),
                 ]),
-            ]);
+            ])->defaultSort('created_at', 'desc');
     }
 }
