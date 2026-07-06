@@ -20,6 +20,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
@@ -46,10 +47,9 @@ class ContestRelationManager extends RelationManager
                         ])->columnSpanFull(),
                         Grid::make(1)->schema([
                             Textarea::make('description')
-                                ->required()
                                 ->maxLength(255)
                         ])->columnSpanFull(),
-                        Grid::make(2)->schema([
+                        Grid::make(3)->columns(fn(Get $get) => $get('contest_type') === 'team' ? 2 : 3)->schema([
                             Select::make('scoring_type')->label('Type of Scoring')
                                 ->options([
                                     'point_based' => 'Point Based',
@@ -59,7 +59,14 @@ class ContestRelationManager extends RelationManager
                                 ->options([
                                     'individual' => 'Individual',
                                     'team' => 'Team',
-                                ])->required(),
+                                ])->live()->required(),
+                            Select::make('gender_category')->label('Type of Gender Category')
+                                ->options([
+                                    'male' => 'Male Only',
+                                    'female' => 'Female Only',
+                                    'male&female' => 'Male & Female',
+                                    'mixed' => 'Mixed',
+                                ])->required()->hidden(fn($get) => $get('contest_type') === 'team'),
                         ])->columnSpanFull(),
                         Grid::make(2)->schema([
                             DatePicker::make('date')->native(false)
