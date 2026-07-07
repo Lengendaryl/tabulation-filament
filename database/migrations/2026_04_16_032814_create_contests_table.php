@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Event::class)->constrained()->cascadeOnDelete();
             $table->string('category');
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->string('organizer');
             $table->string('scoring_type');
             $table->string('contest_type');
