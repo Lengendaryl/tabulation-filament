@@ -32,7 +32,12 @@ class ViewResult extends ViewRecord
     public array $judgesInfo;
     public array $participants = [];
     public array $judgeStatusMap = [];
-
+    public bool $isRunnerUp = true;
+    
+    public function toggleRunnerUp()
+    {
+        $this->isRunnerUp = ! $this->isRunnerUp;
+    }
     public function loadJudgesGroup()
     {
         $judgesGroup = JudgesGroup::where('criteria_id', $this->record->id)->get();
@@ -62,14 +67,15 @@ class ViewResult extends ViewRecord
                 ->map(function ($levelGroup) use ($judgesInfo) {
 
                     $levelGroup['judges'] = collect($levelGroup['judges'] ?? [])
+                        ->filter(fn($judge) => is_array($judge))
                         ->map(function ($judge) use ($judgesInfo) {
 
                             $user = $judgesInfo->get($judge['judge_id'] ?? null);
 
-                            $judge['name'] = $user?->name;
-                            $judge['email'] = $user?->email;
-                            $judge['no'] = $user?->no;
-                            $judge['position'] = $user?->position;
+                            $judge['name'] = $user?->name ?? '';
+                            $judge['email'] = $user?->email ?? '';
+                            $judge['no'] = $user?->no ?? '';
+                            $judge['position'] = $user?->position ?? '';
                             return $judge;
                         })
                         ->toArray();
@@ -107,6 +113,11 @@ class ViewResult extends ViewRecord
 
         $this->criteria = Criteria::where('id', $this->record->id)->with(['contest.event'])->get();
 
+        $this->loadJudgesGroup();
+    }
+
+    public function hydrate(): void
+    {
         $this->loadJudgesGroup();
     }
 

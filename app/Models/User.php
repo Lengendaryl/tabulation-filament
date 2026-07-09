@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
-use Spatie\Permission\Models\Role;
 
 #[Fillable(['name', 'category', 'email', 'password', 'no', 'position'])]
 #[Hidden(['password', 'remember_token'])]
@@ -21,19 +20,6 @@ class User extends Authenticatable implements FilamentUser
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, HasRoles, SoftDeletes;
 
-    protected static function booted(): void
-    {
-        static::created(function (User $user) {
-            // This ensures every new account is a Super Admin automatically
-
-            $superAdminRole = Role::firstOrCreate([
-                'name' => 'super_admin',
-                'guard_name' => 'web',
-            ]);
-
-            $user->assignRole($superAdminRole);
-        });
-    }
     /**
      * Get the attributes that should be cast.
      *

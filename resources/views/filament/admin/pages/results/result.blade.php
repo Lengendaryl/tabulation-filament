@@ -121,7 +121,8 @@
                  <div class="space-y-10" id="major_awards">
                      <livewire:result-header :contest="$criteria" />
                      <livewire:table.result heading="MAJOR AWARDS" :criteria="$criteria" :score="$score"
-                         roundType="{{ Round::Preliminary->value }}" :judges="$judges" tabType="major" />
+                         roundType="{{ Round::Preliminary->value }}" :judges="$judges" tabType="major"
+                         :isRunnerUp="$isRunnerUp" />
                  </div>
              </div>
 
@@ -132,7 +133,8 @@
                      <livewire:result-header :contest="$criteria" />
                      <livewire:table.result heading="TOP {{ $topParticipants }} RESULT"
                          subHeading="{{ $topParticipants }}" :criteria="$criteria" :score="$score"
-                         roundType="{{ Round::Preliminary->value }}" :judges="$judges" tabType="top" />
+                         roundType="{{ Round::Preliminary->value }}" :judges="$judges" tabType="top"
+                         :isRunnerUp="$isRunnerUp" />
                  </div>
              </div>
 
@@ -140,32 +142,39 @@
                  <flux:button x-on:click="printDiv('final_result')" variant="primary" icon="printer" color="violet">
                      Print
                  </flux:button>
+
+                 <flux:button variant="primary" color="zinc" wire:click="toggleRunnerUp">
+                     {{ $isRunnerUp ? 'Runner Up' : 'Placer' }}
+                 </flux:button>
+
                  <div class="space-y-10" id="final_result">
                      <livewire:result-header :contest="$criteria" />
                      <livewire:table.result heading="FINAL RESULT" :criteria="$criteria" :score="$score"
                          roundType="{{ $contestType === ContestType::Individual->value ? $finalRoundType : Round::Preliminary->value }}"
                          :judges="$judges"
-                         tabType="{{ $contestType === ContestType::Individual->value ? Round::Final->value : Round::Preliminary->value }}" />
+                         tabType="{{ $contestType === ContestType::Individual->value ? Round::Final->value : Round::Preliminary->value }}"
+                         :isRunnerUp="$isRunnerUp" />
                  </div>
              </div>
              @foreach (collect($score)->unique('judge.id') as $judgeItem)
                  @php
                      $judgeEntries = collect($score)->where('judge.id', $judgeItem['judge']['id']);
+                     logger($judgeItem);
                      $uniqueCategories = $judgeEntries->unique('contest_category');
                  @endphp
                  @if ($judgeItem)
-                     <div id="judge-{{ $judgeItem['judge']['id'] ?? Str::slug($judgeItem['judge']['name']) }}"
-                         class="space-y-10" x-show="activeTab === '{{ $judgeItem['judge']['name'] }}'" x-cloak>
+                     <div id="judge-{{ $judgeItem['judge']['id'] ?? Str::slug($judgeItem['judge']['name'] ?? '') }}"
+                         class="space-y-10" x-show="activeTab === '{{ $judgeItem['judge']['name'] ?? '' }}'" x-cloak>
 
                          <flux:button
-                             x-on:click="printDiv('judge-{{ $judgeItem['judge']['id'] ?? Str::slug($judgeItem['judge']['name']) }}')"
+                             x-on:click="printDiv('judge-{{ $judgeItem['judge']['id'] ?? Str::slug($judgeItem['judge']['name'] ?? '') }}')"
                              icon="printer" variant="primary" color="violet" class="no-print">
                              Print
                          </flux:button>
 
                          <livewire:result-header :contest="$criteria" />
                          <p class="text-center uppercase font-bold text-3xl mt-8">
-                             {{ $judgeItem['judge']['name'] }}
+                             {{ $judgeItem['judge']['name'] ?? '' }}
                          </p>
 
                          @foreach ($uniqueCategories as $categoryItem)
@@ -210,7 +219,7 @@
                                      @if ($contestType == ContestType::Individual->value && $genderCategory === 'mixed')
                                          <flux:card class="w-full">
                                              <div class="border-b border-zinc-800/10 dark:border-white/20">
-                                                 <p class="mb-2 font-semibold text-xl text-center">CANDIDATES</p>
+                                                 <p class="mb-2 font-semibold text-xl text-center uppercase">{{ $criteria[0]['participant_label'] }}</p>
                                              </div>
                                              <flux:table class="font-bold">
                                                  <flux:table.columns>
@@ -285,7 +294,7 @@
                                      @elseif ($contestType == ContestType::Individual->value)
                                          <flux:card class="w-full">
                                              <div class="border-b border-zinc-800/10 dark:border-white/20">
-                                                 <p class="mb-2 font-semibold text-xl">MALE CANDIDATES</p>
+                                                 <p class="mb-2 font-semibold text-xl uppercase">MALE {{ $criteria[0]['participant_label'] }}</p>
                                              </div>
                                              <flux:table class="font-bold">
                                                  <flux:table.columns>
@@ -356,7 +365,7 @@
 
                                          <flux:card class="w-full">
                                              <div class="border-b border-zinc-800/10 dark:border-white/20">
-                                                 <p class="mb-2 font-semibold text-xl">FEMALE CANDIDATES</p>
+                                                 <p class="mb-2 font-semibold text-xl uppercase">FEMALE {{ $criteria[0]['participant_label'] }}</p>
                                              </div>
                                              <flux:table class="font-bold">
                                                  <flux:table.columns>
@@ -429,7 +438,7 @@
                                      @else
                                          <flux:card class="w-full">
                                              <div class="border-b border-zinc-800/10 dark:border-white/20">
-                                                 <p class="mb-2 font-semibold text-xl">TEAM CANDIDATES</p>
+                                                 <p class="mb-2 font-semibold text-xl uppercase">TEAM {{ $criteria[0]['participant_label'] }}</p>
                                              </div>
                                              <flux:table class="font-bold">
                                                  <flux:table.columns>
@@ -507,7 +516,7 @@
                          <div class="flex flex-col justify-center items-center uppercase gap-4 mt-10">
                              <div class="text-center">
                                  <p class="font-medium border-b border-black dark:border-white">
-                                     {{ $judgeItem['judge']['name'] }}
+                                     {{ $judgeItem['judge']['name'] ?? '' }}
                                  </p>
                                  <p class="text-center text-xs">
                                      {{ $judgeItem['judge']['position'] ?? 'JUDGE' }}

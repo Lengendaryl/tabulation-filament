@@ -53,7 +53,7 @@ new class extends Component {
             $weight = $t['weight'];
             $hasNoWeight = $t['hasNoWeight'];
             $genderCategory = $res->contest->gender_category;
-
+            $participantLabel = $res->criteria->participant_label;
             if ($genderCategory === 'mixed') {
                 $groupedResults = collect([
                     'ALL' => collect($res->result)
@@ -93,7 +93,7 @@ new class extends Component {
                         <flux:table class="font-bold">
                             <div class="border-b border-zinc-800/10 dark:border-white/20 text-center ">
                                 <p class="text-xl font-bold uppercase mb-2">
-                                    {{ $gender }} Candidates
+                                    {{ $gender }} {{ $participantLabel }}
                                 </p>
                             </div>
                             <flux:table.columns>

@@ -2,7 +2,6 @@
 
 namespace App\Filament\Judge\Pages;
 
-use App\Enums\ContestType;
 use App\Enums\Round;
 use App\Events\JudgeSubmittedEvent;
 use App\Models\Criteria as ModelsCriteria;
@@ -161,17 +160,13 @@ class Criteria extends Page
     {
         $this->ranks = [];
 
-        // $groupedParticipants = $this->allCriteria
-        //     ->first()
-        //     ->contest
-        //     ->participants
-        //     ->groupBy(fn($p) => $p['participant']['gender']);
-        $contestType = $this->allCriteria->first()->contest->contest_type;
+        $genderCategory = $this->allCriteria->first()->contest->gender_category;
+        $participants = $this->allCriteria->first()->contest->participants;
 
-        // ✅ group by gender only for individual, not for team
-        $groupedParticipants = $contestType === ContestType::Team->value
-            ? collect(['team' => $this->allCriteria->first()->contest->participants]) // ✅ single group
-            : $this->allCriteria->first()->contest->participants->groupBy(fn($p) => $p['participant']['gender']);
+        $groupedParticipants = match ($genderCategory) {
+            'male&female' => $participants->groupBy(fn($p) => $p['participant']['gender']),
+            default => collect(['all' => $participants]),
+        };
 
         foreach ($groupedParticipants as $gender => $participants) {
 

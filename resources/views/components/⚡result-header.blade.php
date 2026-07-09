@@ -18,7 +18,7 @@ new class extends Component {
                 <p>Republic of the Philippines</p>
                 <p>BOHOL ISLAND STATE UNIVERSITY</p>
                 <p>Masgsija, Balilihan, 6342, Bohol, Philippines</p>
-                <p>Balance | Integrity | Stewardship | Uprightness</p>
+                <p>Balance | Innovativeness | Stewardship | Uprightness</p>
             </div>
         </div>
         <div class="flex gap-4">
@@ -32,7 +32,7 @@ new class extends Component {
             <img class="h-36 w-32" src="{{ Storage::url($contest[0]['contest']['event']['poster']) }}" alt="">
             <div class="flex flex-col items-center">
                 <p class="font-bold text-lg">
-                    {{ $contest[0]['contest']['event']['name'] }}
+                    {{ $contest[0]['contest']['event']['name'] ?? '' }}
                 </p>
                 <p class="font-medium">
                     {{ $contest[0]['contest']['category'] }}

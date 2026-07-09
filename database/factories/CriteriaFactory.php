@@ -134,7 +134,7 @@ class CriteriaFactory extends Factory
             // NORMAL
             'contest_id' => 1,
             'judges' => [2, 3, 4, 5],
-            'qualified_participant' => 3,
+            'qualified_participant' => 5,
             'final_scoring_method' => 'prelimFinal',
             'preliminary_scoring_method' => 'default',
             'preliminary_round_percentage_score' => 50,

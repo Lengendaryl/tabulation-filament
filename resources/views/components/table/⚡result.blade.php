@@ -16,7 +16,8 @@ new class extends Component {
     public Collection $score;
     public string $roundType;
     public string $tabType;
-
+    public string $resultType;
+    public bool $isRunnerUp;
     #[On('echo:tabulate,.Tabulate')]
     public function refreshData()
     {
@@ -124,7 +125,7 @@ new class extends Component {
                         @foreach ($results->result['male'] ?? [] as $res)
                             <div class="flex justify-around font-bold">
                                 <div class="text-center">
-                                    <p class="text-lg">CANDIDATE
+                                    <p class="text-lg uppercase">{{ $criteria[0]['participant_label'] }}
                                         NO.{{ $res['participant']['participant']['participant_no'] }}</p>
                                     <p>Male</p>
                                 </div>
@@ -133,7 +134,7 @@ new class extends Component {
                         @foreach ($results->result['female'] ?? [] as $res)
                             <div class="flex justify-around font-bold">
                                 <div class="text-center">
-                                    <p class="text-lg">CANDIDATE
+                                    <p class="text-lg uppercase">{{ $criteria[0]['participant_label'] }}
                                         NO.{{ $res['participant']['participant']['participant_no'] }}</p>
                                     <p>Female</p>
                                 </div>
@@ -142,7 +143,7 @@ new class extends Component {
                         @foreach ($results->result['mixed'] ?? [] as $res)
                             <div class="flex justify-around font-bold">
                                 <div class="text-center">
-                                    <p class="text-lg">CANDIDATE
+                                    <p class="text-lg uppercase">{{ $criteria[0]['participant_label'] }}
                                         NO.{{ $res['participant']['participant']['participant_no'] }}</p>
                                 </div>
                             </div>
@@ -161,7 +162,7 @@ new class extends Component {
                             @foreach ($results->result['male'] ?? [] as $res)
                                 <div class="flex justify-around font-bold">
                                     <div class="text-center">
-                                        <p class="text-lg">CANDIDATE
+                                        <p class="text-lg uppercase">{{ $criteria[0]['participant_label'] }}
                                             NO.{{ $res['participant']['participant']['participant_no'] }}</p>
                                         <p>Male</p>
                                     </div>
@@ -172,7 +173,7 @@ new class extends Component {
                             @foreach ($results->result['female'] ?? [] as $res)
                                 <div class="flex justify-around font-bold">
                                     <div class="text-center">
-                                        <p class="text-lg">CANDIDATE
+                                        <p class="text-lg uppercase">{{ $criteria[0]['participant_label'] }}
                                             NO.{{ $res['participant']['participant']['participant_no'] }}</p>
                                         <p>Female</p>
                                     </div>
@@ -183,7 +184,7 @@ new class extends Component {
                             @foreach ($results->result['mixed'] ?? [] as $res)
                                 <div class="flex justify-around font-bold">
                                     <div class="text-center">
-                                        <p class="text-lg">CANDIDATE
+                                        <p class="text-lg uppercase">{{ $criteria[0]['participant_label'] }}
                                             NO.{{ $res['participant']['participant']['participant_no'] }}</p>
                                     </div>
                                 </div>
@@ -193,101 +194,6 @@ new class extends Component {
                 </div>
             @endforeach
         </div>
-        {{-- @elseif ($tabType === $t)
-        <div class="flex flex-col justify-center w-full">
-
-            @foreach ($this->finalResult as $results)
-                @php
-
-                    $category = $results['contest']['category'];
-
-                    $labels = [
-                        1 =>
-                            $results['contest']['category'] .
-                            date_format(date_create($results['contest']['date']), ' Y'),
-                        2 => $category . ' Second Runner Up',
-                        3 => $category . ' Third Runner Up',
-                        4 => $category . ' Fourth Runner Up',
-                        5 => $category . ' Fifth Runner Up',
-                        6 => $category . ' Sixth Runner Up',
-                        7 => $category . ' Seventh Runner Up',
-                        8 => $category . ' Eighth Runner Up',
-                        9 => $category . ' Ninth Runner Up',
-                    ];
-                    $maleByRank = collect($results->result['male'] ?? [])->values();
-                    $femaleByRank = collect($results->result['female'] ?? [])->values();
-                    $teamByRank = collect($results->result['team'] ?? [])->values();
-                    $total =
-                        $contestType === ContestType::Team->value
-                            ? $teamByRank->count()
-                            : max($maleByRank->count(), $femaleByRank->count());
-                @endphp
-                @if ($contestType === ContestType::Individual->value)
-                    @for ($i = 0; $i < $total; $i++)
-                        @php
-                            $rank = $total - $i; // since sorted descending, index 0=lowest rank
-                            $label = $labels[$rank] ?? 'Rank ' . $rank;
-                            $male = $maleByRank[$i] ?? null;
-                            $female = $femaleByRank[$i] ?? null;
-                            $team = $teamByRank[$i] ?? null;
-                            $genderCategory = $results->contest->gender_category;
-                            logger($genderCategory);
-                        @endphp
-                        <div
-                            class="flex flex-col w-full justify-evenly border-b border-dashed border-black dark:border-white p-4">
-                            <div class="text-center mb-2">
-                                <p class="font-bold">{{ $label }}</p>
-</div>
-<div
-    class="{{ $genderCategory === 'male&female' ? 'grid grid-cols-1 md:grid-cols-2 gap-4' : '' }}">
-    <div class="text-center">
-        @if ($male)
-        <p class="text-lg font-bold">CANDIDATE NO.
-            {{ $male['participant']['participant']['participant_no'] }}
-        </p>
-        <p>Male</p>
-        @endif
-    </div>
-    <div class="text-center">
-        @if ($female)
-        <p class="text-lg font-bold">CANDIDATE NO.
-            {{ $female['participant']['participant']['participant_no'] }}
-        </p>
-        <p>Female</p>
-        @endif
-    </div>
-</div>
-</div>
-@endfor
-@else
-@for ($i = $total - 1; $i >= 0; $i--)
-@php
-$rank = $i + 1;
-$label = $labels[$rank] ?? 'Rank ' . $rank;
-$team = $teamByRank[$i] ?? null;
-@endphp
-<div
-    class="flex flex-col w-full justify-evenly border-b border-dashed border-black dark:border-white p-4">
-    <div class="text-center mb-2">
-        <p class="font-bold">{{ $label }}</p>
-    </div>
-    <div class="flex w-full justify-evenly">
-        <div class="text-center">
-            @if ($team)
-            <p class="text-lg font-bold">TEAM CANDIDATE NO.
-                {{ $team['participant']['participant']['team_participant_no'] }}
-            </p>
-            <p>Male</p>
-            @endif
-        </div>
-    </div>
-
-</div>
-@endfor
-@endif
-@endforeach
-</div>
-@endif --}}
     @elseif ($tabType === $t)
         <div class="flex flex-col justify-center w-full">
 
@@ -295,19 +201,31 @@ $team = $teamByRank[$i] ?? null;
                 @php
                     $category = $results['contest']['category'];
 
-                    $labels = [
-                        1 =>
-                            $results['contest']['category'] .
-                            date_format(date_create($results['contest']['date']), ' Y'),
-                        2 => $category . ' Second Runner Up',
-                        3 => $category . ' Third Runner Up',
-                        4 => $category . ' Fourth Runner Up',
-                        5 => $category . ' Fifth Runner Up',
-                        6 => $category . ' Sixth Runner Up',
-                        7 => $category . ' Seventh Runner Up',
-                        8 => $category . ' Eighth Runner Up',
-                        9 => $category . ' Ninth Runner Up',
-                    ];
+                    $labels = $isRunnerUp
+                        ? [
+                            1 =>
+                                $results['contest']['category'] .
+                                date_format(date_create($results['contest']['date']), ' Y'),
+                            2 => $category . ' First Runner Up',
+                            3 => $category . ' Second Runner Up',
+                            4 => $category . ' Third Runner Up',
+                            5 => $category . ' Fourth Runner Up',
+                            6 => $category . ' Fifth Runner Up',
+                            7 => $category . ' Sixth Runner Up',
+                            8 => $category . ' Seventh Runner Up',
+                            9 => $category . ' Eighth Runner Up',
+                        ]
+                        : [
+                            1 => $category . ' 1st Place',
+                            2 => $category . ' 2nd Place',
+                            3 => $category . ' 3rd Place',
+                            4 => $category . ' 4th Place',
+                            5 => $category . ' 5th Place',
+                            6 => $category . ' 6th Place',
+                            7 => $category . ' 7th Place',
+                            8 => $category . ' 8th Place',
+                            9 => $category . ' 9th Place',
+                        ];
 
                     $genderCategory = $results->contest->gender_category;
 
@@ -342,7 +260,7 @@ $team = $teamByRank[$i] ?? null;
                             @if ($genderCategory === 'mixed')
                                 <div class="text-center">
                                     @if ($mixed)
-                                        <p class="text-lg font-bold">CANDIDATE NO.
+                                        <p class="text-lg font-bold uppercase">{{ $criteria[0]['participant_label'] }} NO.
                                             {{ $mixed['participant']['participant']['participant_no'] }}
                                         </p>
                                     @endif
@@ -352,7 +270,7 @@ $team = $teamByRank[$i] ?? null;
                                     class="{{ $genderCategory === 'male&female' ? 'grid grid-cols-1 md:grid-cols-2 gap-4' : '' }}">
                                     <div class="text-center">
                                         @if ($male)
-                                            <p class="text-lg font-bold">CANDIDATE NO.
+                                            <p class="text-lg font-bold uppercase">{{ $criteria[0]['participant_label'] }} NO.
                                                 {{ $male['participant']['participant']['participant_no'] }}
                                             </p>
                                             <p>Male</p>
@@ -360,7 +278,7 @@ $team = $teamByRank[$i] ?? null;
                                     </div>
                                     <div class="text-center">
                                         @if ($female)
-                                            <p class="text-lg font-bold">CANDIDATE NO.
+                                            <p class="text-lg font-bold uppercase">{{ $criteria[0]['participant_label'] }} NO.
                                                 {{ $female['participant']['participant']['participant_no'] }}
                                             </p>
                                             <p>Female</p>
@@ -385,7 +303,7 @@ $team = $teamByRank[$i] ?? null;
                             <div class="flex w-full justify-evenly">
                                 <div class="text-center">
                                     @if ($team)
-                                        <p class="text-lg font-bold">TEAM CANDIDATE NO.
+                                        <p class="text-lg font-bold uppercase">TEAM {{ $criteria[0]['participant_label'] }} NO.
                                             {{ $team['participant']['participant']['team_participant_no'] }}
                                         </p>
                                         <p>Male</p>

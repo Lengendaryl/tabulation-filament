@@ -37,7 +37,7 @@
 
         @foreach ($allCriteria->first()->criteria as $group)
             @php
-
+                $participantLabel = $allCriteria->first()->participant_label;
                 $thisTabId = Str::slug($group['data']['content']);
                 $isFinalLevel = $group['data']['level'] === Round::Final->value;
                 $activeGroup = collect($allCriteria->first()->criteria)->first(
@@ -91,7 +91,7 @@
                     <flux:card class="overflow-hidden relative uppercase w-full">
                         <div
                             class="p-4 border-b border-zinc-800/10 dark:border-white/20 flex justify-between items-center">
-                            <p class="text-lg font-bold"> Candidates</p>
+                            <p class="text-lg font-bold uppercase text-center w-full">{{ $participantLabel }}</p>
                             <flux:button variant="ghost" size="sm" @click="isShowing = !isShowing"
                                 inset="top bottom">
                                 <flux:icon.eye x-show="!isShowing" class="size-5" />
@@ -166,7 +166,7 @@
                                                         wire:model="scores.{{ $activeTab }}.{{ $participant['id'] }}.{{ $slug }}"
                                                         :disabled="$isLocked" placeholder="{{ $item['score'] }}%"
                                                         class="font-bold" x-init="let key = 'judge-draft-{{ $this->criteriaId }}-{{ $activeTab }}-{{ $participant['id'] }}-{{ $slug }}';
-                                                        
+
                                                         if (localStorage.getItem(key)) {
                                                             $el.value = localStorage.getItem(key);
                                                             $wire.set(
@@ -174,7 +174,7 @@
                                                                 localStorage.getItem(key)
                                                             );
                                                         }
-                                                        
+
                                                         $el.addEventListener('input', () => {
                                                             localStorage.setItem(key, $el.value);
                                                         });" />
@@ -205,7 +205,7 @@
                             <flux:card class="overflow-hidden relative uppercase w-full">
                                 <div
                                     class="p-4 border-b border-zinc-800/10 dark:border-white/20 flex justify-between items-center">
-                                    <p class="text-lg font-bold">{{ $gender }} Candidates</p>
+                                    <p class="text-lg font-bold uppercase text-center w-full">{{ $gender }} {{ $participantLabel }}</p>
                                     <flux:button variant="ghost" size="sm" @click="isShowing = !isShowing"
                                         inset="top bottom">
                                         <flux:icon.eye x-show="!isShowing" class="size-5" />
@@ -281,7 +281,7 @@
                                                                 :disabled="$isLocked"
                                                                 placeholder="{{ $item['score'] }}%" class="font-bold"
                                                                 x-init="let key = 'judge-draft-{{ $this->criteriaId }}-{{ $activeTab }}-{{ $participant['id'] }}-{{ $slug }}';
-                                                                
+
                                                                 if (localStorage.getItem(key)) {
                                                                     $el.value = localStorage.getItem(key);
                                                                     $wire.set(
@@ -289,7 +289,7 @@
                                                                         localStorage.getItem(key)
                                                                     );
                                                                 }
-                                                                
+
                                                                 $el.addEventListener('input', () => {
                                                                     localStorage.setItem(key, $el.value);
                                                                 });" />
@@ -324,7 +324,7 @@
             @php
                 $contestType = $allCriteria->first()->contest['contest_type'];
                 $genderCategory = $allCriteria->first()->contest['gender_category'];
-                // logger($allCriteria);
+
                 if ($contestType == ContestType::Team->value) {
                     $rosterGroups = collect([
                         'team' => $allCriteria
