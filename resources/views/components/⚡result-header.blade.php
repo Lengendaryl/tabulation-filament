@@ -18,7 +18,7 @@ new class extends Component {
                 <p>Republic of the Philippines</p>
                 <p>BOHOL ISLAND STATE UNIVERSITY</p>
                 <p>Masgsija, Balilihan, 6342, Bohol, Philippines</p>
-                <p>Balance | Integrity | Stewardship | Uprightness</p>
+                <p>Balance | Innovativeness | Stewardship | Uprightness</p>
             </div>
         </div>
         <div class="flex gap-4">
@@ -30,13 +30,18 @@ new class extends Component {
     <div class="flex justify-center items-center w-full">
         <div class="flex flex-col items-center justify-center gap-1">
             <img class="h-36 w-32" src="{{ Storage::url($contest[0]['contest']['event']['poster']) }}" alt="">
-            <p class="font-medium">
-                {{ $contest[0]['contest']['event']['name'] }}
-            </p>
-            <div class="flex gap-1 text-xs">
-                <p>{{ date_format(date_create($contest[0]['contest']['event']['date']), 'F j, Y') }}</p>
+            <div class="flex flex-col items-center">
+                <p class="font-bold text-lg">
+                    {{ $contest[0]['contest']['event']['name'] ?? '' }}
+                </p>
+                <p class="font-medium">
+                    {{ $contest[0]['contest']['category'] }}
+                </p>
+            </div>
+            <div class="flex gap-1 text-sm">
+                <p>{{ date_format(date_create($contest[0]['contest']['date']), 'F j, Y') }}</p>
                 <p>|</p>
-                <p>{{ $contest[0]['contest']['event']['venue'] }}</p>
+                <p>{{ $contest[0]['contest']['venue'] }}</p>
             </div>
         </div>
     </div>

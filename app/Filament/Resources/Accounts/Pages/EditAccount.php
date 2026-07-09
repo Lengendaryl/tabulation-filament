@@ -17,7 +17,7 @@ class EditAccount extends EditRecord
         ];
     }
 
-    protected function mutateFormDataBeforeCreate(array $data): array
+    protected function mutateFormDataBeforeSave(array $data): array
     {
         if ($data['position'] === 'Chairman of the Board of Judges') {
             $data['no'] = null;

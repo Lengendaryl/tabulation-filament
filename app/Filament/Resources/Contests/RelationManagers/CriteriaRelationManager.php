@@ -76,8 +76,9 @@ class CriteriaRelationManager extends RelationManager
 
 
         // 3. Map the Builder data (Crucial: Keep 'type' and 'criteria' scores)
+        $isDefaultScoring = ($data['preliminary_scoring_method'] ?? null) === 'default';
         $data['criteria'] = collect($data['criteria'] ?? [])
-            ->map(function ($block) {
+            ->map(function ($block) use ($isDefaultScoring) {
                 $total = collect($block['data']['criteria'] ?? [])
                     ->sum(fn($item) => (float) ($item['score'] ?? 0));
                 return [
@@ -85,7 +86,7 @@ class CriteriaRelationManager extends RelationManager
                     'data' => [
                         'level' => $block['data']['level'] ?? null,
                         'content' => $block['data']['content'] ?? null,
-                        'weight' => $block['data']['level'] === Round::Final->value ? null : ($block['data']['weight'] ?? null),
+                        'weight' => $isDefaultScoring ? null : ($block['data']['level'] === Round::Final->value ? null : ($block['data']['weight'] ?? null)),
                         'criteria' => $block['data']['criteria'] ?? [],
                         'total' => $total,
 
@@ -159,7 +160,7 @@ class CriteriaRelationManager extends RelationManager
                                 })
                                 ->live()
                                 ->required(),
-                            Grid::make(3)->schema([
+                            Grid::make(4)->schema([
                                 TextInput::make('qualified_participant')
                                     ->numeric()
                                     ->minValue(1)
@@ -177,7 +178,26 @@ class CriteriaRelationManager extends RelationManager
                                         'weighted' => 'Weighted',
                                     ])
                                     ->live()
-                                    ->required()
+                                    ->afterStateUpdated(function ($state, callable $get, callable $set) {
+                                        if ($state === 'default') {
+                                            $criteria = $get('criteria');
+                                            if ($criteria) {
+                                                foreach ($criteria as $index => $block) {
+                                                    $set("criteria.{$index}.data.weight", null);
+                                                }
+                                            }
+                                        }
+                                    })
+                                    ->required(),
+                                Select::make('participant_label')
+                                    ->label('Participant Label')
+                                    ->options([
+                                        'candidate' => 'Candidate',
+                                        'delegate' => 'Delegate',
+                                        'contestant' => 'Contestant',
+                                        'competitor' => 'Competitor',
+                                    ])
+                                    ->required(),
                             ])->columnSpanFull(),
                             Grid::make(2)->schema([
                                 TextInput::make('preliminary_round_percentage_score')

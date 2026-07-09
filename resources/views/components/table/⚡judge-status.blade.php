@@ -91,36 +91,39 @@ new class extends Component implements HasActions, HasSchemas {
     public function toggleStatus(string $originalCategory, string $level, int $judgeId)
     {
         $groups = JudgesGroup::where('criteria_id', $this->criteria[0]['id'])->get();
+        $updated = false;
+
         foreach ($groups as $group) {
             $judges = $group->judges;
-            $updated = false;
 
             foreach ($judges as $i => $competitionLevel) {
-                if (($competitionLevel['content'] ?? null) !== $originalCategory || ($competitionLevel['level'] ?? null) !== $level) {
+                if (($competitionLevel['content'] ?? null) !== $originalCategory) {
+                    continue;
+                }
+                if (($competitionLevel['level'] ?? null) !== $level) {
                     continue;
                 }
 
                 foreach ($competitionLevel['judges'] as $j => $judgeStatus) {
                     if (($judgeStatus['judge_id'] ?? null) == $judgeId) {
-                        // ✅ TOGGLE instead of forcing true
                         $currentStatus = $judges[$i]['judges'][$j]['status'] ?? false;
                         $statusRequestEdit = $judges[$i]['judges'][$j]['request_edit'] ?? false;
                         $judges[$i]['judges'][$j]['status'] = !$currentStatus;
                         $judges[$i]['judges'][$j]['request_edit'] = !$statusRequestEdit;
 
+                        $group->judges = $judges;
+                        $group->save();
                         $updated = true;
 
-                        break 2;
+                        break 3;
                     }
                 }
             }
+        }
 
-            if ($updated) {
-                $group->judges = $judges;
-                $group->save();
-                $this->buildJudgeStatusMap();
-                broadcast(new JudgeSubmittedEvent($judgeId, $originalCategory))->toOthers();
-            }
+        if ($updated) {
+            $this->buildJudgeStatusMap();
+            broadcast(new JudgeSubmittedEvent($judgeId, $originalCategory))->toOthers();
         }
     }
 
@@ -150,15 +153,15 @@ new class extends Component implements HasActions, HasSchemas {
             @foreach ($judges as $judge)
             <flux:table.row class="uppercase">
                 <flux:table.cell class="flex gap-1 items-center justify-between">
-                    <p class="text-black font-medium dark:text-white">{{ $judge['name'] }}</p>
+                    <p class="text-black font-medium dark:text-white">{{ $judge['name'] ?? '' }}</p>
                     <flux:icon.eye variant="solid"
-                        wire:click="$set('selectedJudgeId', {{ $judge['judge_id'] }}); mountAction('impersonate')" />
+                        wire:click="$set('selectedJudgeId', {{ $judge['judge_id'] ?? 0 }}); mountAction('impersonate')" />
                 </flux:table.cell>
                 @foreach ($contest as $content)
                 @php
-                $categoryName = $content['content'];
-                $judgeId = $judge['judge_id'];
-                $level = $content['level'];
+                $categoryName = $content['content'] ?? '';
+                $judgeId = $judge['judge_id'] ?? 0;
+                $level = $content['level'] ?? '';
                 $status = $judgeStatusMap[$categoryName][$judgeId]['status'] ?? false;
                 $request = $judgeStatusMap[$categoryName][$judgeId]['request_edit'] ?? false;
                 @endphp

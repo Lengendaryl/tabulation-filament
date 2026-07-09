@@ -40,7 +40,7 @@ new class extends Component {
             $contestType = $res->contest->contest_type;
             $scoringType = $res->contest->scoring_type;
             $genderCategory = $res->contest->gender_category;
-
+            $participantLabel = $res->criteria->participant_label;
             if ($genderCategory === 'mixed') {
                 // Merge male + female into one flat list, sorted by final rank
                 $groupedResults = collect([
@@ -77,13 +77,13 @@ new class extends Component {
                     @php
                         $qualified_participant = $criteria[0]['qualified_participant'] ?? 3;
                         $sortedRanks = $scores->pluck('final_rank')->sort()->values();
-                        $cutoffRank = $sortedRanks[$qualified_participant] ?? null;
+                        $cutoffRank = $sortedRanks[$qualified_participant - 1] ?? null;
                     @endphp
                     <flux:card x:card class="w-full">
                         <flux:table class="font-bold">
                             <div class="border-b border-zinc-800/10 dark:border-white/20 text-center ">
                                 <p class="text-xl font-bold uppercase mb-2">
-                                    {{ $gender }} Candidates
+                                    {{ $gender }} {{ $participantLabel }}
                                 </p>
                             </div>
                             <flux:table.columns>

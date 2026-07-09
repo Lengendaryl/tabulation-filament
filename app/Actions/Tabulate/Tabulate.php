@@ -67,7 +67,7 @@ class Tabulate
 
         $results = collect($score)
             ->flatMap(fn($judgeScore) => collect($judgeScore->score)->map(fn($item) => [
-                'judge'          => $judgeScore['judge']['name'],
+                'judge'          => $judgeScore['judge']['name'] ?? '',
                 'participant_id' => $item['participant_id'],
                 'rank'           => $item['rank'],
                 'participant'    => $item['participant'],

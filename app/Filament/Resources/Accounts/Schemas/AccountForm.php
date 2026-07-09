@@ -24,6 +24,7 @@ class AccountForm
                         'Chairman of the Board of Judges' => 'Chairman of the Board of Judges',
                     ])
                     ->live()
+                    ->afterStateUpdated(fn($state, callable $set) => $state === 'Chairman of the Board of Judges' ? $set('no', null) : null)
                     ->required(),
                 TextInput::make('name')->required(),
                 TextInput::make('email')->unique()->required(),

@@ -121,7 +121,8 @@
                  <div class="space-y-10" id="major_awards">
                      <livewire:result-header :contest="$criteria" />
                      <livewire:table.result heading="MAJOR AWARDS" :criteria="$criteria" :score="$score"
-                         roundType="{{ Round::Preliminary->value }}" :judges="$judges" tabType="major" />
+                         roundType="{{ Round::Preliminary->value }}" :judges="$judges" tabType="major"
+                         :isRunnerUp="$isRunnerUp" />
                  </div>
              </div>
 
@@ -132,7 +133,8 @@
                      <livewire:result-header :contest="$criteria" />
                      <livewire:table.result heading="TOP {{ $topParticipants }} RESULT"
                          subHeading="{{ $topParticipants }}" :criteria="$criteria" :score="$score"
-                         roundType="{{ Round::Preliminary->value }}" :judges="$judges" tabType="top" />
+                         roundType="{{ Round::Preliminary->value }}" :judges="$judges" tabType="top"
+                         :isRunnerUp="$isRunnerUp" />
                  </div>
              </div>
 
@@ -140,34 +142,41 @@
                  <flux:button x-on:click="printDiv('final_result')" variant="primary" icon="printer" color="violet">
                      Print
                  </flux:button>
+
+                 <flux:button variant="primary" color="zinc" wire:click="toggleRunnerUp">
+                     {{ $isRunnerUp ? 'Runner Up' : 'Placer' }}
+                 </flux:button>
+
                  <div class="space-y-10" id="final_result">
                      <livewire:result-header :contest="$criteria" />
                      <livewire:table.result heading="FINAL RESULT" :criteria="$criteria" :score="$score"
                          roundType="{{ $contestType === ContestType::Individual->value ? $finalRoundType : Round::Preliminary->value }}"
                          :judges="$judges"
-                         tabType="{{ $contestType === ContestType::Individual->value ? Round::Final->value : Round::Preliminary->value }}" />
+                         tabType="{{ $contestType === ContestType::Individual->value ? Round::Final->value : Round::Preliminary->value }}"
+                         :isRunnerUp="$isRunnerUp" />
                  </div>
              </div>
              @foreach (collect($score)->unique('judge.id') as $judgeItem)
                  @php
                      $judgeEntries = collect($score)->where('judge.id', $judgeItem['judge']['id']);
-
+                     logger($judgeItem);
                      $uniqueCategories = $judgeEntries->unique('contest_category');
                  @endphp
                  @if ($judgeItem)
-                     <div id="judge-{{ $judgeItem['judge']['id'] ?? Str::slug($judgeItem['judge']['name']) }}"
-                         class="space-y-10" x-show="activeTab === '{{ $judgeItem['judge']['name'] }}'" x-cloak>
+                     <div id="judge-{{ $judgeItem['judge']['id'] ?? Str::slug($judgeItem['judge']['name'] ?? '') }}"
+                         class="space-y-10" x-show="activeTab === '{{ $judgeItem['judge']['name'] ?? '' }}'" x-cloak>
 
                          <flux:button
-                             x-on:click="printDiv('judge-{{ $judgeItem['judge']['id'] ?? Str::slug($judgeItem['judge']['name']) }}')"
+                             x-on:click="printDiv('judge-{{ $judgeItem['judge']['id'] ?? Str::slug($judgeItem['judge']['name'] ?? '') }}')"
                              icon="printer" variant="primary" color="violet" class="no-print">
                              Print
                          </flux:button>
 
                          <livewire:result-header :contest="$criteria" />
                          <p class="text-center uppercase font-bold text-3xl mt-8">
-                             {{ $judgeItem['judge']['name'] }}
+                             {{ $judgeItem['judge']['name'] ?? '' }}
                          </p>
+
                          @foreach ($uniqueCategories as $categoryItem)
                              @php
                                  $criteriaBlock = collect($judgeItem['criteria']['criteria'])->firstWhere(
@@ -178,10 +187,11 @@
                                      $categoryItem['contest']['gender_category'] ??
                                      ($criteria[0]['contest']['gender_category'] ?? null);
 
-                                 $dynamicDynamicCriteria = collect(data_get($criteriaBlock, 'data.criteria', []))
-                                     ->pluck('criterion')
+                                 // Each item: ['criterion' => 'Poise', 'score' => 20] (adjust key name if different)
+                                 $dynamicCriteria = collect(data_get($criteriaBlock, 'data.criteria', []))
                                      ->values()
                                      ->toArray();
+
                                  $scores = collect($categoryItem['score']);
                                  $maleParticipants = $scores
                                      ->filter(fn($p) => data_get($p, 'participant.participant.gender') === 'male')
@@ -196,28 +206,32 @@
                                      fn($p) => data_get($p, 'participant.participant.team_participant_no'),
                                  );
                              @endphp
+
                              <flux:card class="space-y-8 uppercase mt-10">
                                  <flux:heading size="xl" class="text-center uppercase">
                                      {{ $categoryItem['contest_category'] }}
                                  </flux:heading>
+
                                  <div
                                      class="{{ $contestType === ContestType::Individual->value && $genderCategory !== 'mixed' ? 'grid grid-cols-1 xl:grid-cols-2 gap-4' : '' }}">
 
+                                     {{-- MIXED --}}
                                      @if ($contestType == ContestType::Individual->value && $genderCategory === 'mixed')
                                          <flux:card class="w-full">
                                              <div class="border-b border-zinc-800/10 dark:border-white/20">
-                                                 <p class="mb-2 font-semibold text-xl">
-                                                     CANDIDATES
-                                                 </p>
+                                                 <p class="mb-2 font-semibold text-xl text-center uppercase">{{ $criteria[0]['participant_label'] }}</p>
                                              </div>
                                              <flux:table class="font-bold">
                                                  <flux:table.columns>
                                                      <flux:table.column>
                                                          <div class="text-center w-full">Participant</div>
                                                      </flux:table.column>
-                                                     @foreach ($dynamicDynamicCriteria as $criterion)
+                                                     @foreach ($dynamicCriteria as $criterion)
                                                          <flux:table.column>
-                                                             <div class="text-center w-full">{{ $criterion }}</div>
+                                                             <div class="text-center w-full text-wrap">
+                                                                 <p>{{ $criterion['criterion'] }}</p>
+                                                                 <p>{{ $criterion['score'] }}%</p>
+                                                             </div>
                                                          </flux:table.column>
                                                      @endforeach
                                                      <flux:table.column>
@@ -252,8 +266,8 @@
                                                                      {{ data_get($participant, 'participant.participant.participant_no') }}
                                                                  </p>
                                                              </flux:table.cell>
-                                                             @foreach ($dynamicDynamicCriteria as $criterion)
-                                                                 @php $key = Str::slug($criterion); @endphp
+                                                             @foreach ($dynamicCriteria as $criterion)
+                                                                 @php $key = Str::slug($criterion['criterion']); @endphp
                                                                  <flux:table.cell>
                                                                      <p class="text-black dark:text-white">
                                                                          {{ $participant['scores'][$key] ?? 0 }}
@@ -262,32 +276,36 @@
                                                              @endforeach
                                                              <flux:table.cell>
                                                                  <p class="text-black dark:text-white">
-                                                                     {{ $participant['total_score'] }}</p>
+                                                                     {{ $participant['total_score'] }}
+                                                                 </p>
                                                              </flux:table.cell>
                                                              <flux:table.cell>
                                                                  <p class="text-black dark:text-white">
-                                                                     {{ $participant['rank'] }}</p>
+                                                                     {{ $participant['rank'] }}
+                                                                 </p>
                                                              </flux:table.cell>
                                                          </flux:table.row>
                                                      @endforeach
                                                  </flux:table.rows>
                                              </flux:table>
                                          </flux:card>
+
+                                         {{-- MALE / FEMALE --}}
                                      @elseif ($contestType == ContestType::Individual->value)
                                          <flux:card class="w-full">
                                              <div class="border-b border-zinc-800/10 dark:border-white/20">
-                                                 <p class="mb-2 font-semibold text-xl">
-                                                     MALE CANDIDATES
-                                                 </p>
+                                                 <p class="mb-2 font-semibold text-xl uppercase">MALE {{ $criteria[0]['participant_label'] }}</p>
                                              </div>
                                              <flux:table class="font-bold">
                                                  <flux:table.columns>
                                                      <flux:table.column>
                                                          <div class="text-center w-full">Participant</div>
                                                      </flux:table.column>
-                                                     @foreach ($dynamicDynamicCriteria as $criterion)
+                                                     @foreach ($dynamicCriteria as $criterion)
                                                          <flux:table.column>
-                                                             <div class="text-center w-full">{{ $criterion }}
+                                                             <div class="text-center w-full text-wrap">
+                                                                 <p>{{ $criterion['criterion'] }}</p>
+                                                                 <p>{{ $criterion['score'] }}%</p>
                                                              </div>
                                                          </flux:table.column>
                                                      @endforeach
@@ -321,10 +339,8 @@
                                                                      {{ data_get($participant, 'participant.participant.participant_no') }}
                                                                  </p>
                                                              </flux:table.cell>
-                                                             @foreach ($dynamicDynamicCriteria as $criterion)
-                                                                 @php
-                                                                     $key = Str::slug($criterion);
-                                                                 @endphp
+                                                             @foreach ($dynamicCriteria as $criterion)
+                                                                 @php $key = Str::slug($criterion['criterion']); @endphp
                                                                  <flux:table.cell>
                                                                      <p class="text-black dark:text-white">
                                                                          {{ $participant['scores'][$key] ?? 0 }}
@@ -333,11 +349,13 @@
                                                              @endforeach
                                                              <flux:table.cell>
                                                                  <p class="text-black dark:text-white">
-                                                                     {{ $participant['total_score'] }}</p>
+                                                                     {{ $participant['total_score'] }}
+                                                                 </p>
                                                              </flux:table.cell>
                                                              <flux:table.cell>
                                                                  <p class="text-black dark:text-white">
-                                                                     {{ $participant['rank'] }}</p>
+                                                                     {{ $participant['rank'] }}
+                                                                 </p>
                                                              </flux:table.cell>
                                                          </flux:table.row>
                                                      @endforeach
@@ -347,18 +365,18 @@
 
                                          <flux:card class="w-full">
                                              <div class="border-b border-zinc-800/10 dark:border-white/20">
-                                                 <p class="mb-2 font-semibold text-xl">
-                                                     FEMALE CANDIDATES
-                                                 </p>
+                                                 <p class="mb-2 font-semibold text-xl uppercase">FEMALE {{ $criteria[0]['participant_label'] }}</p>
                                              </div>
                                              <flux:table class="font-bold">
                                                  <flux:table.columns>
                                                      <flux:table.column>
                                                          <div class="text-center w-full">Participant</div>
                                                      </flux:table.column>
-                                                     @foreach ($dynamicDynamicCriteria as $criterion)
+                                                     @foreach ($dynamicCriteria as $criterion)
                                                          <flux:table.column>
-                                                             <div class="text-center w-full">{{ $criterion }}
+                                                             <div class="text-center w-full text-wrap">
+                                                                 <p>{{ $criterion['criterion'] }}</p>
+                                                                 <p>{{ $criterion['score'] }}%</p>
                                                              </div>
                                                          </flux:table.column>
                                                      @endforeach
@@ -374,7 +392,7 @@
                                                          @php
                                                              $rankValue = (float) $participant['rank'];
 
-                                                             $sortedRanks = collect($maleParticipants)
+                                                             $sortedRanks = collect($femaleParticipants)
                                                                  ->pluck('rank')
                                                                  ->map(fn($r) => (float) $r)
                                                                  ->sort()
@@ -392,10 +410,8 @@
                                                                      {{ data_get($participant, 'participant.participant.participant_no') }}
                                                                  </p>
                                                              </flux:table.cell>
-                                                             @foreach ($dynamicDynamicCriteria as $criterion)
-                                                                 @php
-                                                                     $key = Str::slug($criterion);
-                                                                 @endphp
+                                                             @foreach ($dynamicCriteria as $criterion)
+                                                                 @php $key = Str::slug($criterion['criterion']); @endphp
                                                                  <flux:table.cell>
                                                                      <p class="text-black dark:text-white">
                                                                          {{ $participant['scores'][$key] ?? 0 }}
@@ -404,32 +420,36 @@
                                                              @endforeach
                                                              <flux:table.cell>
                                                                  <p class="text-black dark:text-white">
-                                                                     {{ $participant['total_score'] }}</p>
+                                                                     {{ $participant['total_score'] }}
+                                                                 </p>
                                                              </flux:table.cell>
                                                              <flux:table.cell>
                                                                  <p class="text-black dark:text-white">
-                                                                     {{ $participant['rank'] }}</p>
+                                                                     {{ $participant['rank'] }}
+                                                                 </p>
                                                              </flux:table.cell>
                                                          </flux:table.row>
                                                      @endforeach
                                                  </flux:table.rows>
                                              </flux:table>
                                          </flux:card>
+
+                                         {{-- TEAM --}}
                                      @else
                                          <flux:card class="w-full">
                                              <div class="border-b border-zinc-800/10 dark:border-white/20">
-                                                 <p class="mb-2 font-semibold text-xl">
-                                                     TEAM CANDIDATES
-                                                 </p>
+                                                 <p class="mb-2 font-semibold text-xl uppercase">TEAM {{ $criteria[0]['participant_label'] }}</p>
                                              </div>
                                              <flux:table class="font-bold">
                                                  <flux:table.columns>
                                                      <flux:table.column>
                                                          <div class="text-center w-full">Participant</div>
                                                      </flux:table.column>
-                                                     @foreach ($dynamicDynamicCriteria as $criterion)
+                                                     @foreach ($dynamicCriteria as $criterion)
                                                          <flux:table.column>
-                                                             <div class="text-center w-full">{{ $criterion }}
+                                                             <div class="text-center w-full text-wrap">
+                                                                 <p>{{ $criterion['criterion'] }}</p>
+                                                                 <p>{{ $criterion['score'] }}%</p>
                                                              </div>
                                                          </flux:table.column>
                                                      @endforeach
@@ -452,12 +472,9 @@
                                                                  ->map(fn($r) => (float) $r)
                                                                  ->sort()
                                                                  ->values();
-
                                                              $cutoffRank = $sortedRanks[$qualifiedCount] ?? null;
-
                                                              $isHighlighted =
                                                                  $cutoffRank !== null && $rankValue <= $cutoffRank;
-
                                                              $rowBg = $isHighlighted
                                                                  ? 'bg-violet-600/10 ring-1 ring-inset ring-violet-500 text-white'
                                                                  : '';
@@ -468,10 +485,8 @@
                                                                      {{ data_get($participant, 'participant.participant.team_participant_no') }}
                                                                  </p>
                                                              </flux:table.cell>
-                                                             @foreach ($dynamicDynamicCriteria as $criterion)
-                                                                 @php
-                                                                     $key = Str::slug($criterion);
-                                                                 @endphp
+                                                             @foreach ($dynamicCriteria as $criterion)
+                                                                 @php $key = Str::slug($criterion['criterion']); @endphp
                                                                  <flux:table.cell>
                                                                      <p class="text-black dark:text-white">
                                                                          {{ $participant['scores'][$key] ?? 0 }}
@@ -480,11 +495,13 @@
                                                              @endforeach
                                                              <flux:table.cell>
                                                                  <p class="text-black dark:text-white">
-                                                                     {{ $participant['total_score'] }}</p>
+                                                                     {{ $participant['total_score'] }}
+                                                                 </p>
                                                              </flux:table.cell>
                                                              <flux:table.cell>
                                                                  <p class="text-black dark:text-white">
-                                                                     {{ $participant['rank'] }}</p>
+                                                                     {{ $participant['rank'] }}
+                                                                 </p>
                                                              </flux:table.cell>
                                                          </flux:table.row>
                                                      @endforeach
@@ -495,10 +512,11 @@
                                  </div>
                              </flux:card>
                          @endforeach
+
                          <div class="flex flex-col justify-center items-center uppercase gap-4 mt-10">
                              <div class="text-center">
-                                 <p class="font-medium  border-b border-black dark:border-white ">
-                                     {{ $judgeItem['judge']['name'] }}
+                                 <p class="font-medium border-b border-black dark:border-white">
+                                     {{ $judgeItem['judge']['name'] ?? '' }}
                                  </p>
                                  <p class="text-center text-xs">
                                      {{ $judgeItem['judge']['position'] ?? 'JUDGE' }}
@@ -507,12 +525,10 @@
                              </div>
 
                              <div>
-                                 <p class="font-medium text-center  border-b border-black dark:border-white ">
+                                 <p class="font-medium text-center border-b border-black dark:border-white">
                                      {{ auth()->user()->name }}
                                  </p>
-                                 <p class="text-center text-xs">
-                                     TABULATOR
-                                 </p>
+                                 <p class="text-center text-xs">TABULATOR</p>
                              </div>
                          </div>
                      </div>

@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Auth\Register;
 use AchyutN\FilamentLogViewer\FilamentLogViewer;
 use AlizHarb\ActivityLog\ActivityLogPlugin;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
@@ -37,6 +38,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->spa(hasPrefetching: true)
+            ->profile()
             ->bootUsing(function () {
                 Notifications::alignment(Alignment::Center);
                 Notifications::verticalAlignment(VerticalAlignment::Center);
@@ -49,11 +51,8 @@ class AdminPanelProvider extends PanelProvider
                 fn() => Blade::render('@vite(["resources/js/app.js"])')
             )
             ->topNavigation()
-            ->login()
-            ->registration()
             ->plugins([
                 FilamentLogViewer::make()->navigationLabel('System Logs')->navigationGroup('System'),
-                // FilamentEnvEditorPlugin::make(),
                 FilamentShieldPlugin::make()
                     ->gridColumns([
                         'default' => 1,
@@ -77,7 +76,7 @@ class AdminPanelProvider extends PanelProvider
                             ->mediaPosition(MediaPosition::Left)
                             ->mediaSize('50%')
                     )->login()
-                    ->registration(),
+                    ->registration(fn($config) => $config->usingPage(Register::class)),
                 ActivityLogPlugin::make()
                     ->label('Log')
                     ->pluralLabel('Tabulation Logs')
