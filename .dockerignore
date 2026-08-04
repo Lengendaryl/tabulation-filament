@@ -7,7 +7,7 @@
 **/.classpath
 **/.dockerignore
 **/.env
-**/.git
+.git
 **/.gitignore
 **/.project
 **/.settings
@@ -25,11 +25,14 @@
 !**/composer.json
 !**/composer.lock
 **/Dockerfile*
-**/node_modules
+node_modules
 **/npm-debug.log
 **/obj
 **/secrets.dev.yaml
 **/values.dev.yaml
-**/vendor
+vendor
+node_modules
+.git
+storage/logs
 LICENSE
 README.md

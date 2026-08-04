@@ -114,84 +114,199 @@ new class extends Component {
 
     @if ($tabType === 'major')
         <div class="flex flex-col justify-center w-full">
-            @foreach ($this->majorAward as $results)
-                <div
-                    class="flex flex-col w-full justify-evenly border-b border-dashed border-black dark:border-white p-4">
-                    <div class="text-center">
-                        <p class="font-bold">Best in {{ $results['contest_category'] }}</p>
-                        <p>Category</p>
-                    </div>
-                    <div class="flex w-full justify-evenly">
-                        @foreach ($results->result['male'] ?? [] as $res)
-                            <div class="flex justify-around font-bold">
-                                <div class="text-center">
-                                    <p class="text-lg uppercase">{{ $criteria[0]['participant_label'] }}
-                                        NO.{{ $res['participant']['participant']['participant_no'] }}</p>
-                                    <p>Male</p>
-                                </div>
+            @php
+                $allMale = collect();
+                $allFemale = collect();
+                $allMixed = collect();
+                $participantLabel = $criteria[0]['participant_label'];
+
+                foreach ($this->majorAward as $results) {
+                    $category = $results['contest_category'];
+                    $isTeam = $contestType === ContestType::Team->value;
+
+                    foreach ($results->result['male'] ?? [] as $res) {
+                        $allMale->push([
+                            'participant_no' => $isTeam
+                                ? $res['participant']['participant']['team_participant_no']
+                                : $res['participant']['participant']['participant_no'],
+                            'category' => $category,
+                            'name' => $isTeam
+                                ? $res['participant']['participant']['team_name']
+                                : $res['participant']['participant']['first_name'] .
+                                    ' ' .
+                                    $res['participant']['participant']['last_name'],
+                        ]);
+                    }
+
+                    foreach ($results->result['female'] ?? [] as $res) {
+                        $allFemale->push([
+                            'participant_no' => $isTeam
+                                ? $res['participant']['participant']['team_participant_no']
+                                : $res['participant']['participant']['participant_no'],
+                            'category' => $category,
+                            'name' => $isTeam
+                                ? $res['participant']['participant']['team_name']
+                                : $res['participant']['participant']['first_name'] .
+                                    ' ' .
+                                    $res['participant']['participant']['last_name'],
+                        ]);
+                    }
+
+                    foreach ($results->result['mixed'] ?? [] as $res) {
+                        $allMixed->push([
+                            'participant_no' => $isTeam
+                                ? $res['participant']['participant']['team_participant_no']
+                                : $res['participant']['participant']['participant_no'],
+                            'category' => $category,
+                            'name' => $isTeam
+                                ? $res['participant']['participant']['team_name']
+                                : $res['participant']['participant']['first_name'] .
+                                    ' ' .
+                                    $res['participant']['participant']['last_name'],
+                        ]);
+                    }
+                }
+            @endphp
+
+            <div class="flex justify-between items-center gap-4">
+                @if ($allMale->isNotEmpty())
+                    <flux:card x:card class="w-full mb-6">
+                        <flux:table class="font-bold">
+                            <div class="border-b border-zinc-800/10 dark:border-white/20 text-center">
+                                <p class="text-xl font-bold uppercase mb-2">Male {{ $participantLabel }}</p>
                             </div>
-                        @endforeach
-                        @foreach ($results->result['female'] ?? [] as $res)
-                            <div class="flex justify-around font-bold">
-                                <div class="text-center">
-                                    <p class="text-lg uppercase">{{ $criteria[0]['participant_label'] }}
-                                        NO.{{ $res['participant']['participant']['participant_no'] }}</p>
-                                    <p>Female</p>
-                                </div>
+                            <flux:table.columns>
+                                <flux:table.column>
+                                    <p class="font-bold uppercase">{{ $participantLabel }} NO</p>
+                                </flux:table.column>
+                                <flux:table.column>
+                                    <p class="font-bold">NAME</p>
+                                </flux:table.column>
+                                <flux:table.column>
+                                    <p class="font-bold">CATEGORY</p>
+                                </flux:table.column>
+                            </flux:table.columns>
+                            <flux:table.rows>
+                                @foreach ($allMale as $entry)
+                                    <flux:table.row>
+                                        <flux:table.cell>
+                                            <p class="text-black dark:text-white  font-bold">
+                                                {{ $entry['participant_no'] }}
+                                            </p>
+                                        </flux:table.cell>
+                                        <flux:table.cell>
+                                            <p class="text-black dark:text-white  font-bold">{{ $entry['name'] }}</p>
+                                        </flux:table.cell>
+                                        <flux:table.cell>
+                                            <p class="text-black dark:text-white  font-bold">Best in
+                                                {{ $entry['category'] }}</p>
+                                        </flux:table.cell>
+                                    </flux:table.row>
+                                @endforeach
+                            </flux:table.rows>
+                        </flux:table>
+                    </flux:card>
+                @endif
+                @if ($allFemale->isNotEmpty())
+                    <flux:card x:card class="w-full mb-6">
+                        <flux:table class="font-bold">
+                            <div class="border-b border-zinc-800/10 dark:border-white/20 text-center">
+                                <p class="text-xl font-bold uppercase mb-2">Female {{ $participantLabel }}</p>
                             </div>
-                        @endforeach
-                        @foreach ($results->result['mixed'] ?? [] as $res)
-                            <div class="flex justify-around font-bold">
-                                <div class="text-center">
-                                    <p class="text-lg uppercase">{{ $criteria[0]['participant_label'] }}
-                                        NO.{{ $res['participant']['participant']['participant_no'] }}</p>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            @endforeach
+                            <flux:table.columns>
+                                <flux:table.column>
+                                    <p class="font-bold uppercase">{{ $participantLabel }} NO</p>
+                                </flux:table.column>
+                                <flux:table.column>
+                                    <p class=" font-bold">NAME</p>
+                                </flux:table.column>
+                                <flux:table.column>
+                                    <p class="  font-bold">CATEGORY</p>
+                                </flux:table.column>
+                            </flux:table.columns>
+                            <flux:table.rows>
+                                @foreach ($allFemale as $entry)
+                                    <flux:table.row>
+                                        <flux:table.cell>
+                                            <p class="text-black dark:text-white  font-bold">
+                                                {{ $entry['participant_no'] }}
+                                            </p>
+                                        </flux:table.cell>
+                                        <flux:table.cell>
+                                            <p class="text-black dark:text-white  font-bold">{{ $entry['name'] }}</p>
+                                        </flux:table.cell>
+                                        <flux:table.cell>
+                                            <p class="text-black dark:text-white  font-bold">Best in
+                                                {{ $entry['category'] }}</p>
+                                        </flux:table.cell>
+                                    </flux:table.row>
+                                @endforeach
+                            </flux:table.rows>
+                        </flux:table>
+                    </flux:card>
+                @endif
+            </div>
+
+            @if ($allMixed->isNotEmpty())
+                <flux:card x:card class="w-full mb-6">
+                    <flux:table class="font-bold">
+                        <div class="border-b border-zinc-800/10 dark:border-white/20 text-center">
+                            <p class="text-xl font-bold uppercase mb-2">Mixed {{ $participantLabel }}</p>
+                        </div>
+                        <flux:table.columns>
+                            <flux:table.column>
+                                <p class="font-bold uppercase">{{ $participantLabel }} NO</p>
+                            </flux:table.column>
+                            <flux:table.column>
+                                <p class=" font-bold">NAME</p>
+                            </flux:table.column>
+                            <flux:table.column>
+                                <p class=" font-bold">CATEGORY</p>
+                            </flux:table.column>
+                        </flux:table.columns>
+                        <flux:table.rows>
+                            @foreach ($allMixed as $entry)
+                                <flux:table.row>
+                                    <flux:table.cell>
+                                        <p class="text-black dark:text-white  font-bold">{{ $entry['participant_no'] }}
+                                        </p>
+                                    </flux:table.cell>
+                                    <flux:table.cell>
+                                        <p class="text-black dark:text-white  font-bold">{{ $entry['name'] }}</p>
+                                    </flux:table.cell>
+                                    <flux:table.cell>
+                                        <p class="text-black dark:text-white  font-bold">Best in
+                                            {{ $entry['category'] }}</p>
+                                    </flux:table.cell>
+                                </flux:table.row>
+                            @endforeach
+                        </flux:table.rows>
+                    </flux:table>
+                </flux:card>
+            @endif
         </div>
     @elseif ($tabType === 'top')
         <div class="flex flex-col justify-center w-full">
             @foreach ($this->topResult as $results)
-                <div
-                    class="flex flex-col w-full justify-evenly border-b border-dashed border-black dark:border-white  p-4">
-                    <div class="flex flex-col gap-8 w-full justify-evenly">
-                        <div class="flex w-full justify-evenly">
-                            @foreach ($results->result['male'] ?? [] as $res)
-                                <div class="flex justify-around font-bold">
-                                    <div class="text-center">
-                                        <p class="text-lg uppercase">{{ $criteria[0]['participant_label'] }}
-                                            NO.{{ $res['participant']['participant']['participant_no'] }}</p>
-                                        <p>Male</p>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                        <div class="flex w-full justify-evenly">
-                            @foreach ($results->result['female'] ?? [] as $res)
-                                <div class="flex justify-around font-bold">
-                                    <div class="text-center">
-                                        <p class="text-lg uppercase">{{ $criteria[0]['participant_label'] }}
-                                            NO.{{ $res['participant']['participant']['participant_no'] }}</p>
-                                        <p>Female</p>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                        <div class="flex w-full justify-evenly">
-                            @foreach ($results->result['mixed'] ?? [] as $res)
-                                <div class="flex justify-around font-bold">
-                                    <div class="text-center">
-                                        <p class="text-lg uppercase">{{ $criteria[0]['participant_label'] }}
-                                            NO.{{ $res['participant']['participant']['participant_no'] }}</p>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
+                @php
+                    $genderCategory = $results->contest->gender_category;
+                    $participantLabel = $results['criteria']['participant_label'] ?? '';
+                    $isTeam = $contestType === ContestType::Team->value;
+                @endphp
+
+                @if ($genderCategory === 'male&female')
+                    <livewire:table.result.top.male-female :results="$results" :isTeam="$isTeam" :key="'top-result-' . $results->id"
+                        :participantLabel="$participantLabel" />
+                @elseif ($genderCategory === 'male')
+                    <livewire:table.result.top.male :results="$results" :isTeam="$isTeam" :key="'top-result-' . $results->id"
+                        :participantLabel="$participantLabel" />
+                @elseif ($genderCategory === 'female')
+                    <livewire:table.result.top.female :results="$results" :isTeam="$isTeam" :key="'top-result-' . $results->id"
+                        :participantLabel="$participantLabel" />
+                @else
+                    <livewire:table.result.top.mixed :results="$results" :isTeam="$isTeam" :key="'top-result-' . $results->id"
+                        :participantLabel="$participantLabel" />
+                @endif
             @endforeach
         </div>
     @elseif ($tabType === $t)
@@ -200,118 +315,58 @@ new class extends Component {
             @foreach ($this->finalResult as $results)
                 @php
                     $category = $results['contest']['category'];
+                    $participantLabel = $results['criteria']['participant_label'];
 
-                    $labels = $isRunnerUp
-                        ? [
-                            1 =>
-                                $results['contest']['category'] .
-                                date_format(date_create($results['contest']['date']), ' Y'),
-                            2 => $category . ' First Runner Up',
-                            3 => $category . ' Second Runner Up',
-                            4 => $category . ' Third Runner Up',
-                            5 => $category . ' Fourth Runner Up',
-                            6 => $category . ' Fifth Runner Up',
-                            7 => $category . ' Sixth Runner Up',
-                            8 => $category . ' Seventh Runner Up',
-                            9 => $category . ' Eighth Runner Up',
-                        ]
-                        : [
-                            1 => $category . ' 1st Place',
-                            2 => $category . ' 2nd Place',
-                            3 => $category . ' 3rd Place',
-                            4 => $category . ' 4th Place',
-                            5 => $category . ' 5th Place',
-                            6 => $category . ' 6th Place',
-                            7 => $category . ' 7th Place',
-                            8 => $category . ' 8th Place',
-                            9 => $category . ' 9th Place',
-                        ];
+                    $qualifiedParticipant = $results['criteria']['qualified_participant'] ?? 3;
+
+                    $ordinalSuffixes = ['th', 'st', 'nd', 'rd'];
+                    $runnerUpOrdinals = [
+                        'First', 'Second', 'Third', 'Fourth', 'Fifth',
+                        'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth',
+                        'Eleventh', 'Twelfth', 'Thirteenth', 'Fourteenth', 'Fifteenth',
+                    ];
+
+                    $labels = [];
+                    for ($i = 1; $i <= $qualifiedParticipant; $i++) {
+                        if ($i === 1 && $isRunnerUp) {
+                            $labels[$i] = $results['contest']['category'] .
+                                date_format(date_create($results['contest']['date']), ' Y');
+                        } elseif ($isRunnerUp) {
+                            $runnerUpLabel = $runnerUpOrdinals[$i - 1] ?? $i . $ordinalSuffixes[min($i % 100, 10)] ?? 'th';
+                            $labels[$i] = $category . ' ' . $runnerUpLabel . ' Runner Up';
+                        } else {
+                            $suffix = $ordinalSuffixes[min($i % 100, 10)] ?? 'th';
+                            $labels[$i] = $category . ' ' . $i . $suffix . ' Place';
+                        }
+                    }
 
                     $genderCategory = $results->contest->gender_category;
+                    $isTeam = $contestType === ContestType::Team->value;
 
                     $maleByRank = collect($results->result['male'] ?? [])->values();
                     $femaleByRank = collect($results->result['female'] ?? [])->values();
                     $mixedByRank = collect($results->result['mixed'] ?? [])->values();
                     $teamByRank = collect($results->result['team'] ?? [])->values();
 
-                    $total =
-                        $contestType === ContestType::Team->value
-                            ? $teamByRank->count()
-                            : ($genderCategory === 'mixed'
-                                ? $mixedByRank->count()
-                                : max($maleByRank->count(), $femaleByRank->count()));
+                    $total = $isTeam
+                        ? $teamByRank->count()
+                        : ($genderCategory === 'mixed'
+                            ? $mixedByRank->count()
+                            : max($maleByRank->count(), $femaleByRank->count()));
                 @endphp
-                @if ($contestType === ContestType::Individual->value)
-                    @for ($i = 0; $i < $total; $i++)
-                        @php
-                            $rank = $total - $i; // since sorted descending, index 0=lowest rank
-                            $label = $labels[$rank] ?? 'Rank ' . $rank;
-                            $male = $maleByRank[$i] ?? null;
-                            $female = $femaleByRank[$i] ?? null;
-                            $mixed = $mixedByRank[$i] ?? null;
-                            $team = $teamByRank[$i] ?? null;
-                        @endphp
-                        <div
-                            class="flex flex-col w-full justify-evenly border-b border-dashed border-black dark:border-white p-4">
-                            <div class="text-center mb-2">
-                                <p class="font-bold">{{ $label }}</p>
-                            </div>
 
-                            @if ($genderCategory === 'mixed')
-                                <div class="text-center">
-                                    @if ($mixed)
-                                        <p class="text-lg font-bold uppercase">{{ $criteria[0]['participant_label'] }} NO.
-                                            {{ $mixed['participant']['participant']['participant_no'] }}
-                                        </p>
-                                    @endif
-                                </div>
-                            @else
-                                <div
-                                    class="{{ $genderCategory === 'male&female' ? 'grid grid-cols-1 md:grid-cols-2 gap-4' : '' }}">
-                                    <div class="text-center">
-                                        @if ($male)
-                                            <p class="text-lg font-bold uppercase">{{ $criteria[0]['participant_label'] }} NO.
-                                                {{ $male['participant']['participant']['participant_no'] }}
-                                            </p>
-                                            <p>Male</p>
-                                        @endif
-                                    </div>
-                                    <div class="text-center">
-                                        @if ($female)
-                                            <p class="text-lg font-bold uppercase">{{ $criteria[0]['participant_label'] }} NO.
-                                                {{ $female['participant']['participant']['participant_no'] }}
-                                            </p>
-                                            <p>Female</p>
-                                        @endif
-                                    </div>
-                                </div>
-                            @endif
-                        </div>
-                    @endfor
+                @if ($genderCategory === 'male&female')
+                    <livewire:table.result.final.male-female :labels="$labels" :isTeam="$isTeam" :maleByRank="$maleByRank"
+                        :femaleByRank="$femaleByRank" :key="'top-result-' . $results->id" :total="$total" :participantLabel="$participantLabel" />
+                @elseif ($genderCategory === 'male')
+                    <livewire:table.result.final.male :labels="$labels" :isTeam="$isTeam" :maleByRank="$maleByRank"
+                        :key="'top-result-' . $results->id" :total="$total" :participantLabel="$participantLabel" />
+                @elseif ($genderCategory === 'female')
+                    <livewire:table.result.final.female :labels="$labels" :isTeam="$isTeam" :femaleByRank="$femaleByRank"
+                        :key="'top-result-' . $results->id" :total="$total" :participantLabel="$participantLabel" />
                 @else
-                    @for ($i = $total - 1; $i >= 0; $i--)
-                        @php
-                            $rank = $i + 1;
-                            $label = $labels[$rank] ?? 'Rank ' . $rank;
-                            $team = $teamByRank[$i] ?? null;
-                        @endphp
-                        <div
-                            class="flex flex-col w-full justify-evenly border-b border-dashed border-black dark:border-white p-4">
-                            <div class="text-center mb-2">
-                                <p class="font-bold">{{ $label }}</p>
-                            </div>
-                            <div class="flex w-full justify-evenly">
-                                <div class="text-center">
-                                    @if ($team)
-                                        <p class="text-lg font-bold uppercase">TEAM {{ $criteria[0]['participant_label'] }} NO.
-                                            {{ $team['participant']['participant']['team_participant_no'] }}
-                                        </p>
-                                        <p>Male</p>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                    @endfor
+                    <livewire:table.result.final.mixed :labels="$labels" :isTeam="$isTeam" :mixedByRank="$mixedByRank"
+                        :teamByRank="$teamByRank" :key="'top-result-' . $results->id" :total="$total" :participantLabel="$participantLabel" />
                 @endif
             @endforeach
         </div>

@@ -205,7 +205,8 @@
                             <flux:card class="overflow-hidden relative uppercase w-full">
                                 <div
                                     class="p-4 border-b border-zinc-800/10 dark:border-white/20 flex justify-between items-center">
-                                    <p class="text-lg font-bold uppercase text-center w-full">{{ $gender }} {{ $participantLabel }}</p>
+                                    <p class="text-lg font-bold uppercase text-center w-full">{{ $gender }}
+                                        {{ $participantLabel }}</p>
                                     <flux:button variant="ghost" size="sm" @click="isShowing = !isShowing"
                                         inset="top bottom">
                                         <flux:icon.eye x-show="!isShowing" class="size-5" />
@@ -384,6 +385,11 @@
                                         {{ $contestType == ContestType::Team->value
                                             ? $participant['participant']['team_participant_no']
                                             : $participant['participant']['participant_no'] }}
+                                    </p>
+                                    <p class="font-medium text-xs">
+                                        {{ $contestType == ContestType::Team->value
+                                            ? $participant['participant']['description']
+                                            : $participant['participant']['description'] }}
                                     </p>
                                     <p class="font-semibold text-center normal-case">
                                         {{ $contestType == ContestType::Team->value

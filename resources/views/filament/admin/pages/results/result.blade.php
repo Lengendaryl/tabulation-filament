@@ -159,7 +159,6 @@
              @foreach (collect($score)->unique('judge.id') as $judgeItem)
                  @php
                      $judgeEntries = collect($score)->where('judge.id', $judgeItem['judge']['id']);
-                     logger($judgeItem);
                      $uniqueCategories = $judgeEntries->unique('contest_category');
                  @endphp
                  @if ($judgeItem)

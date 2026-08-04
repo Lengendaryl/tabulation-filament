@@ -139,6 +139,7 @@ class CriteriaFactory extends Factory
             'preliminary_scoring_method' => 'default',
             'preliminary_round_percentage_score' => 50,
             'final_round_percentage_score' => 50,
+            'participant_label' => 'candidate',
             'criteria' => [
                 [
                     "data" => [
